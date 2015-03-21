@@ -39,7 +39,6 @@ public class BuildStatusNotifierPluginTest {
 
         String expectedURL = "url";
         String expectedUsername = "username";
-        String expectedPassword = "password";
         String expectedRevision = "sha-1";
         String expectedPRId = "1";
         String pipelineName = "pipeline";
@@ -49,13 +48,13 @@ public class BuildStatusNotifierPluginTest {
         String expectedPipelineInstance = String.format("%s/%s/%s/%s", pipelineName, pipelineCounter, stageName, stageCounter);
         String expectedStageResult = "Passed";
 
-        Map requestBody = createRequestBodyMap(expectedURL, expectedUsername, expectedPassword, expectedRevision, expectedPRId, pipelineName, pipelineCounter, stageName, stageCounter, expectedStageResult);
+        Map requestBody = createRequestBodyMap(expectedURL, expectedUsername, expectedRevision, expectedPRId, pipelineName, pipelineCounter, stageName, stageCounter, expectedStageResult);
         plugin.handleStageNotification(mockGoPluginAPIRequest(new GsonBuilder().create().toJson(requestBody)));
 
-        verify(provider).updateStatus(eq(expectedURL), eq(expectedUsername), eq(expectedPassword), eq("1"), eq(expectedRevision), eq(expectedPipelineInstance), eq(expectedStageResult), eq("https://localhost:8153/go/pipelines/" + expectedPipelineInstance));
+        verify(provider).updateStatus(eq(expectedURL), eq(expectedUsername), eq("1"), eq(expectedRevision), eq(expectedPipelineInstance), eq(expectedStageResult), eq("https://localhost:8153/go/pipelines/" + expectedPipelineInstance));
     }
 
-    private Map createRequestBodyMap(String url, String username, String password, String revision, String prId, String pipelineName, String pipelineCounter, String stageName, String stageCounter, String stageResult) {
+    private Map createRequestBodyMap(String url, String username, String revision, String prId, String pipelineName, String pipelineCounter, String stageName, String stageCounter, String stageResult) {
         Map materialRevisionMap = new HashMap();
         Map materialMap = new HashMap();
         materialMap.put("type", "scm");
@@ -63,7 +62,6 @@ public class BuildStatusNotifierPluginTest {
         Map configurationMap = new HashMap();
         configurationMap.put("url", url);
         configurationMap.put("username", username);
-        configurationMap.put("password", password);
         materialMap.put("scm-configuration", configurationMap);
         materialRevisionMap.put("material", materialMap);
 

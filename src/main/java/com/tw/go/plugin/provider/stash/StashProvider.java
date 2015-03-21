@@ -11,7 +11,7 @@ public class StashProvider implements Provider {
     }
 
     @Override
-    public void updateStatus(String url, String username, String password, String branch, String revision, String pipelineInstance, String result, String trackbackURL) {
+    public void updateStatus(String url, String username, String branch, String revision, String pipelineInstance, String result, String trackbackURL) {
 
     }
 }

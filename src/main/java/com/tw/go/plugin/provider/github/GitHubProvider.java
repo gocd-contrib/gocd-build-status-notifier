@@ -15,12 +15,12 @@ public class GitHubProvider implements Provider {
     }
 
     @Override
-    public void updateStatus(String url, String username, String password, String prIdStr, String revision, String pipelineInstance, String result, String trackbackURL) {
+    public void updateStatus(String url, String username, String prIdStr, String revision, String pipelineInstance, String result, String trackbackURL) {
         try {
             String repository = getRepository(url);
             GHCommitState state = getState(result);
 
-            GitHub github = GitHub.connectUsingPassword(username, password);
+            GitHub github = GitHub.connectUsingPassword(username, null);
             GHRepository ghRepository = github.getRepository(repository);
             ghRepository.createCommitStatus(revision, state, trackbackURL, "", pipelineInstance);
         } catch (Exception e) {

@@ -88,14 +88,13 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
                     Map materialConfiguration = (Map) material.get("scm-configuration");
                     String url = (String) materialConfiguration.get("url");
                     String username = (String) materialConfiguration.get("username");
-                    String password = (String) materialConfiguration.get("password");
 
                     List<Map> modifications = (List<Map>) materialRevision.get("modifications");
                     String revision = (String) modifications.get(0).get("revision");
                     Map modificationData = (Map) modifications.get(0).get("data");
                     String prId = (String) modificationData.get("PR_ID");
 
-                    provider.updateStatus(url, username, password, prId, revision, pipelineInstance, result, trackbackURL);
+                    provider.updateStatus(url, username, prId, revision, pipelineInstance, result, trackbackURL);
                 }
             }
 
