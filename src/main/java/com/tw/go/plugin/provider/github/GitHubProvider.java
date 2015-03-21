@@ -7,7 +7,6 @@ import org.kohsuke.github.GitHub;
 
 public class GitHubProvider implements Provider {
     public static final String GITHUB_PR_PLUGIN_ID = "github.pr";
-    public static final String PUBLIC_GITHUB_ENDPOINT = "https://api.github.com";
 
     @Override
     public String pollerPluginId() {
@@ -16,16 +15,51 @@ public class GitHubProvider implements Provider {
 
     @Override
     public void updateStatus(String url, String username, String prIdStr, String revision, String pipelineInstance, String result, String trackbackURL) {
-        try {
-            String repository = getRepository(url);
-            GHCommitState state = getState(result);
+        String repository = getRepository(url);
+        GHCommitState state = getState(result);
 
-            GitHub github = GitHub.connectUsingPassword(username, null);
+        String usernameToUse = System.getProperty("go.plugin.build.status.github.username");
+        if (isEmpty(usernameToUse)) {
+            usernameToUse = username;
+        }
+        String passwordToUse = System.getProperty("go.plugin.build.status.github.password");
+        String oauthAccessTokenToUse = System.getProperty("go.plugin.build.status.github.oauthAccessToken");
+        String endPointToUse = System.getProperty("go.plugin.build.status.github.endpoint");
+
+        updateCommitStatus(revision, pipelineInstance, trackbackURL, repository, state, usernameToUse, passwordToUse, oauthAccessTokenToUse, endPointToUse);
+    }
+
+    void updateCommitStatus(String revision, String pipelineInstance, String trackbackURL, String repository, GHCommitState state,
+                            String usernameToUse, String passwordToUse, String oauthAccessTokenToUse, String endPointToUse) {
+        try {
+            GitHub github = createGitHubClient(usernameToUse, passwordToUse, oauthAccessTokenToUse, endPointToUse);
             GHRepository ghRepository = github.getRepository(repository);
             ghRepository.createCommitStatus(revision, state, trackbackURL, "", pipelineInstance);
         } catch (Exception e) {
             // ignore
         }
+    }
+
+    GitHub createGitHubClient(String usernameToUse, String passwordToUse, String oauthAccessTokenToUse, String endPointToUse) throws Exception {
+        GitHub github = null;
+        if (usernameAndPasswordIsAvailable(usernameToUse, passwordToUse)) {
+            if (endPointIsAvailable(endPointToUse)) {
+                github = GitHub.connectToEnterprise(endPointToUse, usernameToUse, passwordToUse);
+            } else {
+                github = GitHub.connectUsingPassword(usernameToUse, passwordToUse);
+            }
+        }
+        if (oAuthTokenIsAvailable(oauthAccessTokenToUse)) {
+            if (endPointIsAvailable(endPointToUse)) {
+                github = GitHub.connectUsingOAuth(endPointToUse, oauthAccessTokenToUse);
+            } else {
+                github = GitHub.connectUsingOAuth(oauthAccessTokenToUse);
+            }
+        }
+        if (github == null) {
+            github = GitHub.connect();
+        }
+        return github;
     }
 
     String getRepository(String url) {
@@ -49,5 +83,21 @@ public class GitHubProvider implements Provider {
             state = GHCommitState.ERROR;
         }
         return state;
+    }
+
+    private boolean usernameAndPasswordIsAvailable(String usernameToUse, String passwordToUse) {
+        return !isEmpty(usernameToUse) && !isEmpty(passwordToUse);
+    }
+
+    private boolean oAuthTokenIsAvailable(String oauthAccessTokenToUse) {
+        return !isEmpty(oauthAccessTokenToUse);
+    }
+
+    private boolean endPointIsAvailable(String endPointToUse) {
+        return !isEmpty(endPointToUse);
+    }
+
+    private boolean isEmpty(String str) {
+        return str == null || str.trim().isEmpty();
     }
 }

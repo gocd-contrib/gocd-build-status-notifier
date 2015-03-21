@@ -77,7 +77,8 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
         List<String> messages = new ArrayList<String>();
         try {
             String pipelineInstance = String.format("%s/%s/%s/%s", dataMap.get("pipeline-name"), dataMap.get("pipeline-counter"), dataMap.get("stage-name"), dataMap.get("stage-counter"));
-            String trackbackURL = String.format("https://%s/go/pipelines/%s", "localhost:8153", pipelineInstance);
+            String trackbackHostAndPort = System.getProperty("go.plugin.build.status.go-server", "localhost:8153");
+            String trackbackURL = String.format("https://%s/go/pipelines/%s", trackbackHostAndPort, pipelineInstance);
             String result = (String) dataMap.get("stage-result");
 
             Map pipeline = (Map) dataMap.get("pipeline");
