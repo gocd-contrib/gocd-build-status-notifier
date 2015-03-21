@@ -1,50 +1,63 @@
-[![Build Status](https://snap-ci.com/ashwanthkumar/gocd-build-github-pull-requests/branch/master/build_image)](https://snap-ci.com/ashwanthkumar/gocd-build-github-pull-requests/branch/master)
+# GoCD build status notifier
+This is GoCD's Notification plugin that updates SCM with build status.
 
-# GoCD - Build PR from Github
-This GoCD's SCM plugin polls the Github repository for Pull Requests (new PR/update to existing PRs) and triggers the build pipeline. [Discussion Thread](https://groups.google.com/d/topic/go-cd-dev/Rt_Y5G2VkOc/discussion)
+Supported:
+* GitHub Pull Request status
+
+To Do:
+* Stash Pull Request status
+* Gerrit Change Set status
 
 ## Requirements
 This needs GoCD >= v15.x which is due release as of writing.
 
 ## Get Started
 **Installation:**
-- Download the latest plugin jar from [Releases](https://github.com/ashwanthkumar/gocd-build-github-pull-requests/releases) section. Place it in `<go-server-location>/plugins/external` & restart Go Server.
+- Download the latest plugin jar from [Releases](https://github.com/srinivasupadhya/gocd-build-status-notifier/releases) section. Place it in `<go-server-location>/plugins/external` & restart Go Server.
 
-**Usage:**
-- Assuming you already have a pipeline "ProjectA" for one of your Github repos, 'Extract Template' from the pipeline (if its not templatized already)
-- Create new pipeline say "ProjectA-PullRequests" off of the extracted template. You can clone "ProjectA" pipeline to achieve this.
-- Select `Github` in Admin -> 'Pipeline' Configuration (ProjectA-PullRequests) -> 'Materials' Configuration -> 'Material' listing drop-down
+## Behavior
+- Go Server notifies the plugin on every `Stage Status Change` with relevant details. The plugin scans the `build-cause` to see if the `github.pr`/`stash.pr`/`gerrit.cs` material is present.
+- If it is, then Pull Request/Change Set status is updated with `status=stage-result`, `context=pipeline-name/pipeline-counter/stage-name/stage-counter` & `target-url=trackback-url`.
+
+**Target URL:**
+- You can choose to provide `trackback` through system property `go.github.pr.status.trackback`.
+Eg:
+```
+-Dgo.github.pr.status.trackback=localhost:8153
+```
 
 **Authentication:**
-- You can choose to provide `username` & `password` through Go Config XML
-- (or) Create a file `~/.github` with the following contents: (Note: `~/.github` needs to be available on Go Server and on all Go Agent machines)
+- You can choose to provide `username` & `password` through system property `go.github.pr.status.username` & `go.github.pr.status.password`.
+Eg: 
+```
+-Dgo.github.pr.status.username=johndoe
+-Dgo.github.pr.status.password=thisaintapassword
+```
+or
+```
+-Dgo.github.pr.status.username=johndoe
+-Dgo.github.pr.status.oauthAccessToken=thisaintatoken
+```
+- (or) through file `~/.github` on Go Server with the following contents:
 ```
 login=johndoe
 password=thisaintapassword
 ```
+or
+```
+login=johndoe
+oauthAccessToken=thisaintatoken
+```
 
 **Github Enterprise:**
-- If you intend to use this plugin with 'Github Enterprise' then add the following content in `~/.github` (Note: `~/.github` needs to be available on Go Server and on all Go Agent machines)
+- You can choose to provide `endpoint` through system property `go.github.pr.status.endpoint`.
+Eg:
 ```
-# for enterprise installations - Make sure to add /api/v3 to the hostname
-# ignore this field or have the value to https://api.github.com
+-Dgo.github.pr.status.endpoint=http://code.yourcompany.com/api/v3
+```
+- (or) through file `~/.github` on Go Server with the following contents:
+```
 endpoint=http://code.yourcompany.com/api/v3
 ```
 
-## Behavior
-- First run of the new pipeline will be off of 'master' branch. This creates base PR-Revision map. It also serves as sanity check for newly created pipeline.
-- From then on, any new change (new PR create / new commits to existing PR) will trigger the new pipeline. Only the top commit in the PR will show up in build cause.
-- PR details (id, author etc.) will be available as environement variable for tasks to consume.
-
-## To Dos
-- Clean up the code esp. the JSON SerDe part
-- Add proper tests around the plugin
-- Add support for [Github's commit status](https://developer.github.com/v3/repos/statuses/) API to push build status to Github. May be a separate task/notification plugin?
-
 ## FAQs
-
-### Pull Request isn't being built
-- We periodically poll for new PRs on the given repository. We build a pull request when it's first opened and when commits are added to the pull request throughout its lifetime. Rather than test the commits from the branches the pull request is sent from, we test the merge between the origin and the upstream branch.
-- If a pull request isn't built, that usually means that it can't be merged. We rely on the merge commit that GitHub transparently creates between the changes in the source branch and the upstream branch the pull request is sent against.
-- So when you create or update a pull request, and Go doesn't create a build for it, make sure the pull request is mergeable. If it isn't, rebase it against the upstream branch and resolve any merge conflicts.
-
