@@ -11,7 +11,8 @@ public class GerritProvider implements Provider {
     }
 
     @Override
-    public void updateStatus(String url, String username, String branch, String revision, String pipelineInstance, String result, String trackbackURL) {
+    public void updateStatus(String url, String username, String branch, String revision, String pipelineInstance,
+                             String result, String trackbackURL) throws Exception {
 
     }
 }

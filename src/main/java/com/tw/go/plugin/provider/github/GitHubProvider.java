@@ -14,14 +14,12 @@ public class GitHubProvider implements Provider {
     }
 
     @Override
-    public void updateStatus(String url, String username, String prIdStr, String revision, String pipelineInstance, String result, String trackbackURL) {
+    public void updateStatus(String url, String username, String prIdStr, String revision, String pipelineInstance,
+                             String result, String trackbackURL) throws Exception {
         String repository = getRepository(url);
         GHCommitState state = getState(result);
 
         String usernameToUse = System.getProperty("go.plugin.build.status.github.username");
-        if (isEmpty(usernameToUse)) {
-            usernameToUse = username;
-        }
         String passwordToUse = System.getProperty("go.plugin.build.status.github.password");
         String oauthAccessTokenToUse = System.getProperty("go.plugin.build.status.github.oauthAccessToken");
         String endPointToUse = System.getProperty("go.plugin.build.status.github.endpoint");
@@ -30,14 +28,10 @@ public class GitHubProvider implements Provider {
     }
 
     void updateCommitStatus(String revision, String pipelineInstance, String trackbackURL, String repository, GHCommitState state,
-                            String usernameToUse, String passwordToUse, String oauthAccessTokenToUse, String endPointToUse) {
-        try {
-            GitHub github = createGitHubClient(usernameToUse, passwordToUse, oauthAccessTokenToUse, endPointToUse);
-            GHRepository ghRepository = github.getRepository(repository);
-            ghRepository.createCommitStatus(revision, state, trackbackURL, "", pipelineInstance);
-        } catch (Exception e) {
-            // ignore
-        }
+                            String usernameToUse, String passwordToUse, String oauthAccessTokenToUse, String endPointToUse) throws Exception {
+        GitHub github = createGitHubClient(usernameToUse, passwordToUse, oauthAccessTokenToUse, endPointToUse);
+        GHRepository ghRepository = github.getRepository(repository);
+        ghRepository.createCommitStatus(revision, state, trackbackURL, "", pipelineInstance);
     }
 
     GitHub createGitHubClient(String usernameToUse, String passwordToUse, String oauthAccessTokenToUse, String endPointToUse) throws Exception {

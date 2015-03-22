@@ -34,7 +34,7 @@ public class BuildStatusNotifierPluginTest {
     }
 
     @Test
-    public void shouldDelegateUpdateStatusToProviderWithCorrectParameters() {
+    public void shouldDelegateUpdateStatusToProviderWithCorrectParameters() throws Exception {
         when(provider.pollerPluginId()).thenReturn("github.pr");
 
         String expectedURL = "url";

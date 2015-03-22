@@ -95,7 +95,11 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
                     Map modificationData = (Map) modifications.get(0).get("data");
                     String prId = (String) modificationData.get("PR_ID");
 
-                    provider.updateStatus(url, username, prId, revision, pipelineInstance, result, trackbackURL);
+                    try {
+                        provider.updateStatus(url, username, prId, revision, pipelineInstance, result, trackbackURL);
+                    } catch (Exception e) {
+                        LOGGER.error(String.format("Error occurred. Could not update build status - URL: %s Revision: %s Build: %s Result: %s Message: %s", url, revision, pipelineInstance, result, e.getMessage()));
+                    }
                 }
             }
 
