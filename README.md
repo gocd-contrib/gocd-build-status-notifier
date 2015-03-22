@@ -26,9 +26,8 @@ Eg:
 -Dgo.plugin.build.status.go-server=localhost:8153
 ```
 
-**Authentication:**
-
 #### GitHub
+**Authentication:**
 - You can choose to provide `username` & `password` through system property `go.plugin.build.status.github.username` & `go.plugin.build.status.github.password`.
 Eg: 
 ```
@@ -50,7 +49,8 @@ or
 oauthAccessToken=thisaintatoken
 ```
 
-- **Github Enterprise:** You can choose to provide `endpoint` through system property `go.plugin.build.status.github.endpoint`.
+**Github Enterprise:**
+- You can choose to provide `endpoint` through system property `go.plugin.build.status.github.endpoint`.
 Eg:
 ```
 -Dgo.plugin.build.status.github.endpoint=http://code.yourcompany.com
@@ -61,6 +61,7 @@ endpoint=http://code.yourcompany.com
 ```
 
 #### Stash
+**Setup:**
 - You need to provide `endpoint`, `username` & `password` through system property `go.plugin.build.status.stash.endpoint`, `go.plugin.build.status.stash.username` & `go.plugin.build.status.stash.password`.
 Eg:
 ```
