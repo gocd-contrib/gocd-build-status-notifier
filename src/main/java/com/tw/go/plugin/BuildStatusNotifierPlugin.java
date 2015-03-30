@@ -76,12 +76,15 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
         Map<String, Object> response = new HashMap<String, Object>();
         List<String> messages = new ArrayList<String>();
         try {
-            String pipelineInstance = String.format("%s/%s/%s/%s", dataMap.get("pipeline-name"), dataMap.get("pipeline-counter"), dataMap.get("stage-name"), dataMap.get("stage-counter"));
             String trackbackHostAndPort = System.getProperty("go.plugin.build.status.go-server", "localhost:8153");
-            String trackbackURL = String.format("https://%s/go/pipelines/%s", trackbackHostAndPort, pipelineInstance);
-            String result = (String) dataMap.get("stage-result");
 
             Map pipeline = (Map) dataMap.get("pipeline");
+            Map stage = (Map) pipeline.get("stage");
+
+            String pipelineInstance = String.format("%s/%s/%s/%s", pipeline.get("name"), pipeline.get("counter"), stage.get("name"), stage.get("counter"));
+            String trackbackURL = String.format("https://%s/go/pipelines/%s", trackbackHostAndPort, pipelineInstance);
+            String result = (String) stage.get("result");
+
             List<Map> materialRevisions = (List<Map>) pipeline.get("build-cause");
             for (Map materialRevision : materialRevisions) {
                 Map material = (Map) materialRevision.get("material");
@@ -98,7 +101,7 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
                     try {
                         provider.updateStatus(url, username, prId, revision, pipelineInstance, result, trackbackURL);
                     } catch (Exception e) {
-                        LOGGER.error(String.format("Error occurred. Could not update build status - URL: %s Revision: %s Build: %s Result: %s Message: %s", url, revision, pipelineInstance, result, e.getMessage()));
+                        LOGGER.error(String.format("Error occurred. Could not update build status - URL: %s Revision: %s Build: %s Result: %s", url, revision, pipelineInstance, result), e);
                     }
                 }
             }
@@ -109,6 +112,7 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
             responseCode = INTERNAL_ERROR_RESPONSE_CODE;
             response.put("status", "failure");
             messages.add(e.getMessage());
+            LOGGER.warn("Error occurred.", e);
         }
 
         response.put("messages", messages);
@@ -116,7 +120,7 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
     }
 
     private boolean isMaterialOfType(Map material, String pollerPluginId) {
-        return material.get("type").equals("scm") && material.get("plugin-id").equals(pollerPluginId);
+        return ((String) material.get("type")).equalsIgnoreCase("scm") && ((String) material.get("plugin-id")).equalsIgnoreCase(pollerPluginId);
     }
 
     private Map<String, Object> getMapFor(GoPluginApiRequest goPluginApiRequest) {

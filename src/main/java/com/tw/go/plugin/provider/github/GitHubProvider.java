@@ -1,5 +1,6 @@
 package com.tw.go.plugin.provider.github;
 
+import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.tw.go.plugin.provider.Provider;
 import org.kohsuke.github.GHCommitState;
 import org.kohsuke.github.GHRepository;
@@ -7,6 +8,7 @@ import org.kohsuke.github.GitHub;
 
 public class GitHubProvider implements Provider {
     public static final String GITHUB_PR_PLUGIN_ID = "github.pr";
+    private static Logger LOGGER = Logger.getLoggerFor(GitHubProvider.class);
 
     @Override
     public String pollerPluginId() {
