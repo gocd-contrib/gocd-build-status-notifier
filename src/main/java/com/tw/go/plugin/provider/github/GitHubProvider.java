@@ -23,7 +23,7 @@ public class GitHubProvider implements Provider {
 
         String usernameToUse = System.getProperty("go.plugin.build.status.github.username");
         String passwordToUse = System.getProperty("go.plugin.build.status.github.password");
-        String oauthAccessTokenToUse = System.getProperty("go.plugin.build.status.github.oauthAccessToken");
+        String oauthAccessTokenToUse = System.getProperty("go.plugin.build.status.github.oauth");
         String endPointToUse = System.getProperty("go.plugin.build.status.github.endpoint");
 
         updateCommitStatus(revision, pipelineInstance, trackbackURL, repository, state, usernameToUse, passwordToUse, oauthAccessTokenToUse, endPointToUse);
