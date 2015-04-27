@@ -36,6 +36,7 @@ Eg:
 ```
 or provide the `oauth access token` through system property `go.plugin.build.status.github.oauth`.
 ```
+-Dgo.plugin.build.status.github.username=johndoe
 -Dgo.plugin.build.status.github.oauth=thisaintatoken
 ```
 
