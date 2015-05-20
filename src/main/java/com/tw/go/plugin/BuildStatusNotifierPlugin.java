@@ -130,7 +130,7 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
         Map<String, Object> requestMap = new HashMap<String, Object>();
         requestMap.put("plugin-id", provider.pluginId());
         GoApiResponse response = goApplicationAccessor.submit(createGoApiRequest(GET_PLUGIN_SETTINGS, JSONUtils.toJSON(requestMap)));
-        Map<String, String> responseBodyMap = (Map<String, String>) JSONUtils.fromJSON(response.responseBody());
+        Map<String, String> responseBodyMap = response.responseBody() == null ? new HashMap<String, String>() : (Map<String, String>) JSONUtils.fromJSON(response.responseBody());
         return new PluginSettings(responseBodyMap.get(PLUGIN_SETTINGS_SERVER_BASE_URL), responseBodyMap.get(PLUGIN_SETTINGS_END_POINT),
                 responseBodyMap.get(PLUGIN_SETTINGS_USERNAME), responseBodyMap.get(PLUGIN_SETTINGS_PASSWORD), responseBodyMap.get(PLUGIN_SETTINGS_OAUTH_TOKEN));
     }
