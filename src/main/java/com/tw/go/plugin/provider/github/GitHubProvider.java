@@ -1,39 +1,58 @@
 package com.tw.go.plugin.provider.github;
 
-import com.thoughtworks.go.plugin.api.logging.Logger;
+import com.tw.go.plugin.PluginSettings;
 import com.tw.go.plugin.provider.Provider;
+import com.tw.go.plugin.util.StringUtils;
 import org.kohsuke.github.GHCommitState;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
 public class GitHubProvider implements Provider {
-    public static final String GITHUB_PR_PLUGIN_ID = "github.pr";
-    private static Logger LOGGER = Logger.getLoggerFor(GitHubProvider.class);
+    public static final String PLUGIN_ID = "github.pr.status";
+    public static final String GITHUB_PR_POLLER_PLUGIN_ID = "github.pr";
 
     @Override
-    public String pollerPluginId() {
-        return GITHUB_PR_PLUGIN_ID;
+    public String pluginId() {
+        return PLUGIN_ID;
     }
 
     @Override
-    public void updateStatus(String url, String username, String prIdStr, String revision, String pipelineInstance,
+    public String pollerPluginId() {
+        return GITHUB_PR_POLLER_PLUGIN_ID;
+    }
+
+    @Override
+    public void updateStatus(String url, PluginSettings pluginSettings, String prIdStr, String revision, String pipelineStage,
                              String result, String trackbackURL) throws Exception {
         String repository = getRepository(url);
         GHCommitState state = getState(result);
 
-        String usernameToUse = System.getProperty("go.plugin.build.status.github.username");
-        String passwordToUse = System.getProperty("go.plugin.build.status.github.password");
-        String oauthAccessTokenToUse = System.getProperty("go.plugin.build.status.github.oauth");
-        String endPointToUse = System.getProperty("go.plugin.build.status.github.endpoint");
+        String endPointToUse = pluginSettings.getEndPoint();
+        String usernameToUse = pluginSettings.getUsername();
+        String passwordToUse = pluginSettings.getPassword();
+        String oauthAccessTokenToUse = pluginSettings.getOauthToken();
 
-        updateCommitStatus(revision, pipelineInstance, trackbackURL, repository, state, usernameToUse, passwordToUse, oauthAccessTokenToUse, endPointToUse);
+        if (StringUtils.isEmpty(endPointToUse)) {
+            endPointToUse = System.getProperty("go.plugin.build.status.github.endpoint");
+        }
+        if (StringUtils.isEmpty(usernameToUse)) {
+            usernameToUse = System.getProperty("go.plugin.build.status.github.username");
+        }
+        if (StringUtils.isEmpty(passwordToUse)) {
+            passwordToUse = System.getProperty("go.plugin.build.status.github.password");
+        }
+        if (StringUtils.isEmpty(oauthAccessTokenToUse)) {
+            oauthAccessTokenToUse = System.getProperty("go.plugin.build.status.github.oauth");
+        }
+
+        updateCommitStatus(revision, pipelineStage, trackbackURL, repository, state, usernameToUse, passwordToUse, oauthAccessTokenToUse, endPointToUse);
     }
 
-    void updateCommitStatus(String revision, String pipelineInstance, String trackbackURL, String repository, GHCommitState state,
+    void updateCommitStatus(String revision, String pipelineStage, String trackbackURL, String repository, GHCommitState state,
                             String usernameToUse, String passwordToUse, String oauthAccessTokenToUse, String endPointToUse) throws Exception {
         GitHub github = createGitHubClient(usernameToUse, passwordToUse, oauthAccessTokenToUse, endPointToUse);
         GHRepository ghRepository = github.getRepository(repository);
-        ghRepository.createCommitStatus(revision, state, trackbackURL, "", pipelineInstance);
+        ghRepository.createCommitStatus(revision, state, trackbackURL, "", pipelineStage);
     }
 
     GitHub createGitHubClient(String usernameToUse, String passwordToUse, String oauthAccessTokenToUse, String endPointToUse) throws Exception {

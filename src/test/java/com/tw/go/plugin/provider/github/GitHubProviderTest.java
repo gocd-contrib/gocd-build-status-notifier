@@ -1,5 +1,6 @@
 package com.tw.go.plugin.provider.github;
 
+import com.tw.go.plugin.PluginSettings;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kohsuke.github.GHCommitState;
@@ -32,6 +33,6 @@ public class GitHubProviderTest {
     @Test
     public void shouldUpdateStatusForPR() throws Exception {
         GitHubProvider provider = new GitHubProvider();
-        provider.updateStatus("https://github.com/srinivasupadhya/sample-repo", "", "1", "6d4627a71fa6dc1610a321feee8e76d3e5fe997c", "pipeline/1/stage/1", "Passed", "http://localhost:8153");
+        provider.updateStatus("https://github.com/srinivasupadhya/sample-repo", new PluginSettings(), "1", "6d4627a71fa6dc1610a321feee8e76d3e5fe997c", "pipeline/stage", "Passed", "http://localhost:8153/go/pipelines/pipeline/1/stage/1");
     }
 }

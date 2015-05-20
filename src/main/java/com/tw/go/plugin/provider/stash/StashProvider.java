@@ -1,7 +1,9 @@
 package com.tw.go.plugin.provider.stash;
 
 import com.google.gson.GsonBuilder;
+import com.tw.go.plugin.PluginSettings;
 import com.tw.go.plugin.provider.Provider;
+import com.tw.go.plugin.util.StringUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -13,26 +15,42 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StashProvider implements Provider {
-    public static final String STASH_PR_PLUGIN_ID = "stash.pr";
+    public static final String PLUGIN_ID = "stash.pr.status";
+    public static final String STASH_PR_POLLER_PLUGIN_ID = "stash.pr";
 
     @Override
-    public String pollerPluginId() {
-        return STASH_PR_PLUGIN_ID;
+    public String pluginId() {
+        return PLUGIN_ID;
     }
 
     @Override
-    public void updateStatus(String url, String username, String branch, String revision, String pipelineInstance,
-                             String result, String trackbackURL) throws Exception {
-        String endpoint = System.getProperty("go.plugin.build.status.stash.endpoint");
-        String usernameToUse = System.getProperty("go.plugin.build.status.stash.username");
-        String passwordToUse = System.getProperty("go.plugin.build.status.stash.password");
+    public String pollerPluginId() {
+        return STASH_PR_POLLER_PLUGIN_ID;
+    }
 
-        String updateURL = String.format("%s/rest/build-status/1.0/commits/%s", endpoint, revision);
+    @Override
+    public void updateStatus(String url, PluginSettings pluginSettings, String branch, String revision, String pipelineStage,
+                             String result, String trackbackURL) throws Exception {
+        String endPointToUse = pluginSettings.getEndPoint();
+        String usernameToUse = pluginSettings.getUsername();
+        String passwordToUse = pluginSettings.getPassword();
+
+        if (StringUtils.isEmpty(endPointToUse)) {
+            endPointToUse = System.getProperty("go.plugin.build.status.stash.endpoint");
+        }
+        if (StringUtils.isEmpty(usernameToUse)) {
+            usernameToUse = System.getProperty("go.plugin.build.status.stash.username");
+        }
+        if (StringUtils.isEmpty(passwordToUse)) {
+            passwordToUse = System.getProperty("go.plugin.build.status.stash.password");
+        }
+
+        String updateURL = String.format("%s/rest/build-status/1.0/commits/%s", endPointToUse, revision);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("state", getState(result));
-        params.put("key", pipelineInstance);
-        params.put("name", pipelineInstance);
+        params.put("key", pipelineStage);
+        params.put("name", pipelineStage);
         params.put("url", trackbackURL);
         params.put("description", "");
         String requestBody = new GsonBuilder().create().toJson(params);

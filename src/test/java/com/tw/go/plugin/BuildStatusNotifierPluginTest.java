@@ -1,10 +1,15 @@
 package com.tw.go.plugin;
 
-import com.google.gson.GsonBuilder;
-import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
+import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
+import com.thoughtworks.go.plugin.api.request.DefaultGoPluginApiRequest;
+import com.thoughtworks.go.plugin.api.request.GoApiRequest;
+import com.thoughtworks.go.plugin.api.response.DefaultGoApiResponse;
 import com.tw.go.plugin.provider.Provider;
+import com.tw.go.plugin.provider.github.GitHubProvider;
+import com.tw.go.plugin.util.JSONUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,16 +20,29 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class BuildStatusNotifierPluginTest {
+    @Mock
+    private GoApplicationAccessor goApplicationAccessor;
+    @Mock
     private Provider provider;
+
     private BuildStatusNotifierPlugin plugin;
 
     @Before
     public void setUp() {
-        provider = mock(Provider.class);
+        initMocks(this);
 
         plugin = new BuildStatusNotifierPlugin();
+
+        DefaultGoApiResponse pluginSettingsResponse = new DefaultGoApiResponse(200);
+        pluginSettingsResponse.setResponseBody(JSONUtils.toJSON(new HashMap<String, String>()));
+        when(goApplicationAccessor.submit(any(GoApiRequest.class))).thenReturn(pluginSettingsResponse);
+        when(provider.pluginId()).thenReturn(GitHubProvider.PLUGIN_ID);
+        when(provider.pollerPluginId()).thenReturn(GitHubProvider.GITHUB_PR_POLLER_PLUGIN_ID);
+
+        plugin.initializeGoApplicationAccessor(goApplicationAccessor);
         plugin.setProvider(provider);
     }
 
@@ -35,8 +53,6 @@ public class BuildStatusNotifierPluginTest {
 
     @Test
     public void shouldDelegateUpdateStatusToProviderWithCorrectParameters() throws Exception {
-        when(provider.pollerPluginId()).thenReturn("github.pr");
-
         String expectedURL = "url";
         String expectedUsername = "username";
         String expectedRevision = "sha-1";
@@ -45,13 +61,14 @@ public class BuildStatusNotifierPluginTest {
         String pipelineCounter = "1";
         String stageName = "stage";
         String stageCounter = "1";
+        String expectedPipelineStage = String.format("%s/%s", pipelineName, stageName);
         String expectedPipelineInstance = String.format("%s/%s/%s/%s", pipelineName, pipelineCounter, stageName, stageCounter);
         String expectedStageResult = "Passed";
 
         Map requestBody = createRequestBodyMap(expectedURL, expectedUsername, expectedRevision, expectedPRId, pipelineName, pipelineCounter, stageName, stageCounter, expectedStageResult);
-        plugin.handleStageNotification(mockGoPluginAPIRequest(new GsonBuilder().create().toJson(requestBody)));
+        plugin.handleStageNotification(createGoPluginAPIRequest(requestBody));
 
-        verify(provider).updateStatus(eq(expectedURL), eq(expectedUsername), eq("1"), eq(expectedRevision), eq(expectedPipelineInstance), eq(expectedStageResult), eq("https://localhost:8153/go/pipelines/" + expectedPipelineInstance));
+        verify(provider).updateStatus(eq(expectedURL), any(PluginSettings.class), eq("1"), eq(expectedRevision), eq(expectedPipelineStage), eq(expectedStageResult), eq("https://localhost:8153/go/pipelines/" + expectedPipelineInstance));
     }
 
     private Map createRequestBodyMap(String url, String username, String revision, String prId, String pipelineName, String pipelineCounter, String stageName, String stageCounter, String stageResult) {
@@ -79,47 +96,23 @@ public class BuildStatusNotifierPluginTest {
         buildCause.add(materialRevisionMap);
         pipelineMap.put("build-cause", buildCause);
 
+        Map stageMap = new HashMap();
+        stageMap.put("name", stageName);
+        stageMap.put("counter", stageCounter);
+        stageMap.put("result", stageResult);
+        pipelineMap.put("stage", stageMap);
+
+        pipelineMap.put("name", pipelineName);
+        pipelineMap.put("counter", pipelineCounter);
+
         Map requestBody = new HashMap();
-        requestBody.put("pipeline-name", pipelineName);
-        requestBody.put("pipeline-counter", pipelineCounter);
-        requestBody.put("stage-name", stageName);
-        requestBody.put("stage-counter", stageCounter);
-        requestBody.put("stage-result", stageResult);
         requestBody.put("pipeline", pipelineMap);
         return requestBody;
     }
 
-    private GoPluginApiRequest mockGoPluginAPIRequest(final String requestBody) {
-        return new GoPluginApiRequest() {
-            @Override
-            public String extension() {
-                return null;
-            }
-
-            @Override
-            public String extensionVersion() {
-                return null;
-            }
-
-            @Override
-            public String requestName() {
-                return null;
-            }
-
-            @Override
-            public Map<String, String> requestParameters() {
-                return null;
-            }
-
-            @Override
-            public Map<String, String> requestHeaders() {
-                return null;
-            }
-
-            @Override
-            public String requestBody() {
-                return requestBody;
-            }
-        };
+    private DefaultGoPluginApiRequest createGoPluginAPIRequest(Map requestBody) {
+        DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest(BuildStatusNotifierPlugin.EXTENSION_NAME, "1.0", BuildStatusNotifierPlugin.REQUEST_STAGE_STATUS);
+        request.setRequestBody(JSONUtils.toJSON(requestBody));
+        return request;
     }
 }

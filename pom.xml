@@ -88,6 +88,9 @@
             <resource>
                 <directory>${resource.directory}</directory>
             </resource>
+            <resource>
+                <directory>src/main/resources/common</directory>
+            </resource>
         </resources>
 
         <plugins>

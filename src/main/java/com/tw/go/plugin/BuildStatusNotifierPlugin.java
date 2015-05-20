@@ -6,10 +6,16 @@ import com.thoughtworks.go.plugin.api.GoPlugin;
 import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
 import com.thoughtworks.go.plugin.api.annotation.Extension;
 import com.thoughtworks.go.plugin.api.logging.Logger;
+import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
+import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.tw.go.plugin.provider.Provider;
+import com.tw.go.plugin.util.JSONUtils;
+import com.tw.go.plugin.util.StringUtils;
+import org.apache.commons.io.IOUtils;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
@@ -17,15 +23,30 @@ import static java.util.Arrays.asList;
 
 @Extension
 public class BuildStatusNotifierPlugin implements GoPlugin {
-    public static final String EXTENSION_NAME = "notification";
-    public static final String REQUEST_NOTIFICATIONS_INTERESTED_IN = "notifications-interested-in";
-    public static final String REQUEST_STAGE_STATUS = "stage-status";
-    public static final int SUCCESS_RESPONSE_CODE = 200;
-    public static final int INTERNAL_ERROR_RESPONSE_CODE = 500;
-    private static final List<String> goSupportedVersions = asList("1.0");
     private static Logger LOGGER = Logger.getLoggerFor(BuildStatusNotifierPlugin.class);
 
+    public static final String EXTENSION_NAME = "notification";
+    public static final List<String> goSupportedVersions = asList("1.0");
+
+    public static final String PLUGIN_SETTINGS_GET_CONFIGURATION = "go.plugin-settings.get-configuration";
+    public static final String PLUGIN_SETTINGS_GET_VIEW = "go.plugin-settings.get-view";
+    public static final String PLUGIN_SETTINGS_VALIDATE_CONFIGURATION = "go.plugin-settings.validate-configuration";
+    public static final String REQUEST_NOTIFICATIONS_INTERESTED_IN = "notifications-interested-in";
+    public static final String REQUEST_STAGE_STATUS = "stage-status";
+
+    public static final String GET_PLUGIN_SETTINGS = "go.processor.plugin-settings.get";
+
+    public static final String PLUGIN_SETTINGS_SERVER_BASE_URL = "server_base_url";
+    public static final String PLUGIN_SETTINGS_END_POINT = "end_point";
+    public static final String PLUGIN_SETTINGS_USERNAME = "username";
+    public static final String PLUGIN_SETTINGS_PASSWORD = "password";
+    public static final String PLUGIN_SETTINGS_OAUTH_TOKEN = "oauth_token";
+    public static final int SUCCESS_RESPONSE_CODE = 200;
+    public static final int NOT_FOUND_RESPONSE_CODE = 404;
+    public static final int INTERNAL_ERROR_RESPONSE_CODE = 500;
+
     private Provider provider;
+    private GoApplicationAccessor goApplicationAccessor;
 
     public BuildStatusNotifierPlugin() {
         try {
@@ -45,22 +66,73 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
 
     @Override
     public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor) {
-        // ignore
+        this.goApplicationAccessor = goApplicationAccessor;
     }
 
     @Override
     public GoPluginApiResponse handle(GoPluginApiRequest goPluginApiRequest) {
-        if (goPluginApiRequest.requestName().equals(REQUEST_NOTIFICATIONS_INTERESTED_IN)) {
+        String requestName = goPluginApiRequest.requestName();
+        if (requestName.equals(PLUGIN_SETTINGS_GET_CONFIGURATION)) {
+            return handleGetPluginSettingsConfiguration();
+        } else if (requestName.equals(PLUGIN_SETTINGS_GET_VIEW)) {
+            try {
+                return handleGetPluginSettingsView();
+            } catch (IOException e) {
+                return renderJSON(500, String.format("Failed to find template: %s", e.getMessage()));
+            }
+        } else if (requestName.equals(PLUGIN_SETTINGS_VALIDATE_CONFIGURATION)) {
+            return handleValidatePluginSettingsConfiguration(goPluginApiRequest);
+        } else if (requestName.equals(REQUEST_NOTIFICATIONS_INTERESTED_IN)) {
             return handleNotificationsInterestedIn();
-        } else if (goPluginApiRequest.requestName().equals(REQUEST_STAGE_STATUS)) {
+        } else if (requestName.equals(REQUEST_STAGE_STATUS)) {
             return handleStageNotification(goPluginApiRequest);
         }
-        return null;
+        return renderJSON(NOT_FOUND_RESPONSE_CODE, null);
     }
 
     @Override
     public GoPluginIdentifier pluginIdentifier() {
-        return new GoPluginIdentifier(EXTENSION_NAME, goSupportedVersions);
+        return getGoPluginIdentifier();
+    }
+
+    private GoPluginApiResponse handleGetPluginSettingsConfiguration() {
+        Map<String, Object> response = new HashMap<String, Object>();
+        response.put(PLUGIN_SETTINGS_SERVER_BASE_URL, createField("Server Base URL", null, true, false, "0"));
+        response.put(PLUGIN_SETTINGS_END_POINT, createField("End Point", null, true, false, "1"));
+        response.put(PLUGIN_SETTINGS_USERNAME, createField("Username", null, true, false, "2"));
+        response.put(PLUGIN_SETTINGS_PASSWORD, createField("Password", null, true, true, "3"));
+        response.put(PLUGIN_SETTINGS_OAUTH_TOKEN, createField("OAuth Token", null, true, true, "4"));
+        return renderJSON(SUCCESS_RESPONSE_CODE, response);
+    }
+
+    private Map<String, Object> createField(String displayName, String defaultValue, boolean isRequired, boolean isSecure, String displayOrder) {
+        Map<String, Object> fieldProperties = new HashMap<String, Object>();
+        fieldProperties.put("display-name", displayName);
+        fieldProperties.put("default-value", defaultValue);
+        fieldProperties.put("required", isRequired);
+        fieldProperties.put("secure", isSecure);
+        fieldProperties.put("display-order", displayOrder);
+        return fieldProperties;
+    }
+
+    private GoPluginApiResponse handleGetPluginSettingsView() throws IOException {
+        Map<String, Object> response = new HashMap<String, Object>();
+        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/plugin-settings.template.html"), "UTF-8"));
+        return renderJSON(SUCCESS_RESPONSE_CODE, response);
+    }
+
+    private GoPluginApiResponse handleValidatePluginSettingsConfiguration(GoPluginApiRequest goPluginApiRequest) {
+        List<Map<String, Object>> response = new ArrayList<Map<String, Object>>();
+        return renderJSON(SUCCESS_RESPONSE_CODE, response);
+    }
+
+    public PluginSettings getPluginSettings() {
+        Map<String, Object> requestMap = new HashMap<String, Object>();
+        requestMap.put("plugin-id", provider.pluginId());
+        GoApiResponse response = goApplicationAccessor.submit(createGoApiRequest(GET_PLUGIN_SETTINGS, JSONUtils.toJSON(requestMap)));
+        Map<String, String> responseBodyMap = (Map<String, String>) JSONUtils.fromJSON(response.responseBody());
+        return new PluginSettings(responseBodyMap.get(PLUGIN_SETTINGS_SERVER_BASE_URL), responseBodyMap.get(PLUGIN_SETTINGS_END_POINT),
+                responseBodyMap.get(PLUGIN_SETTINGS_USERNAME), responseBodyMap.get(PLUGIN_SETTINGS_PASSWORD), responseBodyMap.get(PLUGIN_SETTINGS_OAUTH_TOKEN));
     }
 
     GoPluginApiResponse handleNotificationsInterestedIn() {
@@ -70,19 +142,24 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
     }
 
     GoPluginApiResponse handleStageNotification(GoPluginApiRequest goPluginApiRequest) {
-        Map<String, Object> dataMap = getMapFor(goPluginApiRequest);
+        Map<String, Object> dataMap = (Map<String, Object>) JSONUtils.fromJSON(goPluginApiRequest.requestBody());
 
         int responseCode = SUCCESS_RESPONSE_CODE;
         Map<String, Object> response = new HashMap<String, Object>();
         List<String> messages = new ArrayList<String>();
         try {
-            String trackbackHostAndPort = System.getProperty("go.plugin.build.status.go-server", "localhost:8153");
+            PluginSettings pluginSettings = getPluginSettings();
+            String serverBaseURLToUse = pluginSettings.getServerBaseURL();
+            if (StringUtils.isEmpty(serverBaseURLToUse)) {
+                serverBaseURLToUse = System.getProperty("go.plugin.build.status.go-server", "localhost:8153");
+            }
 
             Map pipeline = (Map) dataMap.get("pipeline");
             Map stage = (Map) pipeline.get("stage");
 
+            String pipelineStage = String.format("%s/%s", pipeline.get("name"), stage.get("name"));
             String pipelineInstance = String.format("%s/%s/%s/%s", pipeline.get("name"), pipeline.get("counter"), stage.get("name"), stage.get("counter"));
-            String trackbackURL = String.format("https://%s/go/pipelines/%s", trackbackHostAndPort, pipelineInstance);
+            String trackbackURL = String.format("%s/go/pipelines/%s", serverBaseURLToUse, pipelineInstance);
             String result = (String) stage.get("result");
 
             List<Map> materialRevisions = (List<Map>) pipeline.get("build-cause");
@@ -91,7 +168,6 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
                 if (isMaterialOfType(material, provider.pollerPluginId())) {
                     Map materialConfiguration = (Map) material.get("scm-configuration");
                     String url = (String) materialConfiguration.get("url");
-                    String username = (String) materialConfiguration.get("username");
 
                     List<Map> modifications = (List<Map>) materialRevision.get("modifications");
                     String revision = (String) modifications.get(0).get("revision");
@@ -99,7 +175,7 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
                     String prId = (String) modificationData.get("PR_ID");
 
                     try {
-                        provider.updateStatus(url, username, prId, revision, pipelineInstance, result, trackbackURL);
+                        provider.updateStatus(url, pluginSettings, prId, revision, pipelineStage, result, trackbackURL);
                     } catch (Exception e) {
                         LOGGER.error(String.format("Error occurred. Could not update build status - URL: %s Revision: %s Build: %s Result: %s", url, revision, pipelineInstance, result), e);
                     }
@@ -123,8 +199,42 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
         return ((String) material.get("type")).equalsIgnoreCase("scm") && ((String) material.get("plugin-id")).equalsIgnoreCase(pollerPluginId);
     }
 
-    private Map<String, Object> getMapFor(GoPluginApiRequest goPluginApiRequest) {
-        return (Map<String, Object>) new GsonBuilder().create().fromJson(goPluginApiRequest.requestBody(), Object.class);
+    private GoPluginIdentifier getGoPluginIdentifier() {
+        return new GoPluginIdentifier(EXTENSION_NAME, goSupportedVersions);
+    }
+
+    private GoApiRequest createGoApiRequest(final String api, final String responseBody) {
+        return new GoApiRequest() {
+            @Override
+            public String api() {
+                return api;
+            }
+
+            @Override
+            public String apiVersion() {
+                return "1.0";
+            }
+
+            @Override
+            public GoPluginIdentifier pluginIdentifier() {
+                return getGoPluginIdentifier();
+            }
+
+            @Override
+            public Map<String, String> requestParameters() {
+                return null;
+            }
+
+            @Override
+            public Map<String, String> requestHeaders() {
+                return null;
+            }
+
+            @Override
+            public String requestBody() {
+                return responseBody;
+            }
+        };
     }
 
     private GoPluginApiResponse renderJSON(final int responseCode, Object response) {

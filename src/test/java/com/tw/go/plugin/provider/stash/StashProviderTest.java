@@ -1,5 +1,6 @@
 package com.tw.go.plugin.provider.stash;
 
+import com.tw.go.plugin.PluginSettings;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -20,6 +21,6 @@ public class StashProviderTest {
     @Test
     public void shouldUpdateStatusForPR() throws Exception {
         StashProvider provider = new StashProvider();
-        provider.updateStatus("http://localhost:7990/scm/test", "test", "1", "a0029a9049f5ad3f8492b830bec8f9d35463a2b5", "pipeline-name/1/stage-name/1", "Passed", "http://localhost:8153/");
+        provider.updateStatus("http://localhost:7990/scm/test", new PluginSettings(), "1", "a0029a9049f5ad3f8492b830bec8f9d35463a2b5", "pipeline-name/stage-name", "Passed", "http://localhost:8153/go/pipelines/pipeline/1/stage/1");
     }
 }
