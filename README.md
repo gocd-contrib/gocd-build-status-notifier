@@ -9,7 +9,7 @@ To Do:
 * Gerrit Change Set status
 
 ## Requirements
-This needs GoCD >= v15.x which is due release as of writing.
+These plugins require GoCD version >= v15.x or above
 
 ## Get Started
 **Installation:**
@@ -17,7 +17,21 @@ This needs GoCD >= v15.x which is due release as of writing.
 
 ## Behavior
 - Go Server notifies the plugin on every `Stage Status Change` with relevant details. The plugin scans the `build-cause` to see if the `github.pr` / `stash.pr` / `gerrit.cs` material is present.
-- If it is, then Pull Request/Change Set status is updated with `status=stage-result`, `context=pipeline-name/pipeline-counter/stage-name/stage-counter` & `target-url=trackback-url`.
+- If it is, then Pull Request/Change Set status is updated with `status=stage-result`, `context=pipeline-name/stage-name` & `target-url=trackback-url`.
+
+## Configuration
+
+- You will see `Github Pull Requests status notifier` / `Stash Pull Requests status notifier` / `Gerrit Change Set status notifier` on plugin listing page
+![Plugins listing page][1]
+
+- You can configure the plugin
+![Configure plugin pop-up][2]
+
+- When the stage status changes...
+![Pipeline Schedule][3]
+
+- The PR state is updated!
+![Update Status][4]
 
 **Target URL:**
 - You can provide `trackback` through system property `go.plugin.build.status.go-server`. It defaults to 'localhost:8153' if not available.
@@ -73,3 +87,8 @@ Eg:
 ```
 
 ## FAQs
+
+[1]: images/list-plugin.png  "List Plugin"
+[2]: images/configure-plugin.png  "Configure Plugin"
+[3]: images/pipeline-schedule.png  "Pipeline Schedule"
+[4]: images/update-status.png  "On Successful Status Update"
