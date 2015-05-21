@@ -78,13 +78,17 @@ public class GitHubProvider implements Provider {
     }
 
     String getRepository(String url) {
-        url = url.trim();
-        String[] parts = url.split("://");
-        parts = parts[1].split("/");
-        String user = parts[1];
-        String repository = parts[2];
-        repository = repository.contains(".") ? repository.split("\\.")[0] : repository;
-        return user + "/" + repository;
+        String[] urlParts = url.split("/");
+        String repo = urlParts[urlParts.length - 1];
+        String usernameWithSSHPrefix = urlParts[urlParts.length - 2];
+        int positionOfColon = usernameWithSSHPrefix.lastIndexOf(":");
+        if (positionOfColon > 0) {
+            usernameWithSSHPrefix = usernameWithSSHPrefix.substring(positionOfColon + 1);
+        }
+
+        String urlWithoutPrefix = String.format("%s/%s", usernameWithSSHPrefix, repo);
+        if (urlWithoutPrefix.endsWith(".git")) return urlWithoutPrefix.substring(0, urlWithoutPrefix.length() - 4);
+        else return urlWithoutPrefix;
     }
 
     GHCommitState getState(String result) {
