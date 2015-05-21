@@ -34,10 +34,10 @@ These plugins require GoCD version >= v15.x or above
 ![Update Status][4]
 
 **Target URL:**
-- You can provide `trackback` through system property `go.plugin.build.status.go-server`. It defaults to 'http://localhost:8153/' if not available.
+- You can provide `trackback` through system property `go.plugin.build.status.go-server`. It defaults to 'http://localhost:8153' if not available.
 Eg:
 ```
--Dgo.plugin.build.status.go-server=http://localhost:8153/
+-Dgo.plugin.build.status.go-server=http://localhost:8153
 ```
 
 #### GitHub

@@ -151,7 +151,7 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
             PluginSettings pluginSettings = getPluginSettings();
             String serverBaseURLToUse = pluginSettings.getServerBaseURL();
             if (StringUtils.isEmpty(serverBaseURLToUse)) {
-                serverBaseURLToUse = System.getProperty("go.plugin.build.status.go-server", "http://localhost:8153/");
+                serverBaseURLToUse = System.getProperty("go.plugin.build.status.go-server", "http://localhost:8153");
             }
 
             Map pipeline = (Map) dataMap.get("pipeline");
