@@ -3,13 +3,9 @@ package com.tw.go.plugin.provider.stash;
 import com.google.gson.GsonBuilder;
 import com.tw.go.plugin.PluginSettings;
 import com.tw.go.plugin.provider.Provider;
+import com.tw.go.plugin.util.AuthenticationType;
+import com.tw.go.plugin.util.HTTPUtils;
 import com.tw.go.plugin.util.StringUtils;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +13,10 @@ import java.util.Map;
 public class StashProvider implements Provider {
     public static final String PLUGIN_ID = "stash.pr.status";
     public static final String STASH_PR_POLLER_PLUGIN_ID = "stash.pr";
+
+    public static final String IN_PROGRESS_STATE = "INPROGRESS";
+    public static final String SUCCESSFUL_STATE = "SUCCESSFUL";
+    public static final String FAILED_STATE = "FAILED";
 
     @Override
     public String pluginId() {
@@ -55,43 +55,18 @@ public class StashProvider implements Provider {
         params.put("description", "");
         String requestBody = new GsonBuilder().create().toJson(params);
 
-        updateStatus(updateURL, usernameToUse, passwordToUse, requestBody);
-    }
-
-    private void updateStatus(String updateURL, String usernameToUse, String passwordToUse, String requestBody) throws Exception {
-        CloseableHttpClient httpClient = HttpClients.custom().build();
-        try {
-            HttpPost request = new HttpPost(updateURL);
-            byte[] authorizationData = (usernameToUse + ":" + passwordToUse).getBytes();
-            request.setHeader("Authorization", "Basic " + Base64.encodeBase64String(authorizationData));
-            request.addHeader("content-type", "application/json");
-            request.setEntity(new StringEntity(requestBody));
-
-            HttpResponse response = httpClient.execute(request);
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode > 204) {
-                throw new RuntimeException("Error occurred. Status Code: " + statusCode);
-            }
-        } finally {
-            if (httpClient != null) {
-                try {
-                    httpClient.close();
-                } catch (Exception e) {
-                    // ignore
-                }
-            }
-        }
+        HTTPUtils.postRequest(updateURL, AuthenticationType.BASIC, usernameToUse, passwordToUse, requestBody);
     }
 
     String getState(String result) {
         result = result == null ? "" : result;
-        String state = "INPROGRESS";
+        String state = IN_PROGRESS_STATE;
         if (result.equalsIgnoreCase("Passed")) {
-            state = "SUCCESSFUL";
+            state = SUCCESSFUL_STATE;
         } else if (result.equalsIgnoreCase("Failed")) {
-            state = "FAILED";
+            state = FAILED_STATE;
         } else if (result.equalsIgnoreCase("Cancelled")) {
-            state = "FAILED";
+            state = FAILED_STATE;
         }
         return state;
     }
