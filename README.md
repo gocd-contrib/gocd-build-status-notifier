@@ -4,8 +4,6 @@ This is GoCD's Notification plugin that updates SCM with build status.
 Supported:
 * GitHub Pull Request status
 * Stash Pull Request status
-
-To Do:
 * Gerrit Change Set status
 
 ## Requirements
@@ -84,6 +82,16 @@ Eg:
 -Dgo.plugin.build.status.stash.endpoint=http://localhost:7990
 -Dgo.plugin.build.status.stash.username=johndoe
 -Dgo.plugin.build.status.stash.password=thisaintapassword
+```
+
+#### Gerrit
+**Setup:**
+- You need to provide `endpoint`, `username` & `password` through system property `go.plugin.build.status.gerrit.endpoint`, `go.plugin.build.status.gerrit.username` & `go.plugin.build.status.gerrit.password`.
+Eg:
+```
+-Dgo.plugin.build.status.gerrit.endpoint=http://localhost:7990
+-Dgo.plugin.build.status.gerrit.username=johndoe
+-Dgo.plugin.build.status.gerrit.password=thisaintapassword
 ```
 
 ## FAQs
