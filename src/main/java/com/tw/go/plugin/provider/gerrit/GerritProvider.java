@@ -7,6 +7,7 @@ import com.tw.go.plugin.provider.gerrit.response.model.CommitDetails;
 import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPUtils;
 import com.tw.go.plugin.util.JSONUtils;
+import com.tw.go.plugin.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +33,22 @@ public class GerritProvider implements Provider {
     @Override
     public void updateStatus(String url, PluginSettings pluginSettings, String branch, String revision, String pipelineInstance,
                              String result, String trackbackURL) throws Exception {
-        String commitDetailsURL = String.format("%s/a/changes/?q=commit:%s", pluginSettings.getEndPoint(), revision);
-        String commitDetailsResponse = HTTPUtils.getRequest(commitDetailsURL, AuthenticationType.DIGEST, pluginSettings.getUsername(), pluginSettings.getPassword());
+        String endPointToUse = pluginSettings.getEndPoint();
+        String usernameToUse = pluginSettings.getUsername();
+        String passwordToUse = pluginSettings.getPassword();
+
+        if (StringUtils.isEmpty(endPointToUse)) {
+            endPointToUse = System.getProperty("go.plugin.build.status.gerrit.endpoint");
+        }
+        if (StringUtils.isEmpty(usernameToUse)) {
+            usernameToUse = System.getProperty("go.plugin.build.status.gerrit.username");
+        }
+        if (StringUtils.isEmpty(passwordToUse)) {
+            passwordToUse = System.getProperty("go.plugin.build.status.gerrit.password");
+        }
+
+        String commitDetailsURL = String.format("%s/a/changes/?q=commit:%s", endPointToUse, revision);
+        String commitDetailsResponse = HTTPUtils.getRequest(commitDetailsURL, AuthenticationType.DIGEST, usernameToUse, passwordToUse);
         CommitDetails commitDetails = new ResponseParser().parseCommitDetails(commitDetailsResponse);
 
         Map<String, Object> request = new HashMap<String, Object>();
@@ -41,8 +56,8 @@ public class GerritProvider implements Provider {
         Map<String, Object> labels = new HashMap<String, Object>();
         request.put("labels", labels);
         labels.put("Code-Review", getCodeReviewValue(result));
-        String updateStatusURL = String.format("%s/a/changes/%s/revisions/%s/review", pluginSettings.getEndPoint(), commitDetails.getId(), revision);
-        HTTPUtils.postRequest(updateStatusURL, AuthenticationType.DIGEST, pluginSettings.getUsername(), pluginSettings.getPassword(), JSONUtils.toJSON(request));
+        String updateStatusURL = String.format("%s/a/changes/%s/revisions/%s/review", endPointToUse, commitDetails.getId(), revision);
+        HTTPUtils.postRequest(updateStatusURL, AuthenticationType.DIGEST, usernameToUse, passwordToUse, JSONUtils.toJSON(request));
     }
 
     int getCodeReviewValue(String result) {
