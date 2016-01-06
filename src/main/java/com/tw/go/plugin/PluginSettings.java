@@ -6,16 +6,18 @@ public class PluginSettings {
     private String username;
     private String password;
     private String oauthToken;
+    private String reviewLabel;
 
     public PluginSettings() {
     }
 
-    public PluginSettings(String serverBaseURL, String endPoint, String username, String password, String oauthToken) {
+    public PluginSettings(String serverBaseURL, String endPoint, String username, String password, String oauthToken, String reviewLabel) {
         this.serverBaseURL = serverBaseURL;
         this.endPoint = endPoint;
         this.username = username;
         this.password = password;
         this.oauthToken = oauthToken;
+        this.reviewLabel = reviewLabel;
     }
 
     public String getServerBaseURL() {
@@ -58,6 +60,14 @@ public class PluginSettings {
         this.oauthToken = oauthToken;
     }
 
+    public String getReviewLabel() {
+        return reviewLabel;
+    }
+
+    public void setReviewLabel(String reviewLabel) {
+        this.reviewLabel = reviewLabel;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,6 +81,7 @@ public class PluginSettings {
         if (serverBaseURL != null ? !serverBaseURL.equals(that.serverBaseURL) : that.serverBaseURL != null)
             return false;
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
+        if (reviewLabel != null ? !reviewLabel.equals(that.reviewLabel) : that.reviewLabel != null) return false;
 
         return true;
     }
@@ -82,6 +93,7 @@ public class PluginSettings {
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (oauthToken != null ? oauthToken.hashCode() : 0);
+        result = 31 * result + (reviewLabel != null ? reviewLabel.hashCode() : 0);
         return result;
     }
 }

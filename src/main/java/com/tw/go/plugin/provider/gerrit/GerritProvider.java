@@ -36,6 +36,7 @@ public class GerritProvider implements Provider {
         String endPointToUse = pluginSettings.getEndPoint();
         String usernameToUse = pluginSettings.getUsername();
         String passwordToUse = pluginSettings.getPassword();
+        String codeReviewLabel = pluginSettings.getReviewLabel();
 
         if (StringUtils.isEmpty(endPointToUse)) {
             endPointToUse = System.getProperty("go.plugin.build.status.gerrit.endpoint");
@@ -46,6 +47,9 @@ public class GerritProvider implements Provider {
         if (StringUtils.isEmpty(passwordToUse)) {
             passwordToUse = System.getProperty("go.plugin.build.status.gerrit.password");
         }
+        if (StringUtils.isEmpty(codeReviewLabel)) {
+            codeReviewLabel = System.getProperty("go.plugin.build.status.gerrit.codeReviewLabel");
+        }
 
         String commitDetailsURL = String.format("%s/a/changes/?q=commit:%s", endPointToUse, revision);
         String commitDetailsResponse = HTTPUtils.getRequest(commitDetailsURL, AuthenticationType.DIGEST, usernameToUse, passwordToUse);
@@ -55,7 +59,7 @@ public class GerritProvider implements Provider {
         request.put("message", String.format("%s: %s", pipelineInstance, trackbackURL));
         Map<String, Object> labels = new HashMap<String, Object>();
         request.put("labels", labels);
-        labels.put("Code-Review", getCodeReviewValue(result));
+        labels.put(codeReviewLabel, getCodeReviewValue(result));
         String updateStatusURL = String.format("%s/a/changes/%s/revisions/%s/review", endPointToUse, commitDetails.getId(), revision);
         HTTPUtils.postRequest(updateStatusURL, AuthenticationType.DIGEST, usernameToUse, passwordToUse, JSONUtils.toJSON(request));
     }

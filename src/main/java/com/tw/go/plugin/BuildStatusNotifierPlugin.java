@@ -41,6 +41,7 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
     public static final String PLUGIN_SETTINGS_USERNAME = "username";
     public static final String PLUGIN_SETTINGS_PASSWORD = "password";
     public static final String PLUGIN_SETTINGS_OAUTH_TOKEN = "oauth_token";
+    public static final String PLUGIN_SETTINGS_REVIEW_LABEL = "review_label";
     public static final int SUCCESS_RESPONSE_CODE = 200;
     public static final int NOT_FOUND_RESPONSE_CODE = 404;
     public static final int INTERNAL_ERROR_RESPONSE_CODE = 500;
@@ -102,6 +103,7 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
         response.put(PLUGIN_SETTINGS_USERNAME, createField("Username", null, true, false, "2"));
         response.put(PLUGIN_SETTINGS_PASSWORD, createField("Password", null, true, true, "3"));
         response.put(PLUGIN_SETTINGS_OAUTH_TOKEN, createField("OAuth Token", null, true, true, "4"));
+        response.put(PLUGIN_SETTINGS_REVIEW_LABEL, createField("Gerrit Review Label", "Verified", true, false, "5"));
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 
@@ -132,7 +134,8 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
         GoApiResponse response = goApplicationAccessor.submit(createGoApiRequest(GET_PLUGIN_SETTINGS, JSONUtils.toJSON(requestMap)));
         Map<String, String> responseBodyMap = response.responseBody() == null ? new HashMap<String, String>() : (Map<String, String>) JSONUtils.fromJSON(response.responseBody());
         return new PluginSettings(responseBodyMap.get(PLUGIN_SETTINGS_SERVER_BASE_URL), responseBodyMap.get(PLUGIN_SETTINGS_END_POINT),
-                responseBodyMap.get(PLUGIN_SETTINGS_USERNAME), responseBodyMap.get(PLUGIN_SETTINGS_PASSWORD), responseBodyMap.get(PLUGIN_SETTINGS_OAUTH_TOKEN));
+                responseBodyMap.get(PLUGIN_SETTINGS_USERNAME), responseBodyMap.get(PLUGIN_SETTINGS_PASSWORD), responseBodyMap.get(PLUGIN_SETTINGS_OAUTH_TOKEN),
+                responseBodyMap.get(PLUGIN_SETTINGS_REVIEW_LABEL));
     }
 
     GoPluginApiResponse handleNotificationsInterestedIn() {
