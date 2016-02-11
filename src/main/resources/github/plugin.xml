@@ -7,7 +7,7 @@
         <description>Updates build status for GitHub pull request</description>
         <vendor>
             <name>Srinivas Upadhya</name>
-            <url>https://github.com/srinivasupadhya/gocd-build-status-notifier</url>
+            <url>https://github.com/gocd-contrib/gocd-build-status-notifier/</url>
         </vendor>
     </about>
 </go-plugin>

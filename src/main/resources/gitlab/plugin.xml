@@ -6,8 +6,8 @@
         <target-go-version>${go.version}</target-go-version>
         <description>Updates build status for GitLab Merge request</description>
         <vendor>
-            <name>Srinivas Upadhya</name>
-            <url>https://github.com/srinivasupadhya/gocd-build-status-notifier</url>
+            <name>Mirko Friedenhagen</name>
+            <url>https://github.com/gocd-contrib/gocd-build-status-notifier/</url>
         </vendor>
     </about>
 </go-plugin>
