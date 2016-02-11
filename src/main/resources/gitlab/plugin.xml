@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<go-plugin id="github.pr.status" version="1">
+<go-plugin id="gitlab.mr.status" version="1">
     <about>
-        <name>Github Pull Requests status notifier</name>
+        <name>GitLab Merge Requests status notifier</name>
         <version>${project.version}</version>
         <target-go-version>${go.version}</target-go-version>
-        <description>Updates build status for GitHub pull request</description>
+        <description>Updates build status for GitLab Merge request</description>
         <vendor>
             <name>Srinivas Upadhya</name>
             <url>https://github.com/srinivasupadhya/gocd-build-status-notifier</url>

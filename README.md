@@ -19,7 +19,7 @@ These plugins require GoCD version >= v15.x or above
 
 ## Configuration
 
-- You will see `Github Pull Requests status notifier` / `Stash Pull Requests status notifier` / `Gerrit Change Set status notifier` on plugin listing page
+- You will see `Github Pull Requests status notifier` / `Stash Pull Requests status notifier` / `Gerrit Change Set status notifier` / `GitLab Merge Requests status notifier` on plugin listing page
 ![Plugins listing page][1]
 
 - You can configure the plugin (this feature requires GoCD version >= v15.2, use system properties to configure the plugin)
@@ -93,6 +93,18 @@ Eg:
 -Dgo.plugin.build.status.gerrit.username=johndoe
 -Dgo.plugin.build.status.gerrit.password=thisaintapassword
 ```
+
+#### GitLab
+**Setup:**
+- You need to provide `endpoint` and the [`token` from your profile page](https://gitlab.com/profile/account).
+- The `token` is not really `oauth` but the custom authentication from GitLab.
+
+Eg:
+```
+-Dgo.plugin.build.status.gitlab.endpoint=https://gitlab.com/
+-Dgo.plugin.build.status.gitlab.oauth=YOUR_TOKEN_HERE
+```
+
 
 ## FAQs
 

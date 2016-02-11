@@ -24,7 +24,7 @@ public class GitHubProvider implements Provider {
     @Override
     public void updateStatus(String url, PluginSettings pluginSettings, String prIdStr, String revision, String pipelineStage,
                              String result, String trackbackURL) throws Exception {
-        String repository = getRepository(url);
+        String repository = StringUtils.getRepository(url);
         GHCommitState state = getState(result);
 
         String endPointToUse = pluginSettings.getEndPoint();
@@ -75,20 +75,6 @@ public class GitHubProvider implements Provider {
             github = GitHub.connect();
         }
         return github;
-    }
-
-    String getRepository(String url) {
-        String[] urlParts = url.split("/");
-        String repo = urlParts[urlParts.length - 1];
-        String usernameWithSSHPrefix = urlParts[urlParts.length - 2];
-        int positionOfColon = usernameWithSSHPrefix.lastIndexOf(":");
-        if (positionOfColon > 0) {
-            usernameWithSSHPrefix = usernameWithSSHPrefix.substring(positionOfColon + 1);
-        }
-
-        String urlWithoutPrefix = String.format("%s/%s", usernameWithSSHPrefix, repo);
-        if (urlWithoutPrefix.endsWith(".git")) return urlWithoutPrefix.substring(0, urlWithoutPrefix.length() - 4);
-        else return urlWithoutPrefix;
     }
 
     GHCommitState getState(String result) {

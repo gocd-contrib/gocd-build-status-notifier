@@ -5,11 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tw.go.plugin</groupId>
     <artifactId>gocd-build-status-notifier</artifactId>
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
 
     <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <go.version>14.4.0</go.version>
+        <go.version>15.1.0</go.version>
         <main.dir>${project.basedir}</main.dir>
     </properties>
 
@@ -36,11 +38,26 @@
             <version>4.5</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.kohsuke</groupId>
             <artifactId>github-api</artifactId>
             <version>1.68</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.gitlab</groupId>
+            <artifactId>java-gitlab-api</artifactId>
+            <version>1.2.4</version>
+        </dependency>
+        <!-- <dependency>
+            <groupId>com.messners</groupId>
+            <artifactId>gitlab-api</artifactId>
+            <version>2.0.4</version>
+        </dependency>
+        -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -80,13 +97,21 @@
                 <resource.directory>src/main/resources/gerrit</resource.directory>
             </properties>
         </profile>
+        <profile>
+            <id>gitlab.mr.status</id>
+            <properties>
+                <plugin.name>gitlab-mr-status</plugin.name>
+                <resource.directory>src/main/resources/gitlab</resource.directory>
+            </properties>
+        </profile>
     </profiles>
 
     <build>
-        <finalName>${plugin.name}-${version}</finalName>
+        <finalName>${plugin.name}-${project.version}</finalName>
         <resources>
             <resource>
                 <directory>${resource.directory}</directory>
+                <filtering>true</filtering>
             </resource>
             <resource>
                 <directory>src/main/resources/common</directory>
@@ -98,10 +123,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
             </plugin>
 
             <plugin>
