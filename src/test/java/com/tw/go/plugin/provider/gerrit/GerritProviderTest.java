@@ -6,6 +6,10 @@ import com.tw.go.plugin.util.HTTPClient;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -65,5 +69,31 @@ public class GerritProviderTest {
                 "\"labels\":{\"Verified\":1}" +
                 "}"
         );
+    }
+
+    @Test
+    public void shouldValidateConfigurationSuccessfully() {
+        Map<String, Object> settings = new HashMap<String, Object>();
+        settings.put("review_label", getSettingValue());
+
+        List<Map<String, Object>> validationErrors = provider.validateConfig(settings);
+
+        assertThat(validationErrors.size(), is(0));
+    }
+
+    private Map<String, Object> getSettingValue() {
+        Map<String, Object> value = new HashMap<String, Object>();
+        value.put("value", "Verified");
+        return value;
+    }
+
+    @Test
+    public void shouldValidateMissingReviewField() {
+        Map<String, Object> config = new HashMap<String, Object>();
+        List<Map<String, Object>> validationErrors = provider.validateConfig(config);
+
+        assertThat(validationErrors.size(), is(1));
+        assertThat((String) validationErrors.get(0).get("key"), is("review_label"));
+        assertThat((String) validationErrors.get(0).get("message"), is("Review field must be set"));
     }
 }

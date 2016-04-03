@@ -9,8 +9,13 @@ import com.tw.go.plugin.util.HTTPClient;
 import com.tw.go.plugin.util.JSONUtils;
 import com.tw.go.plugin.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static com.tw.go.plugin.BuildStatusNotifierPlugin.PLUGIN_SETTINGS_REVIEW_LABEL;
+import static com.tw.go.plugin.util.ValidationUtils.getValidationError;
 
 public class GerritProvider implements Provider {
     public static final String PLUGIN_ID = "gerrit.cs.status";
@@ -72,6 +77,19 @@ public class GerritProvider implements Provider {
         labels.put(codeReviewLabel, getCodeReviewValue(result));
         String updateStatusURL = String.format("%s/a/changes/%s/revisions/%s/review", endPointToUse, commitDetails.getId(), revision);
         httpClient.postRequest(updateStatusURL, AuthenticationType.DIGEST, usernameToUse, passwordToUse, JSONUtils.toJSON(request));
+    }
+
+    @Override
+    public List<Map<String, Object>> validateConfig(Map<String, Object> fields) {
+        List<Map<String, Object>> response = new ArrayList<Map<String, Object>>();
+        if (!fields.containsKey(PLUGIN_SETTINGS_REVIEW_LABEL)) {
+            response.add(getValidationError(
+                        PLUGIN_SETTINGS_REVIEW_LABEL,
+                        "Review field must be set"
+            ));
+        }
+
+        return response;
     }
 
     int getCodeReviewValue(String result) {

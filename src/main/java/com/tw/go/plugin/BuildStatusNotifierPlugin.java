@@ -130,9 +130,11 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
     }
 
     private GoPluginApiResponse handleValidatePluginSettingsConfiguration(GoPluginApiRequest goPluginApiRequest) {
-        List<Map<String, Object>> response = new ArrayList<Map<String, Object>>();
+        Map<String, Object> fields = (Map<String, Object>) JSONUtils.fromJSON(goPluginApiRequest.requestBody());
+        List<Map<String, Object>> response = provider.validateConfig((Map<String, Object>) fields.get("plugin-settings"));
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
+
 
     public PluginSettings getPluginSettings() {
         Map<String, Object> requestMap = new HashMap<String, Object>();

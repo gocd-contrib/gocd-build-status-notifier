@@ -7,7 +7,9 @@ import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
 import com.tw.go.plugin.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StashProvider implements Provider {
@@ -66,6 +68,11 @@ public class StashProvider implements Provider {
         String requestBody = new GsonBuilder().create().toJson(params);
 
         httpClient.postRequest(updateURL, AuthenticationType.BASIC, usernameToUse, passwordToUse, requestBody);
+    }
+
+    @Override
+    public List<Map<String, Object>> validateConfig(Map<String, Object> fields) {
+        return new ArrayList<Map<String, Object>>();
     }
 
     String getState(String result) {
