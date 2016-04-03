@@ -19,8 +19,8 @@ import org.apache.http.util.EntityUtils;
 
 import java.net.URI;
 
-public class HTTPUtils {
-    public static String getRequest(String getURL, AuthenticationType authenticationType, String username, String password) throws Exception {
+public class HTTPClient {
+    public String getRequest(String getURL, AuthenticationType authenticationType, String username, String password) throws Exception {
         CloseableHttpClient httpClient = null;
         try {
             HttpGet request = new HttpGet(getURL);
@@ -51,7 +51,7 @@ public class HTTPUtils {
         }
     }
 
-    public static void postRequest(String updateURL, AuthenticationType authenticationType, String username, String password, String requestBody) throws Exception {
+    public void postRequest(String updateURL, AuthenticationType authenticationType, String username, String password, String requestBody) throws Exception {
         CloseableHttpClient httpClient = null;
         try {
             HttpPost request = new HttpPost(updateURL);
@@ -83,12 +83,12 @@ public class HTTPUtils {
         }
     }
 
-    private static HttpHost getHttpHost(String url) throws Exception {
+    private HttpHost getHttpHost(String url) throws Exception {
         URI uri = new URI(url);
         return new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
     }
 
-    private static AuthCache getAuthCache(AuthenticationType authenticationType, HttpHost target) {
+    private AuthCache getAuthCache(AuthenticationType authenticationType, HttpHost target) {
         AuthCache authCache = new BasicAuthCache();
         if (authenticationType == AuthenticationType.BASIC) {
             authCache.put(target, new BasicScheme());

@@ -1,25 +1,39 @@
 package com.tw.go.plugin.provider.gerrit;
 
 import com.tw.go.plugin.PluginSettings;
+import com.tw.go.plugin.util.AuthenticationType;
+import com.tw.go.plugin.util.HTTPClient;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class GerritProviderTest {
+    public static final String USERNAME = "srinivas";
+    public static final String PASSWORD = "VMDiHOBuXPlBU9jQQmy+2/HMZGnW5ey3JY3cthAGXw";
+    public static final String COMMIT_DETAILS_RESPONSE = "[{\n" +
+            "    \"id\": \"1\",\n" +
+            "    \"project\": \"foo\",\n" +
+            "    \"branch\": \"branch\",\n" +
+            "    \"change_id\": \"abcd\"\n" +
+            "}]";
     PluginSettings pluginSettings;
     GerritProvider provider;
+    HTTPClient mockHttpClient;
 
     @Before
     public void setUp() throws Exception {
         pluginSettings = new PluginSettings();
         pluginSettings.setEndPoint("http://localhost:8080");
-        pluginSettings.setUsername("srinivas");
-        pluginSettings.setPassword("VMDiHOBuXPlBU9jQQmy+2/HMZGnW5ey3JY3cthAGXw");
+        pluginSettings.setUsername(USERNAME);
+        pluginSettings.setPassword(PASSWORD);
+        pluginSettings.setReviewLabel("Verified");
 
-        provider = new GerritProvider();
+        mockHttpClient = mock(HTTPClient.class);
+        provider = new GerritProvider(mockHttpClient);
     }
 
     @Test
@@ -30,9 +44,26 @@ public class GerritProviderTest {
         assertThat(provider.getCodeReviewValue("Cancelled"), is(GerritProvider.FAILURE_VALUE));
     }
 
-    @Ignore("for local runs")
     @Test
     public void shouldUpdateStatus() throws Exception {
+        when(mockHttpClient.getRequest(
+                eq("http://localhost:8080/a/changes/?q=commit:64bdf589adda32a0652f8b3335b15bb8f53fe2cf"),
+                any(AuthenticationType.class),
+                eq(USERNAME),
+                eq(PASSWORD))
+        ).thenReturn(COMMIT_DETAILS_RESPONSE);
+
         provider.updateStatus(null, pluginSettings, null, "64bdf589adda32a0652f8b3335b15bb8f53fe2cf", "pipeline-name/stage-name", "Passed", "https://localhost:8153/go/pipelines/pipeline-name/1/stage-name/1");
+
+        verify(mockHttpClient).postRequest(
+                "http://localhost:8080/a/changes/1/revisions/64bdf589adda32a0652f8b3335b15bb8f53fe2cf/review",
+                AuthenticationType.DIGEST,
+                USERNAME,
+                PASSWORD,
+                "{" +
+                "\"message\":\"pipeline-name/stage-name: https://localhost:8153/go/pipelines/pipeline-name/1/stage-name/1\"," +
+                "\"labels\":{\"Verified\":1}" +
+                "}"
+        );
     }
 }

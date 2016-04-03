@@ -5,7 +5,7 @@ import com.tw.go.plugin.provider.Provider;
 import com.tw.go.plugin.provider.gerrit.response.ResponseParser;
 import com.tw.go.plugin.provider.gerrit.response.model.CommitDetails;
 import com.tw.go.plugin.util.AuthenticationType;
-import com.tw.go.plugin.util.HTTPUtils;
+import com.tw.go.plugin.util.HTTPClient;
 import com.tw.go.plugin.util.JSONUtils;
 import com.tw.go.plugin.util.StringUtils;
 
@@ -19,6 +19,16 @@ public class GerritProvider implements Provider {
     public static final int IN_PROGRESS_VALUE = 0;
     public static final int SUCCESS_VALUE = 1;
     public static final int FAILURE_VALUE = -1;
+
+    private HTTPClient httpClient;
+
+    public GerritProvider() {
+        httpClient = new HTTPClient();
+    }
+
+    public GerritProvider(HTTPClient httpClient) {
+        this.httpClient = httpClient;
+    }
 
     @Override
     public String pluginId() {
@@ -52,7 +62,7 @@ public class GerritProvider implements Provider {
         }
 
         String commitDetailsURL = String.format("%s/a/changes/?q=commit:%s", endPointToUse, revision);
-        String commitDetailsResponse = HTTPUtils.getRequest(commitDetailsURL, AuthenticationType.DIGEST, usernameToUse, passwordToUse);
+        String commitDetailsResponse = httpClient.getRequest(commitDetailsURL, AuthenticationType.DIGEST, usernameToUse, passwordToUse);
         CommitDetails commitDetails = new ResponseParser().parseCommitDetails(commitDetailsResponse);
 
         Map<String, Object> request = new HashMap<String, Object>();
@@ -61,7 +71,7 @@ public class GerritProvider implements Provider {
         request.put("labels", labels);
         labels.put(codeReviewLabel, getCodeReviewValue(result));
         String updateStatusURL = String.format("%s/a/changes/%s/revisions/%s/review", endPointToUse, commitDetails.getId(), revision);
-        HTTPUtils.postRequest(updateStatusURL, AuthenticationType.DIGEST, usernameToUse, passwordToUse, JSONUtils.toJSON(request));
+        httpClient.postRequest(updateStatusURL, AuthenticationType.DIGEST, usernameToUse, passwordToUse, JSONUtils.toJSON(request));
     }
 
     int getCodeReviewValue(String result) {

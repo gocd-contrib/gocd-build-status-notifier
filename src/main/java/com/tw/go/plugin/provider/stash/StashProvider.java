@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.tw.go.plugin.PluginSettings;
 import com.tw.go.plugin.provider.Provider;
 import com.tw.go.plugin.util.AuthenticationType;
-import com.tw.go.plugin.util.HTTPUtils;
+import com.tw.go.plugin.util.HTTPClient;
 import com.tw.go.plugin.util.StringUtils;
 
 import java.util.HashMap;
@@ -17,6 +17,16 @@ public class StashProvider implements Provider {
     public static final String IN_PROGRESS_STATE = "INPROGRESS";
     public static final String SUCCESSFUL_STATE = "SUCCESSFUL";
     public static final String FAILED_STATE = "FAILED";
+
+    private HTTPClient httpClient;
+
+    public StashProvider() {
+        httpClient = new HTTPClient();
+    }
+
+    public StashProvider(HTTPClient httpClient) {
+        this.httpClient = httpClient;
+    }
 
     @Override
     public String pluginId() {
@@ -55,7 +65,7 @@ public class StashProvider implements Provider {
         params.put("description", "");
         String requestBody = new GsonBuilder().create().toJson(params);
 
-        HTTPUtils.postRequest(updateURL, AuthenticationType.BASIC, usernameToUse, passwordToUse, requestBody);
+        httpClient.postRequest(updateURL, AuthenticationType.BASIC, usernameToUse, passwordToUse, requestBody);
     }
 
     String getState(String result) {
