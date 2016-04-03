@@ -11,6 +11,7 @@ import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.tw.go.plugin.provider.Provider;
+import com.tw.go.plugin.provider.gerrit.GerritProvider;
 import com.tw.go.plugin.util.JSONUtils;
 import com.tw.go.plugin.util.StringUtils;
 import org.apache.commons.io.IOUtils;
@@ -48,6 +49,7 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
 
     private Provider provider;
     private GoApplicationAccessor goApplicationAccessor;
+    private String templateName;
 
     public BuildStatusNotifierPlugin() {
         try {
@@ -56,6 +58,7 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
             Class<?> providerClass = Class.forName(properties.getProperty("provider"));
             Constructor<?> constructor = providerClass.getConstructor();
             provider = (Provider) constructor.newInstance();
+            templateName = properties.getProperty("settings.template");
         } catch (Exception e) {
             throw new RuntimeException("could not create provider", e);
         }
@@ -103,7 +106,9 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
         response.put(PLUGIN_SETTINGS_USERNAME, createField("Username", null, true, false, "2"));
         response.put(PLUGIN_SETTINGS_PASSWORD, createField("Password", null, true, true, "3"));
         response.put(PLUGIN_SETTINGS_OAUTH_TOKEN, createField("OAuth Token", null, true, true, "4"));
-        response.put(PLUGIN_SETTINGS_REVIEW_LABEL, createField("Gerrit Review Label", "Verified", true, false, "5"));
+        if (provider.pluginId().equals(GerritProvider.PLUGIN_ID)) {
+            response.put(PLUGIN_SETTINGS_REVIEW_LABEL, createField("Gerrit Review Label", "Verified", true, false, "5"));
+        }
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 
@@ -119,7 +124,8 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
 
     private GoPluginApiResponse handleGetPluginSettingsView() throws IOException {
         Map<String, Object> response = new HashMap<String, Object>();
-        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/plugin-settings.template.html"), "UTF-8"));
+
+        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/" + templateName), "UTF-8"));
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 

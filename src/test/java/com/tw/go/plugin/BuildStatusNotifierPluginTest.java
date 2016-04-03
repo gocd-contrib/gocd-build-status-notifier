@@ -1,11 +1,15 @@
 package com.tw.go.plugin;
 
+import com.google.gson.Gson;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.request.DefaultGoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoApiRequest;
+import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.DefaultGoApiResponse;
 import com.tw.go.plugin.provider.Provider;
+import com.tw.go.plugin.provider.gerrit.GerritProvider;
 import com.tw.go.plugin.provider.github.GitHubProvider;
+import com.tw.go.plugin.provider.stash.StashProvider;
 import com.tw.go.plugin.util.JSONUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tw.go.plugin.BuildStatusNotifierPlugin.PLUGIN_SETTINGS_GET_CONFIGURATION;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
@@ -69,6 +74,88 @@ public class BuildStatusNotifierPluginTest {
         plugin.handleStageNotification(createGoPluginAPIRequest(requestBody));
 
         verify(provider).updateStatus(eq(expectedURL), any(PluginSettings.class), eq("1"), eq(expectedRevision), eq(expectedPipelineStage), eq(expectedStageResult), eq("http://localhost:8153/go/pipelines/" + expectedPipelineInstance));
+    }
+
+    @Test
+    public void shouldReturnCorrectConfigForGerritPlugin() throws Exception {
+        when(provider.pluginId()).thenReturn(GerritProvider.PLUGIN_ID);
+
+        Map<String, Object> configuration = new Gson().fromJson(
+                plugin.handle(createRequest(PLUGIN_SETTINGS_GET_CONFIGURATION)
+                ).responseBody(), Map.class);
+
+        assertThat(configuration.containsKey("server_base_url"), is(true));
+        assertThat(configuration.containsKey("end_point"), is(true));
+        assertThat(configuration.containsKey("username"), is(true));
+        assertThat(configuration.containsKey("password"), is(true));
+        assertThat(configuration.containsKey("oauth_token"), is(true));
+        assertThat(configuration.containsKey("review_label"), is(true));
+    }
+
+    @Test
+    public void shouldReturnCorrectConfigForGitHubPlugin() throws Exception {
+        when(provider.pluginId()).thenReturn(GitHubProvider.PLUGIN_ID);
+
+        Map<String, Object> configuration = new Gson().fromJson(
+                plugin.handle(createRequest(PLUGIN_SETTINGS_GET_CONFIGURATION)
+        ).responseBody(), Map.class);
+
+        assertThat(configuration.containsKey("server_base_url"), is(true));
+        assertThat(configuration.containsKey("end_point"), is(true));
+        assertThat(configuration.containsKey("username"), is(true));
+        assertThat(configuration.containsKey("password"), is(true));
+        assertThat(configuration.containsKey("oauth_token"), is(true));
+        assertThat(configuration.containsKey("review_label"), is(false));
+    }
+
+    @Test
+    public void shouldReturnCorrectConfigForStashPlugin() throws Exception {
+        when(provider.pluginId()).thenReturn(StashProvider.PLUGIN_ID);
+
+        Map<String, Object> configuration = new Gson().fromJson(
+                plugin.handle(createRequest(PLUGIN_SETTINGS_GET_CONFIGURATION)
+                ).responseBody(), Map.class);
+
+        assertThat(configuration.containsKey("server_base_url"), is(true));
+        assertThat(configuration.containsKey("end_point"), is(true));
+        assertThat(configuration.containsKey("username"), is(true));
+        assertThat(configuration.containsKey("password"), is(true));
+        assertThat(configuration.containsKey("oauth_token"), is(true));
+        assertThat(configuration.containsKey("review_label"), is(false));
+    }
+
+    private GoPluginApiRequest createRequest(final String name) {
+        return new GoPluginApiRequest() {
+            @Override
+            public String extension() {
+                return null;
+            }
+
+            @Override
+            public String extensionVersion() {
+                return null;
+            }
+
+            @Override
+            public String requestName() {
+                return name;
+            }
+
+            @Override
+            public Map<String, String> requestParameters() {
+                return null;
+            }
+
+            @Override
+            public Map<String, String> requestHeaders() {
+                return null;
+            }
+
+            @Override
+            public String requestBody() {
+                return null;
+            }
+        };
     }
 
     private Map createRequestBodyMap(String url, String username, String revision, String prId, String pipelineName, String pipelineCounter, String stageName, String stageCounter, String stageResult) {
