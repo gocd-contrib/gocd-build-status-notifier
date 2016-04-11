@@ -1,4 +1,6 @@
-package com.tw.go.plugin.setting;
+package com.tw.go.plugin.provider.gerrit.configuration;
+
+import com.tw.go.plugin.setting.Configuration;
 
 import java.util.HashMap;
 import java.util.Map;

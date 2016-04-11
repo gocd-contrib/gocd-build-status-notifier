@@ -1,4 +1,6 @@
-package com.tw.go.plugin.setting;
+package com.tw.go.plugin.provider.gerrit.settings;
+
+import com.tw.go.plugin.setting.DefaultPluginSettings;
 
 public class GerritPluginSettings extends DefaultPluginSettings {
 
