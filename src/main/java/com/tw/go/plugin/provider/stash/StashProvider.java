@@ -1,10 +1,9 @@
 package com.tw.go.plugin.provider.stash;
 
 import com.google.gson.GsonBuilder;
-import com.tw.go.plugin.provider.Provider;
+import com.tw.go.plugin.provider.DefaultProvider;
 import com.tw.go.plugin.setting.Configuration;
 import com.tw.go.plugin.setting.DefaultConfiguration;
-import com.tw.go.plugin.setting.DefaultPluginSettings;
 import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
@@ -15,9 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.tw.go.plugin.setting.DefaultConfiguration.*;
-
-public class StashProvider implements Provider {
+public class StashProvider extends DefaultProvider {
     public static final String PLUGIN_ID = "stash.pr.status";
     public static final String STASH_PR_POLLER_PLUGIN_ID = "stash.pr";
 
@@ -83,17 +80,6 @@ public class StashProvider implements Provider {
     @Override
     public Configuration configuration() {
         return new DefaultConfiguration();
-    }
-
-    @Override
-    public PluginSettings pluginSettings(Map<String, String> responseBodyMap) {
-        return new DefaultPluginSettings(
-                responseBodyMap.get(PLUGIN_SETTINGS_SERVER_BASE_URL),
-                responseBodyMap.get(PLUGIN_SETTINGS_END_POINT),
-                responseBodyMap.get(PLUGIN_SETTINGS_USERNAME),
-                responseBodyMap.get(PLUGIN_SETTINGS_PASSWORD),
-                responseBodyMap.get(PLUGIN_SETTINGS_OAUTH_TOKEN)
-        );
     }
 
     String getState(String result) {

@@ -1,6 +1,6 @@
 package com.tw.go.plugin.provider.gerrit;
 
-import com.tw.go.plugin.provider.Provider;
+import com.tw.go.plugin.provider.DefaultProvider;
 import com.tw.go.plugin.provider.gerrit.response.ResponseParser;
 import com.tw.go.plugin.provider.gerrit.response.model.CommitDetails;
 import com.tw.go.plugin.setting.Configuration;
@@ -21,7 +21,8 @@ import static com.tw.go.plugin.setting.DefaultConfiguration.*;
 import static com.tw.go.plugin.setting.GerritConfiguration.PLUGIN_SETTINGS_REVIEW_LABEL;
 import static com.tw.go.plugin.util.ValidationUtils.getValidationError;
 
-public class GerritProvider implements Provider {
+public class GerritProvider extends DefaultProvider {
+
     public static final String PLUGIN_ID = "gerrit.cs.status";
     public static final String GERRIT_CS_POLLER_PLUGIN_ID = "gerrit.cs";
 

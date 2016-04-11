@@ -1,9 +1,8 @@
 package com.tw.go.plugin.provider.github;
 
-import com.tw.go.plugin.provider.Provider;
+import com.tw.go.plugin.provider.DefaultProvider;
 import com.tw.go.plugin.setting.Configuration;
 import com.tw.go.plugin.setting.DefaultConfiguration;
-import com.tw.go.plugin.setting.DefaultPluginSettings;
 import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.StringUtils;
 import org.kohsuke.github.GHCommitState;
@@ -14,9 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.tw.go.plugin.setting.DefaultConfiguration.*;
-
-public class GitHubProvider implements Provider {
+public class GitHubProvider extends DefaultProvider {
     public static final String PLUGIN_ID = "github.pr.status";
     public static final String GITHUB_PR_POLLER_PLUGIN_ID = "github.pr";
 
@@ -65,17 +62,6 @@ public class GitHubProvider implements Provider {
     @Override
     public Configuration configuration() {
         return new DefaultConfiguration();
-    }
-
-    @Override
-    public PluginSettings pluginSettings(Map<String, String> responseBodyMap) {
-        return new DefaultPluginSettings(
-                responseBodyMap.get(PLUGIN_SETTINGS_SERVER_BASE_URL),
-                responseBodyMap.get(PLUGIN_SETTINGS_END_POINT),
-                responseBodyMap.get(PLUGIN_SETTINGS_USERNAME),
-                responseBodyMap.get(PLUGIN_SETTINGS_PASSWORD),
-                responseBodyMap.get(PLUGIN_SETTINGS_OAUTH_TOKEN)
-        );
     }
 
     void updateCommitStatus(String revision, String pipelineStage, String trackbackURL, String repository, GHCommitState state,
