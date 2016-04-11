@@ -14,4 +14,6 @@ public interface Provider {
                              String result, String trackbackURL) throws Exception;
 
     public List<Map<String, Object>> validateConfig(Map<String, Object> fields);
+
+    public String templateName();
 }

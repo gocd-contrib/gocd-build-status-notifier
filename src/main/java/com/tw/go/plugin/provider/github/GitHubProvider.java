@@ -57,6 +57,11 @@ public class GitHubProvider implements Provider {
         return new ArrayList<Map<String, Object>>();
     }
 
+    @Override
+    public String templateName() {
+        return "plugin-settings.template.html";
+    }
+
     void updateCommitStatus(String revision, String pipelineStage, String trackbackURL, String repository, GHCommitState state,
                             String usernameToUse, String passwordToUse, String oauthAccessTokenToUse, String endPointToUse) throws Exception {
         GitHub github = createGitHubClient(usernameToUse, passwordToUse, oauthAccessTokenToUse, endPointToUse);

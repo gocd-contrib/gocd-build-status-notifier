@@ -49,7 +49,6 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
 
     private Provider provider;
     private GoApplicationAccessor goApplicationAccessor;
-    private String templateName;
 
     public BuildStatusNotifierPlugin() {
         try {
@@ -58,7 +57,6 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
             Class<?> providerClass = Class.forName(properties.getProperty("provider"));
             Constructor<?> constructor = providerClass.getConstructor();
             provider = (Provider) constructor.newInstance();
-            templateName = properties.getProperty("settings.template");
         } catch (Exception e) {
             throw new RuntimeException("could not create provider", e);
         }
@@ -125,7 +123,7 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
     private GoPluginApiResponse handleGetPluginSettingsView() throws IOException {
         Map<String, Object> response = new HashMap<String, Object>();
 
-        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/" + templateName), "UTF-8"));
+        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/" + provider.templateName()), "UTF-8"));
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 

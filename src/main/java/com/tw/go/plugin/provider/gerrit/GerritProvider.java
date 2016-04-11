@@ -92,6 +92,11 @@ public class GerritProvider implements Provider {
         return response;
     }
 
+    @Override
+    public String templateName() {
+        return "plugin-settings-gerrit.template.html";
+    }
+
     int getCodeReviewValue(String result) {
         result = result == null ? "" : result;
         int value = IN_PROGRESS_VALUE;

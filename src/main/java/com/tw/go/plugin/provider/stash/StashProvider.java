@@ -75,6 +75,11 @@ public class StashProvider implements Provider {
         return new ArrayList<Map<String, Object>>();
     }
 
+    @Override
+    public String templateName() {
+        return "plugin-settings.template.html";
+    }
+
     String getState(String result) {
         result = result == null ? "" : result;
         String state = IN_PROGRESS_STATE;
