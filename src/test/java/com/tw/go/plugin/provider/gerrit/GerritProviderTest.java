@@ -1,6 +1,6 @@
 package com.tw.go.plugin.provider.gerrit;
 
-import com.tw.go.plugin.PluginSettings;
+import com.tw.go.plugin.setting.GerritPluginSettings;
 import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
 import org.junit.Before;
@@ -24,13 +24,13 @@ public class GerritProviderTest {
             "    \"branch\": \"branch\",\n" +
             "    \"change_id\": \"abcd\"\n" +
             "}]";
-    PluginSettings pluginSettings;
+    GerritPluginSettings pluginSettings;
     GerritProvider provider;
     HTTPClient mockHttpClient;
 
     @Before
     public void setUp() throws Exception {
-        pluginSettings = new PluginSettings();
+        pluginSettings = new GerritPluginSettings();
         pluginSettings.setEndPoint("http://localhost:8080");
         pluginSettings.setUsername(USERNAME);
         pluginSettings.setPassword(PASSWORD);

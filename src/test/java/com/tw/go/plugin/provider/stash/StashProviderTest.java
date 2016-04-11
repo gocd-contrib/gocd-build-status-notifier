@@ -1,6 +1,6 @@
 package com.tw.go.plugin.provider.stash;
 
-import com.tw.go.plugin.PluginSettings;
+import com.tw.go.plugin.setting.DefaultPluginSettings;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -9,12 +9,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class StashProviderTest {
-    PluginSettings pluginSettings;
+    DefaultPluginSettings pluginSettings;
     StashProvider provider;
 
     @Before
     public void setUp() throws Exception {
-        pluginSettings = new PluginSettings();
+        pluginSettings = new DefaultPluginSettings();
         pluginSettings.setEndPoint("http://localhost:7990");
         pluginSettings.setUsername("test");
         pluginSettings.setPassword("Stash");

@@ -1,6 +1,7 @@
 package com.tw.go.plugin.provider;
 
-import com.tw.go.plugin.PluginSettings;
+import com.tw.go.plugin.setting.Configuration;
+import com.tw.go.plugin.setting.PluginSettings;
 
 import java.util.List;
 import java.util.Map;
@@ -15,5 +16,7 @@ public interface Provider {
 
     public List<Map<String, Object>> validateConfig(Map<String, Object> fields);
 
-    public String templateName();
+    public Configuration configuration();
+
+    public PluginSettings pluginSettings(Map<String, String> responseBodyMap);
 }

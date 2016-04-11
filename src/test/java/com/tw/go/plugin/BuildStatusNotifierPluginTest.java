@@ -10,6 +10,7 @@ import com.tw.go.plugin.provider.Provider;
 import com.tw.go.plugin.provider.gerrit.GerritProvider;
 import com.tw.go.plugin.provider.github.GitHubProvider;
 import com.tw.go.plugin.provider.stash.StashProvider;
+import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.JSONUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +59,9 @@ public class BuildStatusNotifierPluginTest {
 
     @Test
     public void shouldDelegateUpdateStatusToProviderWithCorrectParameters() throws Exception {
+        PluginSettings mockSettings = mock(PluginSettings.class);
+        when(plugin.getPluginSettings()).thenReturn(mockSettings);
+
         String expectedURL = "url";
         String expectedUsername = "username";
         String expectedRevision = "sha-1";
@@ -78,11 +82,11 @@ public class BuildStatusNotifierPluginTest {
 
     @Test
     public void shouldReturnCorrectConfigForGerritPlugin() throws Exception {
-        when(provider.pluginId()).thenReturn(GerritProvider.PLUGIN_ID);
+        plugin.setProvider(new GerritProvider());
 
         Map<String, Object> configuration = new Gson().fromJson(
                 plugin.handle(createRequest(PLUGIN_SETTINGS_GET_CONFIGURATION)
-                ).responseBody(), Map.class);
+        ).responseBody(), Map.class);
 
         assertThat(configuration.containsKey("server_base_url"), is(true));
         assertThat(configuration.containsKey("end_point"), is(true));
@@ -94,7 +98,7 @@ public class BuildStatusNotifierPluginTest {
 
     @Test
     public void shouldReturnCorrectConfigForGitHubPlugin() throws Exception {
-        when(provider.pluginId()).thenReturn(GitHubProvider.PLUGIN_ID);
+        plugin.setProvider(new GitHubProvider());
 
         Map<String, Object> configuration = new Gson().fromJson(
                 plugin.handle(createRequest(PLUGIN_SETTINGS_GET_CONFIGURATION)
@@ -110,11 +114,11 @@ public class BuildStatusNotifierPluginTest {
 
     @Test
     public void shouldReturnCorrectConfigForStashPlugin() throws Exception {
-        when(provider.pluginId()).thenReturn(StashProvider.PLUGIN_ID);
+        plugin.setProvider(new StashProvider());
 
         Map<String, Object> configuration = new Gson().fromJson(
                 plugin.handle(createRequest(PLUGIN_SETTINGS_GET_CONFIGURATION)
-                ).responseBody(), Map.class);
+        ).responseBody(), Map.class);
 
         assertThat(configuration.containsKey("server_base_url"), is(true));
         assertThat(configuration.containsKey("end_point"), is(true));

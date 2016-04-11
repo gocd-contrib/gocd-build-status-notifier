@@ -1,25 +1,24 @@
-package com.tw.go.plugin;
+package com.tw.go.plugin.setting;
 
-public class PluginSettings {
+public class DefaultPluginSettings implements PluginSettings {
     private String serverBaseURL;
     private String endPoint;
     private String username;
     private String password;
     private String oauthToken;
-    private String reviewLabel;
 
-    public PluginSettings() {
+    public DefaultPluginSettings() {
     }
 
-    public PluginSettings(String serverBaseURL, String endPoint, String username, String password, String oauthToken, String reviewLabel) {
+    public DefaultPluginSettings(String serverBaseURL, String endPoint, String username, String password, String oauthToken) {
         this.serverBaseURL = serverBaseURL;
         this.endPoint = endPoint;
         this.username = username;
         this.password = password;
         this.oauthToken = oauthToken;
-        this.reviewLabel = reviewLabel;
     }
 
+    @Override
     public String getServerBaseURL() {
         return serverBaseURL;
     }
@@ -28,6 +27,7 @@ public class PluginSettings {
         this.serverBaseURL = serverBaseURL;
     }
 
+    @Override
     public String getEndPoint() {
         return endPoint;
     }
@@ -36,6 +36,7 @@ public class PluginSettings {
         this.endPoint = endPoint;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
@@ -44,6 +45,7 @@ public class PluginSettings {
         this.username = username;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -52,6 +54,7 @@ public class PluginSettings {
         this.password = password;
     }
 
+    @Override
     public String getOauthToken() {
         return oauthToken;
     }
@@ -60,20 +63,13 @@ public class PluginSettings {
         this.oauthToken = oauthToken;
     }
 
-    public String getReviewLabel() {
-        return reviewLabel;
-    }
-
-    public void setReviewLabel(String reviewLabel) {
-        this.reviewLabel = reviewLabel;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PluginSettings that = (PluginSettings) o;
+        DefaultPluginSettings that = (DefaultPluginSettings) o;
 
         if (endPoint != null ? !endPoint.equals(that.endPoint) : that.endPoint != null) return false;
         if (oauthToken != null ? !oauthToken.equals(that.oauthToken) : that.oauthToken != null) return false;
@@ -81,7 +77,6 @@ public class PluginSettings {
         if (serverBaseURL != null ? !serverBaseURL.equals(that.serverBaseURL) : that.serverBaseURL != null)
             return false;
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
-        if (reviewLabel != null ? !reviewLabel.equals(that.reviewLabel) : that.reviewLabel != null) return false;
 
         return true;
     }
@@ -93,7 +88,6 @@ public class PluginSettings {
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (oauthToken != null ? oauthToken.hashCode() : 0);
-        result = 31 * result + (reviewLabel != null ? reviewLabel.hashCode() : 0);
         return result;
     }
 }

@@ -11,7 +11,7 @@ import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.tw.go.plugin.provider.Provider;
-import com.tw.go.plugin.provider.gerrit.GerritProvider;
+import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.JSONUtils;
 import com.tw.go.plugin.util.StringUtils;
 import org.apache.commons.io.IOUtils;
@@ -37,12 +37,6 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
 
     public static final String GET_PLUGIN_SETTINGS = "go.processor.plugin-settings.get";
 
-    public static final String PLUGIN_SETTINGS_SERVER_BASE_URL = "server_base_url";
-    public static final String PLUGIN_SETTINGS_END_POINT = "end_point";
-    public static final String PLUGIN_SETTINGS_USERNAME = "username";
-    public static final String PLUGIN_SETTINGS_PASSWORD = "password";
-    public static final String PLUGIN_SETTINGS_OAUTH_TOKEN = "oauth_token";
-    public static final String PLUGIN_SETTINGS_REVIEW_LABEL = "review_label";
     public static final int SUCCESS_RESPONSE_CODE = 200;
     public static final int NOT_FOUND_RESPONSE_CODE = 404;
     public static final int INTERNAL_ERROR_RESPONSE_CODE = 500;
@@ -98,32 +92,13 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
     }
 
     private GoPluginApiResponse handleGetPluginSettingsConfiguration() {
-        Map<String, Object> response = new HashMap<String, Object>();
-        response.put(PLUGIN_SETTINGS_SERVER_BASE_URL, createField("Server Base URL", null, true, false, "0"));
-        response.put(PLUGIN_SETTINGS_END_POINT, createField("End Point", null, true, false, "1"));
-        response.put(PLUGIN_SETTINGS_USERNAME, createField("Username", null, true, false, "2"));
-        response.put(PLUGIN_SETTINGS_PASSWORD, createField("Password", null, true, true, "3"));
-        response.put(PLUGIN_SETTINGS_OAUTH_TOKEN, createField("OAuth Token", null, true, true, "4"));
-        if (provider.pluginId().equals(GerritProvider.PLUGIN_ID)) {
-            response.put(PLUGIN_SETTINGS_REVIEW_LABEL, createField("Gerrit Review Label", "Verified", true, false, "5"));
-        }
-        return renderJSON(SUCCESS_RESPONSE_CODE, response);
-    }
-
-    private Map<String, Object> createField(String displayName, String defaultValue, boolean isRequired, boolean isSecure, String displayOrder) {
-        Map<String, Object> fieldProperties = new HashMap<String, Object>();
-        fieldProperties.put("display-name", displayName);
-        fieldProperties.put("default-value", defaultValue);
-        fieldProperties.put("required", isRequired);
-        fieldProperties.put("secure", isSecure);
-        fieldProperties.put("display-order", displayOrder);
-        return fieldProperties;
+        return renderJSON(SUCCESS_RESPONSE_CODE, provider.configuration().fields());
     }
 
     private GoPluginApiResponse handleGetPluginSettingsView() throws IOException {
         Map<String, Object> response = new HashMap<String, Object>();
 
-        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/" + provider.templateName()), "UTF-8"));
+        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/" + provider.configuration().templateName()), "UTF-8"));
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 
@@ -139,9 +114,7 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
         requestMap.put("plugin-id", provider.pluginId());
         GoApiResponse response = goApplicationAccessor.submit(createGoApiRequest(GET_PLUGIN_SETTINGS, JSONUtils.toJSON(requestMap)));
         Map<String, String> responseBodyMap = response.responseBody() == null ? new HashMap<String, String>() : (Map<String, String>) JSONUtils.fromJSON(response.responseBody());
-        return new PluginSettings(responseBodyMap.get(PLUGIN_SETTINGS_SERVER_BASE_URL), responseBodyMap.get(PLUGIN_SETTINGS_END_POINT),
-                responseBodyMap.get(PLUGIN_SETTINGS_USERNAME), responseBodyMap.get(PLUGIN_SETTINGS_PASSWORD), responseBodyMap.get(PLUGIN_SETTINGS_OAUTH_TOKEN),
-                responseBodyMap.get(PLUGIN_SETTINGS_REVIEW_LABEL));
+        return provider.pluginSettings(responseBodyMap);
     }
 
     GoPluginApiResponse handleNotificationsInterestedIn() {

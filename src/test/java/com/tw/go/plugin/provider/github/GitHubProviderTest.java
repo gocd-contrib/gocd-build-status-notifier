@@ -1,6 +1,6 @@
 package com.tw.go.plugin.provider.github;
 
-import com.tw.go.plugin.PluginSettings;
+import com.tw.go.plugin.setting.DefaultPluginSettings;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -10,12 +10,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class GitHubProviderTest {
-    PluginSettings pluginSettings;
+    DefaultPluginSettings pluginSettings;
     GitHubProvider provider;
 
     @Before
     public void setUp() throws Exception {
-        pluginSettings = new PluginSettings();
+        pluginSettings = new DefaultPluginSettings();
         provider = new GitHubProvider();
     }
 
