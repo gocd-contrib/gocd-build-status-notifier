@@ -1,5 +1,6 @@
 package com.tw.go.plugin.provider.gerrit;
 
+import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
 import org.junit.Before;
@@ -9,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tw.go.plugin.provider.gerrit.GerritConfigurationView.PLUGIN_SETTINGS_REVIEW_LABEL;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -94,5 +97,29 @@ public class GerritProviderTest {
         assertThat(validationErrors.size(), is(1));
         assertThat((String) validationErrors.get(0).get("key"), is("review_label"));
         assertThat((String) validationErrors.get(0).get("message"), is("Review field must be set"));
+    }
+
+    @Test
+    public void shouldReturnGerritSettingsObject() {
+        Map<String, String> responseBodyMap = new HashMap<String, String>();
+
+        responseBodyMap.put(PLUGIN_SETTINGS_SERVER_BASE_URL, "url");
+        responseBodyMap.put(PLUGIN_SETTINGS_END_POINT, "endpoint");
+        responseBodyMap.put(PLUGIN_SETTINGS_USERNAME, "username");
+        responseBodyMap.put(PLUGIN_SETTINGS_PASSWORD, "password");
+        responseBodyMap.put(PLUGIN_SETTINGS_OAUTH_TOKEN, "token");
+        responseBodyMap.put(PLUGIN_SETTINGS_REVIEW_LABEL, "label");
+
+        PluginSettings pluginSettings = provider.pluginSettings(responseBodyMap);
+
+        assertThat(pluginSettings instanceof GerritPluginSettings, is(true));
+        GerritPluginSettings gerritPluginSettings = (GerritPluginSettings) pluginSettings;
+
+        assertThat(gerritPluginSettings.getServerBaseURL(), is("url"));
+        assertThat(gerritPluginSettings.getEndPoint(), is("endpoint"));
+        assertThat(gerritPluginSettings.getUsername(), is("username"));
+        assertThat(gerritPluginSettings.getPassword(), is("password"));
+        assertThat(gerritPluginSettings.getOauthToken(), is("token"));
+        assertThat(gerritPluginSettings.getReviewLabel(), is("label"));
     }
 }
