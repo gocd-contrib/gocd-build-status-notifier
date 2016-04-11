@@ -3,9 +3,7 @@ package com.tw.go.plugin.provider.gerrit;
 import com.tw.go.plugin.provider.DefaultProvider;
 import com.tw.go.plugin.provider.gerrit.response.ResponseParser;
 import com.tw.go.plugin.provider.gerrit.response.model.CommitDetails;
-import com.tw.go.plugin.setting.Configuration;
-import com.tw.go.plugin.provider.gerrit.configuration.GerritConfiguration;
-import com.tw.go.plugin.provider.gerrit.settings.GerritPluginSettings;
+import com.tw.go.plugin.setting.PluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
@@ -17,8 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.tw.go.plugin.setting.DefaultConfiguration.*;
-import static com.tw.go.plugin.provider.gerrit.configuration.GerritConfiguration.PLUGIN_SETTINGS_REVIEW_LABEL;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
+import static com.tw.go.plugin.provider.gerrit.GerritConfigurationView.PLUGIN_SETTINGS_REVIEW_LABEL;
 import static com.tw.go.plugin.util.ValidationUtils.getValidationError;
 
 public class GerritProvider extends DefaultProvider {
@@ -100,8 +98,8 @@ public class GerritProvider extends DefaultProvider {
     }
 
     @Override
-    public Configuration configuration() {
-        return new GerritConfiguration();
+    public PluginConfigurationView configuration() {
+        return new GerritConfigurationView();
     }
 
     @Override

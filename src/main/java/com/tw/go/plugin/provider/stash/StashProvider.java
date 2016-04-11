@@ -2,8 +2,8 @@ package com.tw.go.plugin.provider.stash;
 
 import com.google.gson.GsonBuilder;
 import com.tw.go.plugin.provider.DefaultProvider;
-import com.tw.go.plugin.setting.Configuration;
-import com.tw.go.plugin.setting.DefaultConfiguration;
+import com.tw.go.plugin.setting.PluginConfigurationView;
+import com.tw.go.plugin.setting.DefaultPluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
@@ -78,8 +78,8 @@ public class StashProvider extends DefaultProvider {
     }
 
     @Override
-    public Configuration configuration() {
-        return new DefaultConfiguration();
+    public PluginConfigurationView configuration() {
+        return new DefaultPluginConfigurationView();
     }
 
     String getState(String result) {

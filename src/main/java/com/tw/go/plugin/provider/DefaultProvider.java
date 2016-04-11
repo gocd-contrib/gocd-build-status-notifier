@@ -5,7 +5,7 @@ import com.tw.go.plugin.setting.PluginSettings;
 
 import java.util.Map;
 
-import static com.tw.go.plugin.setting.DefaultConfiguration.*;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 
 public abstract class DefaultProvider implements Provider {
 

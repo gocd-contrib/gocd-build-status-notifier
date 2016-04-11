@@ -2,7 +2,7 @@ package com.tw.go.plugin.setting;
 
 import java.util.Map;
 
-public interface Configuration {
+public interface PluginConfigurationView {
 
     public String templateName();
 

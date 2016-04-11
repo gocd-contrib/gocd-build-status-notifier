@@ -1,4 +1,4 @@
-package com.tw.go.plugin.provider.gerrit.settings;
+package com.tw.go.plugin.provider.gerrit;
 
 import com.tw.go.plugin.setting.DefaultPluginSettings;
 

@@ -1,14 +1,14 @@
-package com.tw.go.plugin.provider.gerrit.configuration;
+package com.tw.go.plugin.provider.gerrit;
 
-import com.tw.go.plugin.setting.Configuration;
+import com.tw.go.plugin.setting.PluginConfigurationView;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tw.go.plugin.setting.DefaultConfiguration.*;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 import static com.tw.go.plugin.util.ConfigurationUtils.createField;
 
-public class GerritConfiguration implements Configuration {
+public class GerritConfigurationView implements PluginConfigurationView {
 
     public static final String PLUGIN_SETTINGS_REVIEW_LABEL = "review_label";
 

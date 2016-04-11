@@ -5,7 +5,7 @@ import java.util.Map;
 
 import static com.tw.go.plugin.util.ConfigurationUtils.createField;
 
-public class DefaultConfiguration implements Configuration {
+public class DefaultPluginConfigurationView implements PluginConfigurationView {
 
     public static final String PLUGIN_SETTINGS_SERVER_BASE_URL = "server_base_url";
     public static final String PLUGIN_SETTINGS_END_POINT = "end_point";

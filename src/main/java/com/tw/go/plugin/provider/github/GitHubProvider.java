@@ -1,8 +1,8 @@
 package com.tw.go.plugin.provider.github;
 
 import com.tw.go.plugin.provider.DefaultProvider;
-import com.tw.go.plugin.setting.Configuration;
-import com.tw.go.plugin.setting.DefaultConfiguration;
+import com.tw.go.plugin.setting.PluginConfigurationView;
+import com.tw.go.plugin.setting.DefaultPluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.StringUtils;
 import org.kohsuke.github.GHCommitState;
@@ -60,8 +60,8 @@ public class GitHubProvider extends DefaultProvider {
     }
 
     @Override
-    public Configuration configuration() {
-        return new DefaultConfiguration();
+    public PluginConfigurationView configuration() {
+        return new DefaultPluginConfigurationView();
     }
 
     void updateCommitStatus(String revision, String pipelineStage, String trackbackURL, String repository, GHCommitState state,

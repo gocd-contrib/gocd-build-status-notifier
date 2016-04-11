@@ -1,6 +1,5 @@
 package com.tw.go.plugin.provider.gerrit;
 
-import com.tw.go.plugin.provider.gerrit.settings.GerritPluginSettings;
 import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
 import org.junit.Before;
