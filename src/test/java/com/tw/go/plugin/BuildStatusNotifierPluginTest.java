@@ -7,9 +7,9 @@ import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.DefaultGoApiResponse;
 import com.tw.go.plugin.provider.Provider;
-import com.tw.go.plugin.provider.gerrit.GerritProvider;
 import com.tw.go.plugin.provider.github.GitHubProvider;
 import com.tw.go.plugin.provider.stash.StashProvider;
+import com.tw.go.plugin.setting.PluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.JSONUtils;
 import org.junit.Before;
@@ -81,35 +81,20 @@ public class BuildStatusNotifierPluginTest {
     }
 
     @Test
-    public void shouldReturnCorrectConfigForGerritPlugin() throws Exception {
-        plugin.setProvider(new GerritProvider());
+    public void shouldReturnPluginSettings() throws Exception {
+        Provider mockProvider = mock(Provider.class);
+        PluginConfigurationView mockConfigView = mock(PluginConfigurationView.class);
+        when(mockProvider.configuration()).thenReturn(mockConfigView);
+        Map<String, Object> fields = new HashMap<String, Object>();
+        when(mockConfigView.fields()).thenReturn(fields);
+
+        plugin.setProvider(mockProvider);
 
         Map<String, Object> configuration = new Gson().fromJson(
                 plugin.handle(createRequest(PLUGIN_SETTINGS_GET_CONFIGURATION)
         ).responseBody(), Map.class);
 
-        assertThat(configuration.containsKey("server_base_url"), is(true));
-        assertThat(configuration.containsKey("end_point"), is(true));
-        assertThat(configuration.containsKey("username"), is(true));
-        assertThat(configuration.containsKey("password"), is(true));
-        assertThat(configuration.containsKey("oauth_token"), is(true));
-        assertThat(configuration.containsKey("review_label"), is(true));
-    }
-
-    @Test
-    public void shouldReturnCorrectConfigForGitHubPlugin() throws Exception {
-        plugin.setProvider(new GitHubProvider());
-
-        Map<String, Object> configuration = new Gson().fromJson(
-                plugin.handle(createRequest(PLUGIN_SETTINGS_GET_CONFIGURATION)
-        ).responseBody(), Map.class);
-
-        assertThat(configuration.containsKey("server_base_url"), is(true));
-        assertThat(configuration.containsKey("end_point"), is(true));
-        assertThat(configuration.containsKey("username"), is(true));
-        assertThat(configuration.containsKey("password"), is(true));
-        assertThat(configuration.containsKey("oauth_token"), is(true));
-        assertThat(configuration.containsKey("review_label"), is(false));
+        assertThat(configuration, is(fields));
     }
 
     @Test

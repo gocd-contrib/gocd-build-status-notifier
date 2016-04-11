@@ -3,6 +3,7 @@ package com.tw.go.plugin.provider.gerrit;
 import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
+import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -121,5 +122,22 @@ public class GerritProviderTest {
         assertThat(gerritPluginSettings.getPassword(), is("password"));
         assertThat(gerritPluginSettings.getOauthToken(), is("token"));
         assertThat(gerritPluginSettings.getReviewLabel(), is("label"));
+    }
+
+    @Test
+    public void shouldReturnCorrectTemplate() {
+        assertThat(provider.configuration().templateName(), is("plugin-settings-gerrit.template.html"));
+    }
+
+    @Test
+    public void shouldReturnCorrectConfigFields() throws Exception {
+        Map<String, Object> configuration = provider.configuration().fields();
+
+        assertThat(configuration.containsKey("server_base_url"), Is.is(true));
+        assertThat(configuration.containsKey("end_point"), Is.is(true));
+        assertThat(configuration.containsKey("username"), Is.is(true));
+        assertThat(configuration.containsKey("password"), Is.is(true));
+        assertThat(configuration.containsKey("oauth_token"), Is.is(true));
+        assertThat(configuration.containsKey("review_label"), Is.is(true));
     }
 }
