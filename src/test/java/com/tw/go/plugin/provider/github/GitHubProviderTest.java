@@ -51,12 +51,12 @@ public class GitHubProviderTest {
 
     @Test
     public void shouldReturnCorrectTemplate() {
-        assertThat(provider.configuration().templateName(), is("plugin-settings.template.html"));
+        assertThat(provider.configurationView().templateName(), is("plugin-settings.template.html"));
     }
 
     @Test
     public void shouldReturnCorrectConfigFields() throws Exception {
-        Map<String, Object> configuration = provider.configuration().fields();
+        Map<String, Object> configuration = provider.configurationView().fields();
 
         assertThat(configuration.containsKey("server_base_url"), Is.is(true));
         assertThat(configuration.containsKey("end_point"), Is.is(true));

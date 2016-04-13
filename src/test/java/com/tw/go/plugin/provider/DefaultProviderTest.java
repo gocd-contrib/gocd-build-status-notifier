@@ -39,7 +39,7 @@ public class DefaultProviderTest {
         }
 
         @Override
-        public PluginConfigurationView configuration() {
+        public PluginConfigurationView configurationView() {
             return null;
         }
     }

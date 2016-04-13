@@ -92,13 +92,13 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
     }
 
     private GoPluginApiResponse handleGetPluginSettingsConfiguration() {
-        return renderJSON(SUCCESS_RESPONSE_CODE, provider.configuration().fields());
+        return renderJSON(SUCCESS_RESPONSE_CODE, provider.configurationView().fields());
     }
 
     private GoPluginApiResponse handleGetPluginSettingsView() throws IOException {
         Map<String, Object> response = new HashMap<String, Object>();
 
-        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/" + provider.configuration().templateName()), "UTF-8"));
+        response.put("template", IOUtils.toString(getClass().getResourceAsStream("/" + provider.configurationView().templateName()), "UTF-8"));
         return renderJSON(SUCCESS_RESPONSE_CODE, response);
     }
 

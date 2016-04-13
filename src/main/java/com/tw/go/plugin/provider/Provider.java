@@ -16,7 +16,7 @@ public interface Provider {
 
     public List<Map<String, Object>> validateConfig(Map<String, Object> fields);
 
-    public PluginConfigurationView configuration();
+    public PluginConfigurationView configurationView();
 
     public PluginSettings pluginSettings(Map<String, String> responseBodyMap);
 }

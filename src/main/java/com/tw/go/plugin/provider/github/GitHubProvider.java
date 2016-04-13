@@ -60,7 +60,7 @@ public class GitHubProvider extends DefaultProvider {
     }
 
     @Override
-    public PluginConfigurationView configuration() {
+    public PluginConfigurationView configurationView() {
         return new DefaultPluginConfigurationView();
     }
 

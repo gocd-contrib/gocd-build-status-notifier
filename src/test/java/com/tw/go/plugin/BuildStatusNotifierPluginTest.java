@@ -84,7 +84,7 @@ public class BuildStatusNotifierPluginTest {
     public void shouldReturnPluginSettings() throws Exception {
         Provider mockProvider = mock(Provider.class);
         PluginConfigurationView mockConfigView = mock(PluginConfigurationView.class);
-        when(mockProvider.configuration()).thenReturn(mockConfigView);
+        when(mockProvider.configurationView()).thenReturn(mockConfigView);
         Map<String, Object> fields = new HashMap<String, Object>();
         when(mockConfigView.fields()).thenReturn(fields);
 

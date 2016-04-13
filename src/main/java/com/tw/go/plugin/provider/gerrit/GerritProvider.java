@@ -98,7 +98,7 @@ public class GerritProvider extends DefaultProvider {
     }
 
     @Override
-    public PluginConfigurationView configuration() {
+    public PluginConfigurationView configurationView() {
         return new GerritConfigurationView();
     }
 
