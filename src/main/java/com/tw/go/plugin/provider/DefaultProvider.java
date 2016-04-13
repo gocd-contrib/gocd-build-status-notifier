@@ -1,6 +1,7 @@
 package com.tw.go.plugin.provider;
 
 import com.tw.go.plugin.setting.DefaultPluginSettings;
+import com.tw.go.plugin.setting.PluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
 
 import java.util.Map;
@@ -8,6 +9,17 @@ import java.util.Map;
 import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 
 public abstract class DefaultProvider implements Provider {
+
+    private PluginConfigurationView pluginConfigurationView;
+
+    public DefaultProvider(PluginConfigurationView pluginConfigurationView) {
+        this.pluginConfigurationView = pluginConfigurationView;
+    }
+
+    @Override
+    public PluginConfigurationView configurationView() {
+        return pluginConfigurationView;
+    }
 
     @Override
     public PluginSettings pluginSettings(Map<String, String> responseBodyMap) {

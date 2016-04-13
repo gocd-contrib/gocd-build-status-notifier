@@ -1,6 +1,6 @@
 package com.tw.go.plugin.provider;
 
-import com.tw.go.plugin.setting.PluginConfigurationView;
+import com.tw.go.plugin.setting.DefaultPluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +18,11 @@ public class DefaultProviderTest {
     private Provider provider;
 
     static class TestProvider extends DefaultProvider {
+
+        public TestProvider() {
+            super(new DefaultPluginConfigurationView());
+        }
+
         @Override
         public String pluginId() {
             return null;
@@ -38,10 +43,6 @@ public class DefaultProviderTest {
             return null;
         }
 
-        @Override
-        public PluginConfigurationView configurationView() {
-            return null;
-        }
     }
 
     @Before
