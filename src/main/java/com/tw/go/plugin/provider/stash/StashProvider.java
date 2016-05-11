@@ -1,22 +1,37 @@
 package com.tw.go.plugin.provider.stash;
 
 import com.google.gson.GsonBuilder;
-import com.tw.go.plugin.PluginSettings;
-import com.tw.go.plugin.provider.Provider;
+import com.tw.go.plugin.provider.DefaultProvider;
+import com.tw.go.plugin.setting.DefaultPluginConfigurationView;
+import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.AuthenticationType;
-import com.tw.go.plugin.util.HTTPUtils;
+import com.tw.go.plugin.util.HTTPClient;
 import com.tw.go.plugin.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class StashProvider implements Provider {
+public class StashProvider extends DefaultProvider {
     public static final String PLUGIN_ID = "stash.pr.status";
     public static final String STASH_PR_POLLER_PLUGIN_ID = "stash.pr";
 
     public static final String IN_PROGRESS_STATE = "INPROGRESS";
     public static final String SUCCESSFUL_STATE = "SUCCESSFUL";
     public static final String FAILED_STATE = "FAILED";
+
+    private HTTPClient httpClient;
+
+    public StashProvider() {
+        super(new DefaultPluginConfigurationView());
+        httpClient = new HTTPClient();
+    }
+
+    public StashProvider(HTTPClient httpClient) {
+        super(new DefaultPluginConfigurationView());
+        this.httpClient = httpClient;
+    }
 
     @Override
     public String pluginId() {
@@ -55,7 +70,12 @@ public class StashProvider implements Provider {
         params.put("description", "");
         String requestBody = new GsonBuilder().create().toJson(params);
 
-        HTTPUtils.postRequest(updateURL, AuthenticationType.BASIC, usernameToUse, passwordToUse, requestBody);
+        httpClient.postRequest(updateURL, AuthenticationType.BASIC, usernameToUse, passwordToUse, requestBody);
+    }
+
+    @Override
+    public List<Map<String, Object>> validateConfig(Map<String, Object> fields) {
+        return new ArrayList<Map<String, Object>>();
     }
 
     String getState(String result) {

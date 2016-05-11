@@ -1,16 +1,16 @@
-package com.tw.go.plugin;
+package com.tw.go.plugin.setting;
 
-public class PluginSettings {
+public class DefaultPluginSettings implements PluginSettings {
     private String serverBaseURL;
     private String endPoint;
     private String username;
     private String password;
     private String oauthToken;
 
-    public PluginSettings() {
+    public DefaultPluginSettings() {
     }
 
-    public PluginSettings(String serverBaseURL, String endPoint, String username, String password, String oauthToken) {
+    public DefaultPluginSettings(String serverBaseURL, String endPoint, String username, String password, String oauthToken) {
         this.serverBaseURL = serverBaseURL;
         this.endPoint = endPoint;
         this.username = username;
@@ -18,6 +18,7 @@ public class PluginSettings {
         this.oauthToken = oauthToken;
     }
 
+    @Override
     public String getServerBaseURL() {
         return serverBaseURL;
     }
@@ -26,6 +27,7 @@ public class PluginSettings {
         this.serverBaseURL = serverBaseURL;
     }
 
+    @Override
     public String getEndPoint() {
         return endPoint;
     }
@@ -34,6 +36,7 @@ public class PluginSettings {
         this.endPoint = endPoint;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
@@ -42,6 +45,7 @@ public class PluginSettings {
         this.username = username;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -50,6 +54,7 @@ public class PluginSettings {
         this.password = password;
     }
 
+    @Override
     public String getOauthToken() {
         return oauthToken;
     }
@@ -58,12 +63,13 @@ public class PluginSettings {
         this.oauthToken = oauthToken;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PluginSettings that = (PluginSettings) o;
+        DefaultPluginSettings that = (DefaultPluginSettings) o;
 
         if (endPoint != null ? !endPoint.equals(that.endPoint) : that.endPoint != null) return false;
         if (oauthToken != null ? !oauthToken.equals(that.oauthToken) : that.oauthToken != null) return false;

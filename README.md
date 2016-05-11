@@ -86,12 +86,13 @@ Eg:
 
 #### Gerrit
 **Setup:**
-- You need to provide `endpoint`, `username` & `password` through system property `go.plugin.build.status.gerrit.endpoint`, `go.plugin.build.status.gerrit.username` & `go.plugin.build.status.gerrit.password`.
+- You need to provide `endpoint`, `username`, `password` & `codeReviewLabel` through system property `go.plugin.build.status.gerrit.endpoint`, `go.plugin.build.status.gerrit.username`, `go.plugin.build.status.gerrit.password`, `go.plugin.build.status.gerrit.codeReviewLabel`.
 Eg:
 ```
 -Dgo.plugin.build.status.gerrit.endpoint=http://localhost:7990
 -Dgo.plugin.build.status.gerrit.username=johndoe
 -Dgo.plugin.build.status.gerrit.password=thisaintapassword
+-Dgo.plugin.build.status.gerrit.codeReviewLabel=Verified
 ```
 
 ## FAQs

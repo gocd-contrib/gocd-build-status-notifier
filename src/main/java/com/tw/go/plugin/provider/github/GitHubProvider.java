@@ -1,15 +1,24 @@
 package com.tw.go.plugin.provider.github;
 
-import com.tw.go.plugin.PluginSettings;
-import com.tw.go.plugin.provider.Provider;
+import com.tw.go.plugin.provider.DefaultProvider;
+import com.tw.go.plugin.setting.DefaultPluginConfigurationView;
+import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.StringUtils;
 import org.kohsuke.github.GHCommitState;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
-public class GitHubProvider implements Provider {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public class GitHubProvider extends DefaultProvider {
     public static final String PLUGIN_ID = "github.pr.status";
     public static final String GITHUB_PR_POLLER_PLUGIN_ID = "github.pr";
+
+    public GitHubProvider() {
+        super(new DefaultPluginConfigurationView());
+    }
 
     @Override
     public String pluginId() {
@@ -46,6 +55,11 @@ public class GitHubProvider implements Provider {
         }
 
         updateCommitStatus(revision, pipelineStage, trackbackURL, repository, state, usernameToUse, passwordToUse, oauthAccessTokenToUse, endPointToUse);
+    }
+
+    @Override
+    public List<Map<String, Object>> validateConfig(Map<String, Object> fields) {
+        return new ArrayList<Map<String, Object>>();
     }
 
     void updateCommitStatus(String revision, String pipelineStage, String trackbackURL, String repository, GHCommitState state,
