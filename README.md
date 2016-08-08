@@ -1,4 +1,5 @@
-# GoCD build status notifier
+# GoCD build status notifier  [![Build Status](https://snap-ci.com/gocd-contrib/gocd-build-status-notifier/branch/master/build_image)](https://snap-ci.com/gocd-contrib/gocd-build-status-notifier/branch/master)
+
 This is GoCD's Notification plugin that updates SCM with build status.
 
 Supported:
