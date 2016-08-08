@@ -2,7 +2,7 @@
 <go-plugin id="stash.pr.status" version="1">
     <about>
         <name>Stash Pull Requests status notifier</name>
-        <version>0.1</version>
+        <version>1.2</version>
         <target-go-version>15.1.0</target-go-version>
         <description>Updates build status for Stash pull request</description>
         <vendor>

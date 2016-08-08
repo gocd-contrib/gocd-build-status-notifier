@@ -2,7 +2,7 @@
 <go-plugin id="gerrit.cs.status" version="1">
     <about>
         <name>Gerrit Change Set status notifier</name>
-        <version>0.1</version>
+        <version>1.2</version>
         <target-go-version>15.1.0</target-go-version>
         <description>Updates build status for Gerrit change set</description>
         <vendor>
