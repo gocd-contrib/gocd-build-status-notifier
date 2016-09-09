@@ -110,6 +110,7 @@ public class BuildStatusNotifierPluginTest {
         assertThat(configuration.containsKey("username"), is(true));
         assertThat(configuration.containsKey("password"), is(true));
         assertThat(configuration.containsKey("oauth_token"), is(true));
+        assertThat(configuration.containsKey("allow_builtin_git"), is(true));
         assertThat(configuration.containsKey("review_label"), is(false));
     }
 
@@ -155,7 +156,7 @@ public class BuildStatusNotifierPluginTest {
         Map configurationMap = new HashMap();
         configurationMap.put("url", url);
         configurationMap.put("username", username);
-        materialMap.put("scm-configuration", configurationMap);
+		materialMap.put("scm-configuration", configurationMap);
         materialRevisionMap.put("material", materialMap);
 
         List modifications = new ArrayList();

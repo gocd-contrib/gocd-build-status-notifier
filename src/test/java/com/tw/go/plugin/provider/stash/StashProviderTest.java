@@ -1,6 +1,5 @@
 package com.tw.go.plugin.provider.stash;
 
-import com.tw.go.plugin.setting.DefaultPluginSettings;
 import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -12,15 +11,16 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class StashProviderTest {
-    DefaultPluginSettings pluginSettings;
+    StashPluginSettings pluginSettings;
     StashProvider provider;
 
     @Before
     public void setUp() throws Exception {
-        pluginSettings = new DefaultPluginSettings();
+        pluginSettings = new StashPluginSettings();
         pluginSettings.setEndPoint("http://localhost:7990");
         pluginSettings.setUsername("test");
         pluginSettings.setPassword("Stash");
+        pluginSettings.setAllowBuiltinGit("true");
 
         provider = new StashProvider();
     }
@@ -41,7 +41,7 @@ public class StashProviderTest {
 
     @Test
     public void shouldReturnCorrectTemplate() {
-        assertThat(provider.configurationView().templateName(), is("plugin-settings.template.html"));
+        assertThat(provider.configurationView().templateName(), is("plugin-settings-stash.template.html"));
     }
 
     @Test
@@ -52,6 +52,7 @@ public class StashProviderTest {
         assertThat(configuration.containsKey("end_point"), Is.is(true));
         assertThat(configuration.containsKey("username"), Is.is(true));
         assertThat(configuration.containsKey("password"), Is.is(true));
+        assertThat(configuration.containsKey("oauth_token"), Is.is(true));
         assertThat(configuration.containsKey("oauth_token"), Is.is(true));
     }
 }

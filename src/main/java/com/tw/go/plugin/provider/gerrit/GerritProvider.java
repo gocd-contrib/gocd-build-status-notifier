@@ -31,7 +31,7 @@ public class GerritProvider extends DefaultProvider {
 
     public GerritProvider() {
         super(new GerritConfigurationView());
-        httpClient = new HTTPClient();
+        this.httpClient = new HTTPClient();
     }
 
     public GerritProvider(HTTPClient httpClient) {
