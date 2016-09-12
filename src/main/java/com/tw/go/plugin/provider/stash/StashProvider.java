@@ -1,5 +1,17 @@
 package com.tw.go.plugin.provider.stash;
 
+import static com.tw.go.plugin.provider.stash.StashConfigurationView.PLUGIN_SETTINGS_ALLOW_BUILTIN_GIT;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_END_POINT;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_OAUTH_TOKEN;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_PASSWORD;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_SERVER_BASE_URL;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_USERNAME;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gson.GsonBuilder;
 import com.tw.go.plugin.provider.DefaultProvider;
 import com.tw.go.plugin.setting.PluginSettings;
@@ -7,16 +19,8 @@ import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
 import com.tw.go.plugin.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.tw.go.plugin.provider.stash.StashConfigurationView.PLUGIN_SETTINGS_ALLOW_BUILTIN_GIT;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
-
 public class StashProvider extends DefaultProvider {
-    
+
     public static final String PLUGIN_ID = "stash.pr.status";
     public static final String STASH_PR_POLLER_PLUGIN_ID = "stash.pr";
 
@@ -48,13 +52,12 @@ public class StashProvider extends DefaultProvider {
 
     @Override
     public void updateStatus(String url, PluginSettings pluginSettings, String branch, String revision, String pipelineStage,
-                             String result, String trackbackURL) throws Exception {
+            String result, String trackbackURL) throws Exception {
         StashPluginSettings settings = (StashPluginSettings) pluginSettings;
-        
+
         String endPointToUse = settings.getEndPoint();
         String usernameToUse = settings.getUsername();
         String passwordToUse = settings.getPassword();
-        String allowBuiltinGit = settings.getAllowBuiltinGit();
 
         if (StringUtils.isEmpty(endPointToUse)) {
             endPointToUse = System.getProperty("go.plugin.build.status.stash.endpoint");
@@ -64,9 +67,6 @@ public class StashProvider extends DefaultProvider {
         }
         if (StringUtils.isEmpty(passwordToUse)) {
             passwordToUse = System.getProperty("go.plugin.build.status.stash.password");
-        }
-        if (StringUtils.isEmpty(allowBuiltinGit)) {
-            allowBuiltinGit = System.getProperty("go.plugin.build.status.stash.allowBuiltinGit");
         }
 
         String updateURL = String.format("%s/rest/build-status/1.0/commits/%s", endPointToUse, revision);
@@ -96,7 +96,7 @@ public class StashProvider extends DefaultProvider {
                 responseBodyMap.get(PLUGIN_SETTINGS_PASSWORD),
                 responseBodyMap.get(PLUGIN_SETTINGS_OAUTH_TOKEN),
                 responseBodyMap.get(PLUGIN_SETTINGS_ALLOW_BUILTIN_GIT)
-        );
+                );
     }
 
     String getState(String result) {

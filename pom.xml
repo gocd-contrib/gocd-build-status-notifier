@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tw.go.plugin</groupId>
     <artifactId>gocd-build-status-notifier</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.2.1-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -58,7 +58,7 @@
     <profiles>
         <profile>
             <id>github.pr.status</id>
-           <activation>
+            <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>

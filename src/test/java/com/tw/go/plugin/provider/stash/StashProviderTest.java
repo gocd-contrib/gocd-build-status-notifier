@@ -1,14 +1,14 @@
 package com.tw.go.plugin.provider.stash;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.Map;
+
 import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import java.util.Map;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 public class StashProviderTest {
     StashPluginSettings pluginSettings;
@@ -53,6 +53,6 @@ public class StashProviderTest {
         assertThat(configuration.containsKey("username"), Is.is(true));
         assertThat(configuration.containsKey("password"), Is.is(true));
         assertThat(configuration.containsKey("oauth_token"), Is.is(true));
-        assertThat(configuration.containsKey("oauth_token"), Is.is(true));
+        assertThat(configuration.containsKey("allow_builtin_git"), Is.is(true));
     }
 }

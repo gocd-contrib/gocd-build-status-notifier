@@ -1,5 +1,18 @@
 package com.tw.go.plugin;
 
+import static java.util.Arrays.asList;
+
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.commons.io.IOUtils;
+
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;
@@ -15,13 +28,6 @@ import com.tw.go.plugin.provider.stash.StashPluginSettings;
 import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.JSONUtils;
 import com.tw.go.plugin.util.StringUtils;
-import org.apache.commons.io.IOUtils;
-
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.util.*;
-
-import static java.util.Arrays.asList;
 
 @Extension
 public class BuildStatusNotifierPlugin implements GoPlugin {
@@ -135,7 +141,7 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
             String serverBaseURLToUse = pluginSettings.getServerBaseURL();
             if (StringUtils.isEmpty(serverBaseURLToUse)) {
                 serverBaseURLToUse = System.getProperty("go.plugin.build.status.go-server", "http://localhost:8153");
-            } 
+            }
 
             Map pipeline = (Map) dataMap.get("pipeline");
             Map stage = (Map) pipeline.get("stage");
@@ -148,20 +154,25 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
             List<Map> materialRevisions = (List<Map>) pipeline.get("build-cause");
             for (Map materialRevision : materialRevisions) {
                 Map material = (Map) materialRevision.get("material");
-                if (isBuiltinMaterial(material) && pluginSettings instanceof StashPluginSettings
-                        && Boolean.valueOf(((StashPluginSettings) pluginSettings).getAllowBuiltinGit())) {
-                    Map materialConfiguration = (Map) material.get("git-configuration");
-                    String url = (String) materialConfiguration.get("url");
+                if (isBuiltinMaterial(material) && pluginSettings instanceof StashPluginSettings) {
+                    String allowBuiltinGit = ((StashPluginSettings) pluginSettings).getAllowBuiltinGit();
+                    if (StringUtils.isEmpty(allowBuiltinGit)) {
+                        allowBuiltinGit = System.getProperty("go.plugin.build.status.stash.allowBuiltinGit", "false");
+                    }
 
-                    List<Map> modifications = (List<Map>) materialRevision.get("modifications");
-                    String revision = (String) modifications.get(0).get("revision");
-
-                    try {
-                        provider.updateStatus(url, pluginSettings, "1", revision, pipelineStage, result, trackbackURL);
-                    } catch (Exception e) {
-                        LOGGER.error(String.format(
-                                "Error occurred. Could not update build status - URL: %s Revision: %s Build: %s Result: %s",
-                                url, revision, pipelineInstance, result), e);
+                    if (Boolean.valueOf(allowBuiltinGit)) {
+                        Map materialConfiguration = (Map) material.get("git-configuration");
+                        String url = (String) materialConfiguration.get("url");
+                        List<Map> modifications = (List<Map>) materialRevision.get("modifications");
+                        String revision = (String) modifications.get(0).get("revision");
+                        try {
+                            provider.updateStatus(url, pluginSettings, "1", revision, pipelineStage, result,
+                                    trackbackURL);
+                        } catch (Exception e) {
+                            LOGGER.error(String.format(
+                                    "Error occurred. Could not update build status - URL: %s Revision: %s Build: %s Result: %s",
+                                    url, revision, pipelineInstance, result), e);
+                        }
                     }
                 }
                 else if (isMaterialOfType(material, provider.pollerPluginId())) {
@@ -193,7 +204,7 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
         response.put("messages", messages);
         return renderJSON(responseCode, response);
     }
-    
+
     private boolean isBuiltinMaterial(Map material) {
         return ((String) material.get("type")).equalsIgnoreCase("git");
     }
