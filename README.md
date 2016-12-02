@@ -23,7 +23,13 @@ These plugins require GoCD version >= v15.x or above
 - You will see `Github Pull Requests status notifier` / `Stash Pull Requests status notifier` / `Gerrit Change Set status notifier` on plugin listing page
 ![Plugins listing page][1]
 
-- You can configure the plugin (this feature requires GoCD version >= v15.2, use system properties to configure the plugin)
+- You can configure the plugin (this feature requires GoCD version >= v15.2, use system properties to configure the plugin). The details should be as follows:
+  - **Server Base URL** The URL of your go-server (by default, http://localhost:8153).
+  - **End Point** If using enterprise edition, this needs to be configured for the enterprise endpoint. Else, it can be left blank.
+  - **Username** A Github user with push access to the repository.
+  - **Password** If not using two factor authentication, this is the password for the given Github user. Else, it can be left blank.
+  - **OAuth Token** If using two-factor authentication, provide a personal access toke instead of the password above. Else, it can be left blank.
+
 ![Configure plugin pop-up][2]
 
 - When the stage status changes...
