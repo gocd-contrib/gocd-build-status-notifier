@@ -40,6 +40,11 @@
             <artifactId>github-api</artifactId>
             <version>1.68</version>
         </dependency>
+        <dependency>
+            <groupId>org.gitlab</groupId>
+            <artifactId>java-gitlab-api</artifactId>
+            <version>1.2.7</version>
+        </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
@@ -78,6 +83,13 @@
             <properties>
                 <plugin.name>gerrit-cs-status</plugin.name>
                 <resource.directory>src/main/resources/gerrit</resource.directory>
+            </properties>
+        </profile>
+        <profile>
+            <id>gitlab.fb.status</id>
+            <properties>
+                <plugin.name>gitlab-fb-status</plugin.name>
+                <resource.directory>src/main/resources/gitlab</resource.directory>
             </properties>
         </profile>
     </profiles>
