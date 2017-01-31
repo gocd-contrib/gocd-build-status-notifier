@@ -1,0 +1,15 @@
+<div class="form_item_block">
+    <label>Server Base URL:</label>
+    <input type="text" ng-model="server_base_url" ng-required="true"/>
+    <span class="form_error" ng-show="GOINPUTNAME[server_base_url].$error.server">{{ GOINPUTNAME[server_base_url].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>End Point:</label>
+    <input type="text" ng-model="end_point" ng-required="true"/>
+    <span class="form_error" ng-show="GOINPUTNAME[end_point].$error.server">{{ GOINPUTNAME[end_point].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>OAuth Token:</label>
+    <input type="password" ng-model="oauth_token" ng-required="true"/>
+    <span class="form_error" ng-show="GOINPUTNAME[oauth_token].$error.server">{{ GOINPUTNAME[oauth_token].$error.server }}</span>
+</div>

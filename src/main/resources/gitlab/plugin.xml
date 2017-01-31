@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<go-plugin id="gitlab.fb.status" version="1">
+    <about>
+        <name>GitLab Feature Branch status notifier</name>
+        <version>1.2</version>
+        <target-go-version>15.1.0</target-go-version>
+        <description>Updates build status for Gitlab Feature Branches</description>
+        <vendor>
+            <name>Stephen Gran</name>
+            <url>https://github.com/srinivasupadhya/gocd-build-status-notifier</url>
+        </vendor>
+    </about>
+</go-plugin>
