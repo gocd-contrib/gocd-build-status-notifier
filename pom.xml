@@ -58,12 +58,10 @@
     <profiles>
         <profile>
             <id>github.pr.status</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <properties>
                 <plugin.name>github-pr-status</plugin.name>
                 <resource.directory>src/main/resources/github</resource.directory>
+                <maven.resources.overwrite>true</maven.resources.overwrite> 
             </properties>
         </profile>
         <profile>
@@ -71,6 +69,7 @@
             <properties>
                 <plugin.name>stash-pr-status</plugin.name>
                 <resource.directory>src/main/resources/stash</resource.directory>
+                <maven.resources.overwrite>true</maven.resources.overwrite> 
             </properties>
         </profile>
         <profile>
@@ -78,6 +77,7 @@
             <properties>
                 <plugin.name>gerrit-cs-status</plugin.name>
                 <resource.directory>src/main/resources/gerrit</resource.directory>
+                <maven.resources.overwrite>true</maven.resources.overwrite> 
             </properties>
         </profile>
     </profiles>
