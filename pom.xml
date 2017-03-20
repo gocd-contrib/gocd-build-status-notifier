@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tw.go.plugin</groupId>
     <artifactId>gocd-build-status-notifier</artifactId>
-    <version>1.2</version>
+    <version>1.3</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <go.version>14.4.0</go.version>
+        <go.version>17.3.0</go.version>
         <main.dir>${project.basedir}</main.dir>
     </properties>
 
@@ -83,7 +83,7 @@
     </profiles>
 
     <build>
-        <finalName>${plugin.name}-${version}</finalName>
+        <finalName>${plugin.name}-${project.version}</finalName>
         <resources>
             <resource>
                 <directory>${resource.directory}</directory>
