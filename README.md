@@ -20,7 +20,7 @@ These plugins require GoCD version >= v15.x or above
 
 ## Configuration
 
-- You will see `Github Pull Requests status notifier` / `Stash Pull Requests status notifier` / `Gerrit Change Set status notifier` on plugin listing page
+- You will see `Github Pull Requests status notifier` / `Stash Pull Requests status notifier` / `Gerrit Change Set status notifier` / `GitLab Feature Branch status notifier`  on plugin listing page
 ![Plugins listing page][1]
 
 - You can configure the plugin (this feature requires GoCD version >= v15.2, use system properties to configure the plugin). The details should be as follows:
@@ -102,9 +102,19 @@ Eg:
 -Dgo.plugin.build.status.gerrit.codeReviewLabel=Verified
 ```
 
+#### Gitlab
+**Setup:**
+- You need to provide `endpoint`, `oauth token` through system property `go.plugin.build.status.gitlab.endpoint`, `go.plugin.build.status.gitlab.oauth`.
+Eg:
+```
+-Dgo.plugin.build.status.gitlab.endpoint=http://gitlab.com
+-Dgo.plugin.build.status.gitlab.oauth=XXXX
+```
+
 ## FAQs
 
 [1]: images/list-plugin.png  "List Plugin"
 [2]: images/configure-plugin.png  "Configure Plugin"
-[3]: images/pipeline-schedule.png  "Pipeline Schedule"
-[4]: images/update-status.png  "On Successful Status Update"
+[3]: images/gitlab-plugin-settings.png  "Configure Gitlab Plugin"
+[4]: images/pipeline-schedule.png  "Pipeline Schedule"
+[5]: images/update-status.png  "On Successful Status Update"
