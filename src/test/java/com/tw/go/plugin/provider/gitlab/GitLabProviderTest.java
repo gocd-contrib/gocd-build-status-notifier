@@ -1,12 +1,10 @@
 package com.tw.go.plugin.provider.gitlab;
 
 import com.google.gson.internal.LinkedHashTreeMap;
-import com.tw.go.plugin.setting.DefaultPluginSettings;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,12 +14,10 @@ import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SET
 import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_SERVER_BASE_URL;
 
 public class GitLabProviderTest {
-    DefaultPluginSettings pluginSettings;
-    GitLabProvider provider;
+    private GitLabProvider provider;
 
     @Before
     public void setUp() throws Exception {
-        pluginSettings = new DefaultPluginSettings();
         provider = new GitLabProvider();
     }
 
@@ -42,9 +38,9 @@ public class GitLabProviderTest {
         Map<String, String> dummyToken = new LinkedHashTreeMap<String, String>();
         dummyToken.put("value", "abcdef");
 
-        config.put(PLUGIN_SETTINGS_SERVER_BASE_URL, (Object)dummyUrl);
-        config.put(PLUGIN_SETTINGS_END_POINT, (Object)dummyUrl);
-        config.put(PLUGIN_SETTINGS_OAUTH_TOKEN, (Object)dummyToken);
+        config.put(PLUGIN_SETTINGS_SERVER_BASE_URL, dummyUrl);
+        config.put(PLUGIN_SETTINGS_END_POINT, dummyUrl);
+        config.put(PLUGIN_SETTINGS_OAUTH_TOKEN, dummyToken);
 
         List<Map<String, Object>> returnedErrors = provider.validateConfig(config);
         assertEquals(errors, returnedErrors);
@@ -60,9 +56,9 @@ public class GitLabProviderTest {
         Map<String, String> dummyToken = new LinkedHashTreeMap<String, String>();
         dummyToken.put("value", "");
 
-        config.put(PLUGIN_SETTINGS_SERVER_BASE_URL, (Object)dummyUrl);
-        config.put(PLUGIN_SETTINGS_END_POINT, (Object)dummyUrl);
-        config.put(PLUGIN_SETTINGS_OAUTH_TOKEN, (Object)dummyToken);
+        config.put(PLUGIN_SETTINGS_SERVER_BASE_URL, dummyUrl);
+        config.put(PLUGIN_SETTINGS_END_POINT, dummyUrl);
+        config.put(PLUGIN_SETTINGS_OAUTH_TOKEN, dummyToken);
 
         List<Map<String, Object>> returnedErrors = provider.validateConfig(config);
         assertEquals(3, returnedErrors.size());

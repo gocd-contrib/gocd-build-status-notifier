@@ -1,15 +1,14 @@
 package com.tw.go.plugin.provider.gitlab;
 
 public class GitLabState {
-    public static final String PENDING  = "pending";
-    public static final String RUNNING = "running";
-    public static final String SUCCESS = "success";
-    public static final String FAILED = "failed";
-    public static final String CANCELED = "canceled";
+    private static final String PENDING  = "pending";
+    private static final String SUCCESS = "success";
+    private static final String FAILED = "failed";
+    private static final String CANCELED = "canceled";
 
     public GitLabState() {}
 
-    public static String stateFor(String result) {
+    static String stateFor(String result) {
         result = result == null ? "" : result;
         String state = PENDING;
         if (result.equalsIgnoreCase("Passed")) {
