@@ -155,6 +155,10 @@ public class BuildStatusNotifierPlugin implements GoPlugin {
                     String revision = (String) modifications.get(0).get("revision");
                     Map modificationData = (Map) modifications.get(0).get("data");
                     String prId = (String) modificationData.get("PR_ID");
+                    /*
+                    With a standard git backend rather than the github API, PR_ID is null.  Use
+                    current branch identifier in that case.
+                     */
                     if (prId == null) {
                         prId = (String) modificationData.get("CURRENT_BRANCH");
                     }

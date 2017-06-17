@@ -81,6 +81,29 @@ public class BuildStatusNotifierPluginTest {
     }
 
     @Test
+    public void shouldDelegateUpdateStatusToProviderWithCorrectParametersWithoutPrID() throws Exception {
+        PluginSettings mockSettings = mock(PluginSettings.class);
+        when(plugin.getPluginSettings()).thenReturn(mockSettings);
+
+        String expectedURL = "url";
+        String expectedUsername = "username";
+        String expectedRevision = "sha-1";
+        String expectedBranch = "test-branch";
+        String pipelineName = "pipeline";
+        String pipelineCounter = "1";
+        String stageName = "stage";
+        String stageCounter = "1";
+        String expectedPipelineStage = String.format("%s/%s", pipelineName, stageName);
+        String expectedPipelineInstance = String.format("%s/%s/%s/%s", pipelineName, pipelineCounter, stageName, stageCounter);
+        String expectedStageResult = "Passed";
+
+        Map requestBody = createRequestBodyMapWithBranch(expectedURL, expectedUsername, expectedRevision, expectedBranch, pipelineName, pipelineCounter, stageName, stageCounter, expectedStageResult);
+        plugin.handleStageNotification(createGoPluginAPIRequest(requestBody));
+
+        verify(provider).updateStatus(eq(expectedURL), any(PluginSettings.class), eq("test-branch"), eq(expectedRevision), eq(expectedPipelineStage), eq(expectedStageResult), eq("http://localhost:8153/go/pipelines/" + expectedPipelineInstance));
+    }
+
+    @Test
     public void shouldReturnPluginSettings() throws Exception {
         Provider mockProvider = mock(Provider.class);
         PluginConfigurationView mockConfigView = mock(PluginConfigurationView.class);
@@ -163,6 +186,45 @@ public class BuildStatusNotifierPluginTest {
         modificationMap.put("revision", revision);
         Map modificationDataMap = new HashMap();
         modificationDataMap.put("PR_ID", prId);
+        modificationMap.put("data", modificationDataMap);
+        modifications.add(modificationMap);
+        materialRevisionMap.put("modifications", modifications);
+
+        Map pipelineMap = new HashMap();
+        List buildCause = new ArrayList();
+        buildCause.add(materialRevisionMap);
+        pipelineMap.put("build-cause", buildCause);
+
+        Map stageMap = new HashMap();
+        stageMap.put("name", stageName);
+        stageMap.put("counter", stageCounter);
+        stageMap.put("result", stageResult);
+        pipelineMap.put("stage", stageMap);
+
+        pipelineMap.put("name", pipelineName);
+        pipelineMap.put("counter", pipelineCounter);
+
+        Map requestBody = new HashMap();
+        requestBody.put("pipeline", pipelineMap);
+        return requestBody;
+    }
+
+    private Map createRequestBodyMapWithBranch(String url, String username, String revision, String branch, String pipelineName, String pipelineCounter, String stageName, String stageCounter, String stageResult) {
+        Map materialRevisionMap = new HashMap();
+        Map materialMap = new HashMap();
+        materialMap.put("type", "scm");
+        materialMap.put("plugin-id", "github.pr");
+        Map configurationMap = new HashMap();
+        configurationMap.put("url", url);
+        configurationMap.put("username", username);
+        materialMap.put("scm-configuration", configurationMap);
+        materialRevisionMap.put("material", materialMap);
+
+        List modifications = new ArrayList();
+        Map modificationMap = new HashMap();
+        modificationMap.put("revision", revision);
+        Map modificationDataMap = new HashMap();
+        modificationDataMap.put("CURRENT_BRANCH", branch);
         modificationMap.put("data", modificationDataMap);
         modifications.add(modificationMap);
         materialRevisionMap.put("modifications", modifications);

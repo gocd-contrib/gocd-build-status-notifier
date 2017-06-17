@@ -20,7 +20,6 @@ import static com.tw.go.plugin.util.ValidationUtils.getValidationError;
 
 public class GitLabProvider extends DefaultProvider {
 
-    private static Logger LOG = Logger.getLoggerFor(GitLabProvider.class);
     private static final String PLUGIN_ID = "gitlab.fb.status";
     private static final String GITLAB_FB_POLLER_PLUGIN_ID = "git.fb";
 
