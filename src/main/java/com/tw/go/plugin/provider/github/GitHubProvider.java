@@ -1,5 +1,7 @@
 package com.tw.go.plugin.provider.github;
 
+import com.thoughtworks.go.plugin.api.logging.Logger;
+
 import com.tw.go.plugin.provider.DefaultProvider;
 import com.tw.go.plugin.setting.DefaultPluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
@@ -13,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GitHubProvider extends DefaultProvider {
+    private static Logger LOGGER = Logger.getLoggerFor(GitHubProvider.class);
+
     public static final String PLUGIN_ID = "github.pr.status";
     public static final String GITHUB_PR_POLLER_PLUGIN_ID = "github.pr";
 
@@ -33,6 +37,8 @@ public class GitHubProvider extends DefaultProvider {
     @Override
     public void updateStatus(String url, PluginSettings pluginSettings, String prIdStr, String revision, String pipelineStage,
                              String result, String trackbackURL) throws Exception {
+        LOGGER.info(String.format("GitHubProvider.updateStatus(): '%s' -> %s", result, url));
+
         String repository = getRepository(url);
         GHCommitState state = getState(result);
 
@@ -59,17 +65,22 @@ public class GitHubProvider extends DefaultProvider {
 
     @Override
     public List<Map<String, Object>> validateConfig(Map<String, Object> fields) {
+        LOGGER.info("GitHubProvider.validateConfig()");
         return new ArrayList<Map<String, Object>>();
     }
 
     void updateCommitStatus(String revision, String pipelineStage, String trackbackURL, String repository, GHCommitState state,
                             String usernameToUse, String passwordToUse, String oauthAccessTokenToUse, String endPointToUse) throws Exception {
+        LOGGER.info(String.format("GitHubProvider.updateCommitStatus(): '%s' on %s", revision, pipelineStage));
+
         GitHub github = createGitHubClient(usernameToUse, passwordToUse, oauthAccessTokenToUse, endPointToUse);
         GHRepository ghRepository = github.getRepository(repository);
         ghRepository.createCommitStatus(revision, state, trackbackURL, "", pipelineStage);
     }
 
     GitHub createGitHubClient(String usernameToUse, String passwordToUse, String oauthAccessTokenToUse, String endPointToUse) throws Exception {
+        LOGGER.info("GitHubProvider.createGitHubClient()");
+
         GitHub github = null;
         if (usernameAndPasswordIsAvailable(usernameToUse, passwordToUse)) {
             if (endPointIsAvailable(endPointToUse)) {
@@ -92,6 +103,8 @@ public class GitHubProvider extends DefaultProvider {
     }
 
     String getRepository(String url) {
+        LOGGER.info(String.format("GitHubProvider.getRepository(): on %s", url));
+
         String[] urlParts = url.split("/");
         String repo = urlParts[urlParts.length - 1];
         String usernameWithSSHPrefix = urlParts[urlParts.length - 2];
@@ -106,6 +119,8 @@ public class GitHubProvider extends DefaultProvider {
     }
 
     GHCommitState getState(String result) {
+        LOGGER.info(String.format("GitHubProvider.getState(): on %s", result));
+
         result = result == null ? "" : result;
         GHCommitState state = GHCommitState.PENDING;
         if (result.equalsIgnoreCase("Passed")) {
