@@ -1,7 +1,6 @@
 package com.tw.go.plugin.provider.gitlab;
 
 import com.google.gson.internal.LinkedHashTreeMap;
-import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.tw.go.plugin.provider.DefaultProvider;
 import com.tw.go.plugin.setting.PluginSettings;
 import org.gitlab.api.GitlabAPI;
