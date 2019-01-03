@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+group 'com.tw.go.plugin'
+version '1.4'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile 'org.mockito:mockito-all:1.8.5'
+    testCompile 'junit:junit:4.8.2'
+}
