@@ -41,7 +41,8 @@ Thumbs.db
 
 # IntelliJ #
 ###########
-.idea/
+.idea/*
+!.idea/copyright
 out/
 *.ipr
 *.iws
