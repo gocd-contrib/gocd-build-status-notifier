@@ -1,0 +1,81 @@
+/*
+ * Copyright 2017 ThoughtWorks, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import java.text.DecimalFormat
+
+static String gitRevision() {
+    def process = "git log -n 1 --format=%H".execute()
+    process.waitFor()
+    return process.text.stripIndent().trim()
+}
+
+static String distVersion() {
+    def process = "git rev-list --count HEAD".execute()
+    process.waitFor()
+    return process.text.stripIndent().trim()
+}
+
+static def getLastTag(boolean isExperimental) {
+    try {
+        def command = ["git", "describe", "--tags", "--abbrev=0"]
+        if (!isExperimental) {
+            command.add(command.size() - 1, '--match=*[^-exp]')
+        }
+
+        def process = command.join(" ").execute()
+        process.waitFor()
+        def result = process.text
+
+        return result.trim()
+    } catch (Exception e) {
+        return null
+    }
+}
+
+String getCommitsSinceLastTag(String from) {
+    def hashStdOut = new ByteArrayOutputStream()
+    def hashErrorOutput = new ByteArrayOutputStream()
+    def commandToExecute = ["git", "log", "--no-merges", "--pretty=\"%h - %s\""]
+    if (from) {
+        commandToExecute.add("${from}..HEAD")
+    }
+
+    try {
+        project.exec {
+            commandLine commandToExecute
+            standardOutput = hashStdOut
+            errorOutput = hashErrorOutput
+        }
+    } catch (Exception e) {
+        throw new GradleScriptException(hashErrorOutput.toString(), e)
+    }
+
+    return hashStdOut.toString().trim()
+}
+
+static String readableFileSize(long size) {
+    if (size <= 0) return "0"
+    final String[] units = ["B", "KB", "MB", "GB", "TB"]
+    int digitGroups = (int) (Math.log10(size) / Math.log10(1024))
+    return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups]
+}
+
+project.ext.git = {
+    gitRevision = this.&gitRevision
+    distVersion = this.&distVersion
+    getLastTag = this.&getLastTag
+    getCommitsSinceLastTag = this.&getCommitsSinceLastTag
+    readableFileSize = this.&readableFileSize
+}
