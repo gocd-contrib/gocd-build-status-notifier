@@ -18,7 +18,7 @@ package com.tw.go.plugin.provider;
 
 import com.tw.go.plugin.setting.DefaultPluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
-import com.tw.go.plugin.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.github.GHCommitState;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;

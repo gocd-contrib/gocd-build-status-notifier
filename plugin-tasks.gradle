@@ -234,7 +234,6 @@ task deploy() {
     doLast {
         if (project.hasProperty('server_path')) {
             def server_path = "$server_path"
-            delete "$server_path/*.jar.*"
             project.copy {
                 from "$project.buildDir/libs/"
                 include "*.jar"

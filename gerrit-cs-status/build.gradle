@@ -19,7 +19,7 @@ plugins {
 }
 
 group 'com.tw.go.plugin'
-version '1.4'
+version '1.5'
 
 sourceCompatibility = 1.8
 
@@ -31,4 +31,16 @@ dependencies {
     compile project(":common")
     testCompile 'org.mockito:mockito-all:1.8.5'
     testCompile 'junit:junit:4.8.2'
+}
+
+processResources {
+    project.pluginDesc.id = "gerrit.cs.status"
+    project.pluginDesc.name = "Gerrit Change Set status notifier"
+    project.pluginDesc.description = "Updates build status for Gerrit change set"
+
+    from("src/main/resources") {
+        filesMatching('plugin.xml') {
+            expand project.pluginDesc
+        }
+    }
 }

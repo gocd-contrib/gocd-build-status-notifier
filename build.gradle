@@ -20,7 +20,7 @@ plugins {
 
 apply from: 'plugin-helpers.gradle'
 
-project.ext.pluginVersion = '1.4'
+project.ext.pluginVersion = '1.5'
 project.ext.fullVersion = project.git.distVersion() ? "${project.pluginVersion}-${project.git.distVersion()}" : project.pluginVersion
 
 group = 'com.tw.go.plugin'
@@ -31,56 +31,11 @@ project.ext.pluginDesc = [
         version    : project.version,
         goCdVersion: '17.3.0',
         vendorName : 'GoCD Contributors',
-        vendorUrl  : 'https://github.com/gocd/kubernetes-elastic-agents'
+        vendorUrl  : 'https://github.com/gocd-contrib/gocd-build-status-notifier'
 ]
 
 repositories {
     mavenCentral()
-}
-
-project(':gerrit-cs-status') {
-    processResources {
-
-        project.pluginDesc.id = "gerrit.cs.status"
-        project.pluginDesc.name = "Gerrit Change Set status notifier"
-        project.pluginDesc.description = "Updates build status for Gerrit change set"
-
-        from("src/main/resources") {
-            filesMatching('plugin.xml') {
-                expand project.pluginDesc
-            }
-        }
-    }
-}
-
-project(':github-pr-status') {
-    processResources {
-
-        project.pluginDesc.id = "github.pr.status"
-        project.pluginDesc.name = "Github Pull Requests status notifier"
-        project.pluginDesc.description = "Updates build status for GitHub pull request"
-
-        from("src/main/resources") {
-            filesMatching('plugin.xml') {
-                expand project.pluginDesc
-            }
-        }
-    }
-}
-
-project(':stash-pr-status') {
-    processResources {
-
-        project.pluginDesc.id = "stash.pr.status"
-        project.pluginDesc.name = "Stash Pull Requests status notifier"
-        project.pluginDesc.description = "Updates build status for Stash pull request"
-
-        from("src/main/resources") {
-            filesMatching('plugin.xml') {
-                expand project.pluginDesc
-            }
-        }
-    }
 }
 
 subprojects { Project sub ->
@@ -103,6 +58,7 @@ subprojects { Project sub ->
         compile 'com.google.code.gson:gson:2.2.3'
         compile 'commons-io:commons-io:2.4'
         compile 'org.apache.httpcomponents:httpclient:4.5'
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
     }
 
     sourceSets {

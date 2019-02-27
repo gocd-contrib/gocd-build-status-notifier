@@ -19,7 +19,7 @@ plugins {
 }
 
 group 'com.tw.go.plugin'
-version '1.4'
+version '1.5'
 
 sourceCompatibility = 1.8
 
@@ -32,4 +32,16 @@ dependencies {
 
     testCompile 'org.mockito:mockito-all:1.8.5'
     testCompile 'junit:junit:4.8.2'
+}
+
+processResources {
+    project.pluginDesc.id = "stash.pr.status"
+    project.pluginDesc.name = "Stash Pull Requests status notifier"
+    project.pluginDesc.description = "Updates build status for Stash pull request"
+
+    from("src/main/resources") {
+        filesMatching('plugin.xml') {
+            expand project.pluginDesc
+        }
+    }
 }

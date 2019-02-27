@@ -22,9 +22,9 @@ static String gitRevision() {
 }
 
 static String distVersion() {
-    def process = "git rev-list --count HEAD".execute()
+    def process = "git rev-list HEAD".execute()
     process.waitFor()
-    return process.text.stripIndent().trim()
+    return process.text.stripIndent().trim().split("\n").size()
 }
 
 static def getLastTag(boolean isExperimental) {

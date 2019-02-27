@@ -19,7 +19,7 @@ plugins {
 }
 
 group 'com.tw.go.plugin'
-version '1.4'
+version '1.5'
 
 sourceCompatibility = 1.8
 
@@ -29,8 +29,20 @@ repositories {
 
 dependencies {
     compile project(":common")
-    compile 'org.kohsuke:github-api:1.90'
+    compile group: 'org.kohsuke', name: 'github-api', version: '1.95'
 
     testCompile 'org.mockito:mockito-all:1.8.5'
     testCompile 'junit:junit:4.8.2'
+}
+
+processResources {
+    project.pluginDesc.id = "github.pr.status"
+    project.pluginDesc.name = "Github Pull Requests status notifier"
+    project.pluginDesc.description = "Updates build status for GitHub pull request"
+
+    from("src/main/resources") {
+        filesMatching('plugin.xml') {
+            expand project.pluginDesc
+        }
+    }
 }
