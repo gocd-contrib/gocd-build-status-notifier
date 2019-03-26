@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.kohsuke</groupId>
             <artifactId>github-api</artifactId>
-            <version>1.90</version>
+            <version>1.95</version>
         </dependency>
 
         <dependency>
