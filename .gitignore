@@ -41,11 +41,23 @@ Thumbs.db
 
 # IntelliJ #
 ###########
-.idea/
+.idea/*
+!.idea/copyright
 out/
 *.ipr
 *.iws
+.gradle/
 *.iml
+build
+common/build
+github-pr-status/build
+gerrit-cs-status/build
+stash-pr-status/build
+common/out
+github-pr-status/out
+gerrit-cs-status/out
+stash-pr-status/out
+
 
 # App #
 ######

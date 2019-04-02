@@ -1,0 +1,82 @@
+/*
+ * Copyright 2019 ThoughtWorks, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+plugins {
+    id 'java'
+    id 'co.riiid.gradle' version '0.4.2'
+}
+
+apply from: 'plugin-helpers.gradle'
+
+project.ext.pluginVersion = '1.5'
+project.ext.fullVersion = project.git.distVersion() ? "${project.pluginVersion}-${project.git.distVersion()}" : project.pluginVersion
+
+group = 'com.tw.go.plugin'
+version = project.fullVersion
+
+project.ext.pluginDesc = [
+        repo       : rootProject.name,
+        version    : project.version,
+        goCdVersion: '17.3.0',
+        vendorName : 'GoCD Contributors',
+        vendorUrl  : 'https://github.com/gocd-contrib/gocd-build-status-notifier'
+]
+
+repositories {
+    mavenCentral()
+}
+
+subprojects { Project sub ->
+    apply plugin: 'java'
+    apply plugin: 'co.riiid.gradle'
+
+    sub.group = project.group
+    sub.version = project.version
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        jcenter()
+        mavenLocal()
+    }
+
+    dependencies {
+        compileOnly 'cd.go.plugin:go-plugin-api:17.3.0'
+        compile 'com.google.code.gson:gson:2.2.3'
+        compile 'commons-io:commons-io:2.4'
+        compile 'org.apache.httpcomponents:httpclient:4.5'
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
+    }
+
+    sourceSets {
+        test {
+            java {
+                compileClasspath += configurations.compileOnly
+                runtimeClasspath += configurations.compileOnly
+            }
+        }
+    }
+
+    jar {
+        from(configurations.compile) {
+            into "lib/"
+        }
+    }
+    if (!sub.name.equalsIgnoreCase("common")) {
+        apply from: "${rootProject.projectDir}/plugin-tasks.gradle"
+    }
+}
+
