@@ -1,4 +1,4 @@
-package com.tw.go.plugin.provider.gitlab;
+package com.tw.go.plugin.provider;
 
 import com.google.gson.internal.LinkedHashTreeMap;
 import com.tw.go.plugin.provider.DefaultProvider;
@@ -68,7 +68,7 @@ public class GitLabProvider extends DefaultProvider {
 
         GitlabAPI api = GitlabAPI.connect(pluginSettings.getEndPoint(), pluginSettings.getOauthToken());
         GitlabProject project = api.getProject(getRepository(url));
-        api.createCommitStatus(project, revision, GitLabState.stateFor(result), prIdStr,"GoCD",trackbackURL, "");
+        api.createCommitStatus(project, revision, GitLabState.stateFor(result), prIdStr, "GoCD", trackbackURL, "");
     }
 
     private String getValueFromPluginSettings(Object values) {

@@ -229,7 +229,7 @@ public class StashBuildStatusNotifierPluginTest {
         Map materialRevisionMap = new HashMap();
         Map materialMap = new HashMap();
         materialMap.put("type", "scm");
-        materialMap.put("plugin-id", "github.pr");
+        materialMap.put("plugin-id", POLLER_PLUGIN_ID);
         Map configurationMap = new HashMap();
         configurationMap.put("url", url);
         configurationMap.put("username", username);

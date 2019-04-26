@@ -1,4 +1,4 @@
-package com.tw.go.plugin.provider.gitlab;
+package com.tw.go.plugin.provider;
 
 import com.tw.go.plugin.setting.PluginConfigurationView;
 

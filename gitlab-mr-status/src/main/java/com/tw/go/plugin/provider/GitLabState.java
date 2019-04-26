@@ -1,4 +1,4 @@
-package com.tw.go.plugin.provider.gitlab;
+package com.tw.go.plugin.provider;
 
 public class GitLabState {
     private static final String PENDING  = "pending";

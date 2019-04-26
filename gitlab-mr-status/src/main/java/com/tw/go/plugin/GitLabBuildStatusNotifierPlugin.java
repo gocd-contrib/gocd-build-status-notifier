@@ -13,9 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-rootProject.name = 'gocd-build-status-notifier'
-include 'common'
-include 'github-pr-status'
-include 'stash-pr-status'
-include 'gerrit-cs-status'
-include 'gitlab-mr-status'
+
+package com.tw.go.plugin;
+
+import com.thoughtworks.go.plugin.api.annotation.Extension;
+import com.tw.go.plugin.provider.GitLabProvider;
+import com.tw.go.plugin.provider.Provider;
+
+@Extension
+public class GitLabBuildStatusNotifierPlugin extends BuildStatusNotifierPlugin {
+    @Override
+    protected Provider loadProvider() {
+        try {
+            return new GitLabProvider();
+        } catch (Exception e) {
+            throw new RuntimeException("could not create provider", e);
+        }
+    }
+}

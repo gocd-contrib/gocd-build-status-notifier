@@ -1,4 +1,4 @@
-package com.tw.go.plugin.provider.gitlab;
+package com.tw.go.plugin.provider;
 
 import org.junit.Before;
 import org.junit.Test;
