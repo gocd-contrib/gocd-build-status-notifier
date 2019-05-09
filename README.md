@@ -115,6 +115,5 @@ Eg:
 
 [1]: images/list-plugin.png  "List Plugin"
 [2]: images/configure-plugin.png  "Configure Plugin"
-[3]: images/gitlab-plugin-settings.png  "Configure Gitlab Plugin"
-[4]: images/pipeline-schedule.png  "Pipeline Schedule"
-[5]: images/update-status.png  "On Successful Status Update"
+[3]: images/pipeline-schedule.png  "Pipeline Schedule"
+[4]: images/update-status.png  "On Successful Status Update"

@@ -3,6 +3,7 @@ package com.tw.go.plugin.provider;
 import com.google.gson.internal.LinkedHashTreeMap;
 import com.tw.go.plugin.provider.DefaultProvider;
 import com.tw.go.plugin.setting.PluginSettings;
+import org.apache.commons.lang3.StringUtils;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.GitlabProject;
 
@@ -11,6 +12,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 
 import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_END_POINT;
 import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_OAUTH_TOKEN;
@@ -19,7 +23,7 @@ import static com.tw.go.plugin.util.ValidationUtils.getValidationError;
 
 public class GitLabProvider extends DefaultProvider {
 
-    private static final String PLUGIN_ID = "gitlab.fb.status";
+    private static final String PLUGIN_ID = "gitlab.mr.status";
     private static final String GITLAB_FB_POLLER_PLUGIN_ID = "git.fb";
 
     public GitLabProvider() {
@@ -66,7 +70,17 @@ public class GitLabProvider extends DefaultProvider {
     public void updateStatus(String url, PluginSettings pluginSettings, String prIdStr, String revision, String pipelineStage,
                              String result, String trackbackURL) throws Exception {
 
-        GitlabAPI api = GitlabAPI.connect(pluginSettings.getEndPoint(), pluginSettings.getOauthToken());
+        String endPointToUse = pluginSettings.getEndPoint();
+        String oauthAccessTokenToUse = pluginSettings.getOauthToken();
+
+        if (StringUtils.isEmpty(endPointToUse)) {
+            endPointToUse = System.getProperty("go.plugin.build.status.gitlab.endpoint");
+        }
+        if (StringUtils.isEmpty(oauthAccessTokenToUse)) {
+            oauthAccessTokenToUse = System.getProperty("go.plugin.build.status.gitlab.oauth");
+        }
+
+        GitlabAPI api = GitlabAPI.connect(endPointToUse, oauthAccessTokenToUse);
         GitlabProject project = api.getProject(getRepository(url));
         api.createCommitStatus(project, revision, GitLabState.stateFor(result), prIdStr, "GoCD", trackbackURL, "");
     }
@@ -92,18 +106,26 @@ public class GitLabProvider extends DefaultProvider {
         return true;
     }
 
-    private String getRepository(String url) {
-        String[] urlParts = url.split("/");
-        String repo = urlParts[urlParts.length - 1];
-        if (repo.endsWith(".git")) {
-            repo = repo.substring(0, repo.length() - 4);
-        }
-        String usernameWithSSHPrefix = urlParts[urlParts.length - 2];
+    public String getRepository(String url) {
+        String repoPath = null;
 
-        int positionOfColon = usernameWithSSHPrefix.lastIndexOf(":");
-        if (positionOfColon > 0) {
-            usernameWithSSHPrefix = usernameWithSSHPrefix.substring(positionOfColon + 1);
+        String sshProtocolString = "(.*)@(.*):(.*?)(/*)$";
+        Pattern sshPattern = Pattern.compile(sshProtocolString);
+        Matcher sshMatcher = sshPattern.matcher(url);
+        if(sshMatcher.find()) {
+            repoPath = sshMatcher.group(3);
         }
-        return String.format("%s/%s", usernameWithSSHPrefix, repo);
+
+        String httpProtocolString = "http(.?)://(.*?)/(.*?)(/*)$";
+        Pattern httpPattern = Pattern.compile(httpProtocolString);
+        Matcher httpMatcher = httpPattern.matcher(url);
+        if(httpMatcher.find()) {
+            repoPath = httpMatcher.group(3);
+        }
+
+        if (!StringUtils.isEmpty(repoPath) && repoPath.endsWith(".git")) {
+            repoPath = repoPath.substring(0, repoPath.length() - 4);
+        }
+        return repoPath;
     }
 }
