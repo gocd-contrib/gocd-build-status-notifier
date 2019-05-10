@@ -57,7 +57,7 @@ subprojects { Project sub ->
         compileOnly 'cd.go.plugin:go-plugin-api:17.3.0'
         compile 'com.google.code.gson:gson:2.2.3'
         compile 'commons-io:commons-io:2.4'
-        compile 'org.apache.httpcomponents:httpclient:4.5'
+        compile 'org.apache.httpcomponents:httpclient:4.5.8'
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
     }
 
