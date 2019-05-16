@@ -48,7 +48,7 @@ Eg:
 #### GitHub
 **Authentication:**
 - You can choose to provide `username` & `password` through system property `go.plugin.build.status.github.username` & `go.plugin.build.status.github.password`.
-Eg: 
+Eg:
 ```
 -Dgo.plugin.build.status.github.username=johndoe
 -Dgo.plugin.build.status.github.password=thisaintapassword
@@ -104,7 +104,11 @@ Eg:
 
 #### Gitlab
 **Setup:**
-- You need to provide `endpoint`, `oauth token` through system property `go.plugin.build.status.gitlab.endpoint`, `go.plugin.build.status.gitlab.oauth`.
+- This works with git.fb poller plugin that can be found here https://github.com/ashwanthkumar/gocd-build-github-pull-requests/releases
+- You will need a Gitlab Oauth token: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html
+- You need to provide `server_base_url`, `endpoint`, `oauth_token` using the plugin configuration view
+![Configure Gitlab Plugin][5]
+- Alternatively you can pass them through GoCD system property `go.plugin.build.status.gitlab.endpoint`, `go.plugin.build.status.gitlab.oauth`.
 Eg:
 ```
 -Dgo.plugin.build.status.gitlab.endpoint=http://gitlab.com
@@ -117,3 +121,4 @@ Eg:
 [2]: images/configure-plugin.png  "Configure Plugin"
 [3]: images/pipeline-schedule.png  "Pipeline Schedule"
 [4]: images/update-status.png  "On Successful Status Update"
+[5]: images/gitlab-plugin-settings.png  "Configure Gitlab Plugin"
