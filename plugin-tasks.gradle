@@ -178,7 +178,9 @@ task previewGithubRelease() {
         def prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
         def lastTag = project.git.getLastTag(prerelease)
         def targetCommitish = project.git.gitRevision()
-        def assets = jar.outputs.files.files
+        def assets = subprojects.findAll { it.name != "common" }
+                .collect { it.jar.outputs.files.files }
+                .flatten()
         def tagName = "${project.fullVersion}${prerelease ? '-exp' : ''}"
 
         def releaseName = "${prerelease ? 'Experimental: ' : ''}${project.fullVersion}"
@@ -247,21 +249,3 @@ task deploy() {
 
 previewGithubRelease.dependsOn assemble
 githubRelease.dependsOn previewGithubRelease
-
-github {
-    def lastCommit = project.git.gitRevision()
-    owner = System.getenv('GITHUB_USER') ?: 'bob'
-    repo = project.pluginDesc.repo
-    token = System.getenv('GITHUB_TOKEN') ?: 'bad-token'
-    targetCommitish = lastCommit
-    assets = jar.outputs.files.files
-
-    prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
-    tagName = "${project.fullVersion}${prerelease ? '-exp' : ''}"
-    name = "${prerelease ? 'Experimental: ' : ''}${project.fullVersion}"
-    def lastTag = project.git.getLastTag(prerelease)
-    def changelogHeader = lastTag ? "### Changelog ${lastTag}..${lastCommit.substring(0, 7)}" : "### Changelog"
-    def changeLog = project.git.getCommitsSinceLastTag(lastTag).replaceAll("\"", "")
-
-    body = """\n$changelogHeader\n\n${changeLog}\n""".stripIndent().trim()
-}

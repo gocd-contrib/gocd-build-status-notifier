@@ -20,12 +20,6 @@ plugins {
 
 apply from: 'plugin-helpers.gradle'
 
-project.ext.pluginVersion = '1.6'
-project.ext.fullVersion = project.git.distVersion() ? "${project.pluginVersion}-${project.git.distVersion()}" : project.pluginVersion
-
-group = 'com.tw.go.plugin'
-version = project.fullVersion
-
 project.ext.pluginDesc = [
         repo       : rootProject.name,
         version    : project.version,
@@ -36,6 +30,18 @@ project.ext.pluginDesc = [
 
 repositories {
     mavenCentral()
+}
+
+allprojects {
+    apply plugin: 'java'
+
+    project.ext.pluginVersion = '1.6'
+    project.ext.fullVersion = project.git.distVersion() ? "${project.pluginVersion}-${project.git.distVersion()}" : project.pluginVersion
+
+    group = 'com.tw.go.plugin'
+    version = project.fullVersion
+
+    sourceCompatibility = 1.8
 }
 
 subprojects { Project sub ->
@@ -75,8 +81,29 @@ subprojects { Project sub ->
             into "lib/"
         }
     }
+
     if (!sub.name.equalsIgnoreCase("common")) {
         apply from: "${rootProject.projectDir}/plugin-tasks.gradle"
     }
+}
+
+github {
+    def lastCommit = project.git.gitRevision()
+    owner = System.getenv('GITHUB_USER') ?: 'bob'
+    repo = project.pluginDesc.repo
+    token = System.getenv('GITHUB_TOKEN') ?: 'bad-token'
+    targetCommitish = lastCommit
+    assets = subprojects.findAll { "common" != it.name }
+            .collect { it.jar.outputs.files.files }
+            .flatten()
+
+    prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
+    tagName = "${project.fullVersion}${prerelease ? '-exp' : ''}"
+    name = "${prerelease ? 'Experimental: ' : ''}${project.fullVersion}"
+    def lastTag = project.git.getLastTag(prerelease)
+    def changelogHeader = lastTag ? "### Changelog ${lastTag}..${lastCommit.substring(0, 7)}" : "### Changelog"
+    def changeLog = project.git.getCommitsSinceLastTag(lastTag).replaceAll("\"", "")
+
+    body = """\n$changelogHeader\n\n${changeLog}\n""".stripIndent().trim()
 }
 
