@@ -29,5 +29,5 @@ repositories {
 
 dependencies {
     testCompile 'org.mockito:mockito-all:1.8.5'
-    testCompile 'junit:junit:4.8.2'
+    testCompile 'junit:junit:4.12'
 }
