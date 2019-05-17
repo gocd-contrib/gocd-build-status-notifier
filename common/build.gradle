@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 
-plugins {
-    id 'java'
-}
-
-group 'com.tw.go.plugin'
 version '1.4'
-
-sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
