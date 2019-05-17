@@ -163,6 +163,10 @@ public abstract class BuildStatusNotifierPlugin implements GoPlugin {
                     Map modificationData = (Map) modifications.get(0).get("data");
                     String prId = (String) modificationData.get("PR_ID");
 
+                    if (StringUtils.isEmpty(prId)) {
+                        prId = (String) modificationData.get("CURRENT_BRANCH");
+                    }
+
                     try {
                         provider.updateStatus(url, pluginSettings, prId, revision, pipelineStage, result, trackbackURL);
                     } catch (Exception e) {

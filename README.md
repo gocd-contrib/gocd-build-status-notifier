@@ -20,7 +20,7 @@ These plugins require GoCD version >= v15.x or above
 
 ## Configuration
 
-- You will see `Github Pull Requests status notifier` / `Stash Pull Requests status notifier` / `Gerrit Change Set status notifier` on plugin listing page
+- You will see `Github Pull Requests status notifier` / `Stash Pull Requests status notifier` / `Gerrit Change Set status notifier` / `GitLab Feature Branch status notifier`  on plugin listing page
 ![Plugins listing page][1]
 
 - You can configure the plugin (this feature requires GoCD version >= v15.2, use system properties to configure the plugin). The details should be as follows:
@@ -48,7 +48,7 @@ Eg:
 #### GitHub
 **Authentication:**
 - You can choose to provide `username` & `password` through system property `go.plugin.build.status.github.username` & `go.plugin.build.status.github.password`.
-Eg: 
+Eg:
 ```
 -Dgo.plugin.build.status.github.username=johndoe
 -Dgo.plugin.build.status.github.password=thisaintapassword
@@ -102,9 +102,23 @@ Eg:
 -Dgo.plugin.build.status.gerrit.codeReviewLabel=Verified
 ```
 
+#### Gitlab
+**Setup:**
+- This works with git.fb poller plugin that can be found here https://github.com/ashwanthkumar/gocd-build-github-pull-requests/releases
+- You will need a Gitlab Oauth token: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html
+- You need to provide `server_base_url`, `endpoint`, `oauth_token` using the plugin configuration view
+![Configure Gitlab Plugin][5]
+- Alternatively you can pass them through GoCD system property `go.plugin.build.status.gitlab.endpoint`, `go.plugin.build.status.gitlab.oauth`.
+Eg:
+```
+-Dgo.plugin.build.status.gitlab.endpoint=http://gitlab.com
+-Dgo.plugin.build.status.gitlab.oauth=XXXX
+```
+
 ## FAQs
 
 [1]: images/list-plugin.png  "List Plugin"
 [2]: images/configure-plugin.png  "Configure Plugin"
 [3]: images/pipeline-schedule.png  "Pipeline Schedule"
 [4]: images/update-status.png  "On Successful Status Update"
+[5]: images/gitlab-plugin-settings.png  "Configure Gitlab Plugin"

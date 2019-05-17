@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<go-plugin id="${id}" version="1">
+    <about>
+        <name>${name}</name>
+        <version>${version}</version>
+        <target-go-version>${goCdVersion}</target-go-version>
+        <description>${description}</description>
+        <vendor>
+            <name>${vendorName}</name>
+            <url>${vendorUrl}</url>
+        </vendor>
+    </about>
+</go-plugin>
