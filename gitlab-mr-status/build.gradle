@@ -27,9 +27,11 @@ dependencies {
 }
 
 processResources {
-    project.pluginDesc.id = "gitlab.mr.status"
-    project.pluginDesc.name = "GitLab Merge Requests status notifier"
-    project.pluginDesc.description = "Updates build status for GitLab Merge requests"
+    doFirst {
+        project.pluginDesc.id = "gitlab.mr.status"
+        project.pluginDesc.name = "GitLab Merge Requests status notifier"
+        project.pluginDesc.description = "Updates build status for GitLab Merge requests"
+    }
 
     from("src/main/resources") {
         filesMatching('plugin.xml') {

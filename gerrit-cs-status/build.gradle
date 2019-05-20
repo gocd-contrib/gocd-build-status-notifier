@@ -25,9 +25,11 @@ dependencies {
 }
 
 processResources {
-    project.pluginDesc.id = "gerrit.cs.status"
-    project.pluginDesc.name = "Gerrit Change Set status notifier"
-    project.pluginDesc.description = "Updates build status for Gerrit change set"
+    doFirst {
+        project.pluginDesc.id = "gerrit.cs.status"
+        project.pluginDesc.name = "Gerrit Change Set status notifier"
+        project.pluginDesc.description = "Updates build status for Gerrit change set"
+    }
 
     from("src/main/resources") {
         filesMatching('plugin.xml') {
