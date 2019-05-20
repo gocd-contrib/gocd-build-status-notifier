@@ -76,16 +76,6 @@ tasks.withType(Jar) { jarTask ->
                 'Target-Compatibility': project.targetCompatibility
         )
     }
-
-    doLast {
-        project.exec {
-            commandLine = ["mkdir", "-p", "$rootProject.buildDir/libs"]
-        }
-        project.copy {
-            from "$jarTask.destinationDir"
-            into "$rootProject.buildDir/libs"
-        }
-    }
 }
 
 tasks.withType(Test) {
@@ -248,4 +238,3 @@ task deploy() {
 }
 
 previewGithubRelease.dependsOn assemble
-githubRelease.dependsOn previewGithubRelease

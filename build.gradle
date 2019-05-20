@@ -19,6 +19,7 @@ plugins {
 }
 
 apply from: 'plugin-helpers.gradle'
+apply plugin: 'co.riiid.gradle'
 
 project.ext.pluginDesc = [
         repo       : rootProject.name,
@@ -45,15 +46,6 @@ allprojects {
 }
 
 subprojects { Project sub ->
-    apply plugin: 'java'
-    apply plugin: 'co.riiid.gradle'
-
-    sub.group = project.group
-    sub.version = project.version
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-
     repositories {
         jcenter()
         mavenLocal()
@@ -89,17 +81,19 @@ subprojects { Project sub ->
 
 github {
     def lastCommit = project.git.gitRevision()
+
     owner = System.getenv('GITHUB_USER') ?: 'bob'
     repo = project.pluginDesc.repo
     token = System.getenv('GITHUB_TOKEN') ?: 'bad-token'
     targetCommitish = lastCommit
+    prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
     assets = subprojects.findAll { "common" != it.name }
             .collect { it.jar.outputs.files.files }
             .flatten()
 
-    prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
     tagName = "${project.fullVersion}${prerelease ? '-exp' : ''}"
     name = "${prerelease ? 'Experimental: ' : ''}${project.fullVersion}"
+
     def lastTag = project.git.getLastTag(prerelease)
     def changelogHeader = lastTag ? "### Changelog ${lastTag}..${lastCommit.substring(0, 7)}" : "### Changelog"
     def changeLog = project.git.getCommitsSinceLastTag(lastTag).replaceAll("\"", "")
@@ -107,3 +101,4 @@ github {
     body = """\n$changelogHeader\n\n${changeLog}\n""".stripIndent().trim()
 }
 
+githubRelease.dependsOn project.subprojects*.tasks*.findByName('assemble').findAll { it != null }
