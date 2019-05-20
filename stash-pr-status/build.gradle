@@ -25,9 +25,11 @@ dependencies {
 }
 
 processResources {
-    project.pluginDesc.id = "stash.pr.status"
-    project.pluginDesc.name = "Stash Pull Requests status notifier"
-    project.pluginDesc.description = "Updates build status for Stash pull request"
+    doFirst {
+        project.pluginDesc.id = "stash.pr.status"
+        project.pluginDesc.name = "Stash Pull Requests status notifier"
+        project.pluginDesc.description = "Updates build status for Stash pull request"
+    }
 
     from("src/main/resources") {
         filesMatching('plugin.xml') {

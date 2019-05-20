@@ -26,13 +26,16 @@ dependencies {
 }
 
 processResources {
-    project.pluginDesc.id = "github.pr.status"
-    project.pluginDesc.name = "Github Pull Requests status notifier"
-    project.pluginDesc.description = "Updates build status for GitHub pull request"
+    doFirst {
+        project.pluginDesc.id = "github.pr.status"
+        project.pluginDesc.name = "Github Pull Requests status notifier"
+        project.pluginDesc.description = "Updates build status for GitHub pull request"
+    }
 
     from("src/main/resources") {
         filesMatching('plugin.xml') {
             expand project.pluginDesc
         }
     }
+
 }
