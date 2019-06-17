@@ -53,7 +53,7 @@ subprojects { Project sub ->
     }
 
     dependencies {
-        compileOnly 'cd.go.plugin:go-plugin-api:17.3.0'
+        compileOnly 'cd.go.plugin:go-plugin-api:19.5.0'
         compile 'com.google.code.gson:gson:2.2.3'
         compile 'commons-io:commons-io:2.6'
         compile 'org.apache.httpcomponents:httpclient:4.5'
