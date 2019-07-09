@@ -20,7 +20,7 @@ repositories {
 dependencies {
     compile project(":common")
 
-    testCompile 'org.mockito:mockito-core:2.28.2'
+    testCompile 'org.mockito:mockito-core:3.0.0'
     testCompile 'junit:junit:4.12'
 }
 
