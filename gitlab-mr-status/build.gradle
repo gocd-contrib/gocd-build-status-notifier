@@ -22,7 +22,7 @@ dependencies {
     compile project(":common")
     compile group: 'org.gitlab', name: 'java-gitlab-api', version: '4.1.0'
 
-    testCompile 'org.mockito:mockito-core:3.0.0'
+    testCompile 'org.mockito:mockito-core:3.1.0'
     testCompile 'junit:junit:4.12'
 }
 
