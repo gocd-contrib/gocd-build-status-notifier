@@ -50,7 +50,7 @@ public class GitHubProvider extends DefaultProvider {
     @Override
     public void updateStatus(String url, PluginSettings pluginSettings, String prIdStr, String revision, String pipelineStage,
                              String result, String trackbackURL) throws Exception {
-        LOGGER.info(String.format("GitHubProvider.updateStatus(): '%s' -> %s", result, url));
+        LOGGER.info("Updating status for '%s' to %s", url, result);
 
         String repository = getRepository(url);
         GHCommitState state = getState(result);
@@ -78,14 +78,14 @@ public class GitHubProvider extends DefaultProvider {
 
     @Override
     public List<Map<String, Object>> validateConfig(Map<String, Object> fields) {
-        LOGGER.info("GitHubProvider.validateConfig()");
+        LOGGER.info("Validating configuration");
 
         return new ArrayList<Map<String, Object>>();
     }
 
     void updateCommitStatus(String revision, String pipelineStage, String trackbackURL, String repository, GHCommitState state,
                             String usernameToUse, String passwordToUse, String oauthAccessTokenToUse, String endPointToUse) throws Exception {
-        LOGGER.info(String.format("GitHubProvider.updateCommitStatus(): '%s' on %s", revision, pipelineStage));
+        LOGGER.info("Updating commit status for '%s' on '%s'", revision, pipelineStage);
 
         GitHub github = createGitHubClient(usernameToUse, passwordToUse, oauthAccessTokenToUse, endPointToUse);
         GHRepository ghRepository = github.getRepository(repository);
@@ -93,7 +93,7 @@ public class GitHubProvider extends DefaultProvider {
     }
 
     GitHub createGitHubClient(String usernameToUse, String passwordToUse, String oauthAccessTokenToUse, String endPointToUse) throws Exception {
-        LOGGER.info("GitHubProvider.createGitHubClient()"); 
+        LOGGER.info("Creating GitHub client"); 
 
         GitHub github = null;
         if (usernameAndPasswordIsAvailable(usernameToUse, passwordToUse)) {
@@ -117,7 +117,7 @@ public class GitHubProvider extends DefaultProvider {
     }
 
     public String getRepository(String url) {
-        LOGGER.info(String.format("GitHubProvider.getRepository(): on %s", url));
+        LOGGER.info("Getting repository '%s'", url);
 
         String[] urlParts = url.split("/");
         String repo = urlParts[urlParts.length - 1];
@@ -133,8 +133,6 @@ public class GitHubProvider extends DefaultProvider {
     }
 
     GHCommitState getState(String result) {
-        LOGGER.info(String.format("GitHubProvider.getState(): on %s", result));
-
         result = result == null ? "" : result;
         GHCommitState state = GHCommitState.PENDING;
         if (result.equalsIgnoreCase("Passed")) {
