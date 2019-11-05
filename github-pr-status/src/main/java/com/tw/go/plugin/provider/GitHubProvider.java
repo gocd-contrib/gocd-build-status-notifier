@@ -16,6 +16,7 @@
 
 package com.tw.go.plugin.provider;
 
+import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.tw.go.plugin.setting.DefaultPluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GitHubProvider extends DefaultProvider {
+    private static Logger LOGGER = Logger.getLoggerFor(GitHubProvider.class);
     public static final String PLUGIN_ID = "github.pr.status";
     public static final String GITHUB_PR_POLLER_PLUGIN_ID = "github.pr";
 
@@ -48,6 +50,8 @@ public class GitHubProvider extends DefaultProvider {
     @Override
     public void updateStatus(String url, PluginSettings pluginSettings, String prIdStr, String revision, String pipelineStage,
                              String result, String trackbackURL) throws Exception {
+        LOGGER.info("Updating status for '%s' to %s", url, result);
+
         String repository = getRepository(url);
         GHCommitState state = getState(result);
 
@@ -74,17 +78,23 @@ public class GitHubProvider extends DefaultProvider {
 
     @Override
     public List<Map<String, Object>> validateConfig(Map<String, Object> fields) {
+        LOGGER.info("Validating configuration");
+
         return new ArrayList<Map<String, Object>>();
     }
 
     void updateCommitStatus(String revision, String pipelineStage, String trackbackURL, String repository, GHCommitState state,
                             String usernameToUse, String passwordToUse, String oauthAccessTokenToUse, String endPointToUse) throws Exception {
+        LOGGER.info("Updating commit status for '%s' on '%s'", revision, pipelineStage);
+
         GitHub github = createGitHubClient(usernameToUse, passwordToUse, oauthAccessTokenToUse, endPointToUse);
         GHRepository ghRepository = github.getRepository(repository);
         ghRepository.createCommitStatus(revision, state, trackbackURL, "", pipelineStage);
     }
 
     GitHub createGitHubClient(String usernameToUse, String passwordToUse, String oauthAccessTokenToUse, String endPointToUse) throws Exception {
+        LOGGER.info("Creating GitHub client"); 
+
         GitHub github = null;
         if (usernameAndPasswordIsAvailable(usernameToUse, passwordToUse)) {
             if (endPointIsAvailable(endPointToUse)) {
@@ -107,6 +117,8 @@ public class GitHubProvider extends DefaultProvider {
     }
 
     public String getRepository(String url) {
+        LOGGER.info("Getting repository '%s'", url);
+
         String[] urlParts = url.split("/");
         String repo = urlParts[urlParts.length - 1];
         String usernameWithSSHPrefix = urlParts[urlParts.length - 2];
