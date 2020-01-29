@@ -23,7 +23,7 @@ dependencies {
     compile group: 'org.gitlab', name: 'java-gitlab-api', version: '4.1.1'
 
     testCompile 'org.mockito:mockito-core:3.2.4'
-    testCompile 'junit:junit:4.12'
+    testCompile 'junit:junit:4.13'
 }
 
 processResources {
