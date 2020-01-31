@@ -28,7 +28,7 @@ These plugins require GoCD version >= v15.x or above
   - **End Point** If using enterprise edition, this needs to be configured for the enterprise endpoint. Else, it can be left blank.
   - **Username** A Github user with push access to the repository.
   - **Password** If not using two factor authentication, this is the password for the given Github user. Else, it can be left blank.
-  - **OAuth Token** If using two-factor authentication, provide a personal access token instead of the password above. Else, it can be left blank.
+  - **OAuth Token** If using two-factor authentication, provide a personal access token (with the `repo:status` oath scope) instead of the password above. Else, it can be left blank.
 
 ![Configure plugin pop-up][2]
 
