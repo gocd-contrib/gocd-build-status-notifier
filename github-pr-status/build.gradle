@@ -21,7 +21,7 @@ dependencies {
     compile project(":common")
     compile group: 'org.kohsuke', name: 'github-api', version: '1.106'
 
-    testCompile 'org.mockito:mockito-core:3.2.4'
+    testCompile 'org.mockito:mockito-core:3.4.0'
     testCompile 'junit:junit:4.13'
 }
 
