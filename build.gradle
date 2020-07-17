@@ -57,7 +57,7 @@ subprojects { Project sub ->
         compile 'com.google.code.gson:gson:2.8.6'
         compile 'commons-io:commons-io:2.7'
         compile 'org.apache.httpcomponents:httpclient:4.5.11'
-        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
     }
 
     sourceSets {
