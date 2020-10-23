@@ -24,10 +24,7 @@ import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StashProvider extends DefaultProvider {
     public static final String PLUGIN_ID = "stash.pr.status";
@@ -55,8 +52,8 @@ public class StashProvider extends DefaultProvider {
     }
 
     @Override
-    public String pollerPluginId() {
-        return STASH_PR_POLLER_PLUGIN_ID;
+    public List<String> pollerPluginIds() {
+        return Collections.singletonList(STASH_PR_POLLER_PLUGIN_ID);
     }
 
     @Override

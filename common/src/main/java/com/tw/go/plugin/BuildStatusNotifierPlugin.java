@@ -154,7 +154,7 @@ public abstract class BuildStatusNotifierPlugin implements GoPlugin {
             List<Map> materialRevisions = (List<Map>) pipeline.get("build-cause");
             for (Map materialRevision : materialRevisions) {
                 Map material = (Map) materialRevision.get("material");
-                if (isMaterialOfType(material, provider.pollerPluginId())) {
+                if (isMaterialFromTypes(material, provider.pollerPluginIds())) {
                     Map materialConfiguration = (Map) material.get("scm-configuration");
                     String url = (String) materialConfiguration.get("url");
 
@@ -188,8 +188,16 @@ public abstract class BuildStatusNotifierPlugin implements GoPlugin {
         return renderJSON(responseCode, response);
     }
 
-    private boolean isMaterialOfType(Map material, String pollerPluginId) {
-        return ((String) material.get("type")).equalsIgnoreCase("scm") && ((String) material.get("plugin-id")).equalsIgnoreCase(pollerPluginId);
+    private boolean isMaterialFromTypes(Map material, List<String> pollerPluginIds) {
+        if (((String) material.get("type")).equalsIgnoreCase("scm")) {
+            for (String pollerPluginId : pollerPluginIds) {
+                if(((String) material.get("plugin-id")).equalsIgnoreCase(pollerPluginId)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private GoPluginIdentifier getGoPluginIdentifier() {

@@ -25,7 +25,7 @@ import java.util.Map;
 public interface Provider {
     public String pluginId();
 
-    public String pollerPluginId();
+    public List<String> pollerPluginIds();
 
     public void updateStatus(String url, PluginSettings pluginSettings, String branch, String revision, String pipelineStage,
                              String result, String trackbackURL) throws Exception;

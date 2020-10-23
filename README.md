@@ -6,6 +6,7 @@ Supported:
 * GitHub Pull Request status
 * Stash Pull Request status
 * Gerrit Change Set status
+* Gitlab Merge Request Status
 
 ## Requirements
 These plugins require GoCD version >= v15.x or above
@@ -104,7 +105,7 @@ Eg:
 
 #### Gitlab
 **Setup:**
-- This works with git.fb poller plugin that can be found here https://github.com/ashwanthkumar/gocd-build-github-pull-requests/releases
+- This works with `git.fb` and `gitlab.pr` poller plugins that can be found here https://github.com/ashwanthkumar/gocd-build-github-pull-requests/releases
 - You will need a Gitlab Oauth token: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html
 - You need to provide `server_base_url`, `endpoint`, `oauth_token` using the plugin configuration view
 ![Configure Gitlab Plugin][5]
