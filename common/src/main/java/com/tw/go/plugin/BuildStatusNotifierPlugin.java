@@ -190,11 +190,7 @@ public abstract class BuildStatusNotifierPlugin implements GoPlugin {
 
     private boolean isMaterialFromTypes(Map material, List<String> pollerPluginIds) {
         if (((String) material.get("type")).equalsIgnoreCase("scm")) {
-            for (String pollerPluginId : pollerPluginIds) {
-                if(((String) material.get("plugin-id")).equalsIgnoreCase(pollerPluginId)) {
-                    return true;
-                }
-            }
+            return pollerPluginIds.contains((String) material.get("plugin-id"));
         }
 
         return false;
