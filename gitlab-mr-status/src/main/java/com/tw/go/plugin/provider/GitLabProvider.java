@@ -10,7 +10,6 @@ import org.gitlab.api.models.GitlabProject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -18,6 +17,7 @@ import java.util.regex.Pattern;
 
 import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 import static com.tw.go.plugin.util.ValidationUtils.getValidationError;
+import static java.util.Collections.unmodifiableList;
 
 public class GitLabProvider extends DefaultProvider {
     private static Logger LOGGER = Logger.getLoggerFor(GitLabProvider.class);
@@ -25,7 +25,7 @@ public class GitLabProvider extends DefaultProvider {
     private static final String PLUGIN_ID = "gitlab.mr.status";
     private static final String GITLAB_FB_POLLER_PLUGIN_ID = "git.fb";
     private static final String GITLAB_POLLER_PLUGIN_ID = "gitlab.pr";
-    private static final List<String> POLLER_PLUGINS = Collections.unmodifiableList(new ArrayList<String>() {{
+    private static final List<String> POLLER_PLUGINS = unmodifiableList(new ArrayList<String>() {{
         add(GITLAB_FB_POLLER_PLUGIN_ID);
         add(GITLAB_POLLER_PLUGIN_ID);
     }});

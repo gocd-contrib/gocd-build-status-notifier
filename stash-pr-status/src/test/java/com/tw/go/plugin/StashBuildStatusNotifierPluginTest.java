@@ -31,9 +31,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.tw.go.plugin.BuildStatusNotifierPlugin.PLUGIN_SETTINGS_GET_CONFIGURATION;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -61,7 +65,7 @@ public class StashBuildStatusNotifierPluginTest {
         pluginSettingsResponse.setResponseBody(JSONUtils.toJSON(new HashMap<String, String>()));
         when(goApplicationAccessor.submit(any(GoApiRequest.class))).thenReturn(pluginSettingsResponse);
         when(provider.pluginId()).thenReturn(PLUGIN_ID);
-        when(provider.pollerPluginIds()).thenReturn(Collections.singletonList(POLLER_PLUGIN_ID));
+        when(provider.pollerPluginIds()).thenReturn(singletonList(POLLER_PLUGIN_ID));
 
         plugin.initializeGoApplicationAccessor(goApplicationAccessor);
         plugin.setProvider(provider);
