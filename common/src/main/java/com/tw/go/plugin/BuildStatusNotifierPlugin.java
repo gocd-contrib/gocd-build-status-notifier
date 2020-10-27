@@ -161,7 +161,7 @@ public abstract class BuildStatusNotifierPlugin implements GoPlugin {
                     List<Map> modifications = (List<Map>) materialRevision.get("modifications");
                     String revision = (String) modifications.get(0).get("revision");
                     Map modificationData = (Map) modifications.get(0).get("data");
-                    String prBranch = (String) modificationData.getOrDefault("PR_BRANCH", "PR_ID");
+                    String prBranch = (String) modificationData.getOrDefault("PR_BRANCH", modificationData.get("PR_ID"));
 
                     if (StringUtils.isEmpty(prBranch)) {
                         prBranch = (String) modificationData.get("CURRENT_BRANCH");
