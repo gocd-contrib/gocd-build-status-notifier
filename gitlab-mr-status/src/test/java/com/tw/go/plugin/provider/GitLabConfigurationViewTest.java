@@ -6,10 +6,8 @@ import org.junit.Test;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 import static org.junit.Assert.assertEquals;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_END_POINT;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_OAUTH_TOKEN;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_SERVER_BASE_URL;
 
 public class GitLabConfigurationViewTest {
 

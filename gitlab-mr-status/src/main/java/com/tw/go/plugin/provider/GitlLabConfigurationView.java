@@ -5,9 +5,7 @@ import com.tw.go.plugin.setting.PluginConfigurationView;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_END_POINT;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_OAUTH_TOKEN;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_SERVER_BASE_URL;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 import static com.tw.go.plugin.util.ConfigurationUtils.createField;
 
 public class GitlLabConfigurationView implements PluginConfigurationView {

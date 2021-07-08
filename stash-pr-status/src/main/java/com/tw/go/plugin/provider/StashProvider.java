@@ -17,7 +17,6 @@
 package com.tw.go.plugin.provider;
 
 import com.google.gson.GsonBuilder;
-import com.tw.go.plugin.provider.DefaultProvider;
 import com.tw.go.plugin.setting.DefaultPluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.AuthenticationType;
@@ -28,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Collections.singletonList;
 
 public class StashProvider extends DefaultProvider {
     public static final String PLUGIN_ID = "stash.pr.status";
@@ -55,8 +56,8 @@ public class StashProvider extends DefaultProvider {
     }
 
     @Override
-    public String pollerPluginId() {
-        return STASH_PR_POLLER_PLUGIN_ID;
+    public List<String> pollerPluginIds() {
+        return singletonList(STASH_PR_POLLER_PLUGIN_ID);
     }
 
     @Override
