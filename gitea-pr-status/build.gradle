@@ -13,10 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-rootProject.name = 'gocd-build-status-notifier'
-include 'common'
-include 'github-pr-status'
-include 'stash-pr-status'
-include 'gerrit-cs-status'
-include 'gitlab-mr-status'
-include 'gitea-pr-status'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(":common")
+
+    testCompile 'org.mockito:mockito-core:3.8.0'
+    testCompile 'junit:junit:4.13.2'
+}
+
+processResources {
+    doFirst {
+        project.pluginDesc.id = "gitea.pr.status"
+        project.pluginDesc.name = "Gitea Pull Requests status notifier"
+        project.pluginDesc.description = "Updates build status for Gitea pull request"
+    }
+
+    from("src/main/resources") {
+        filesMatching('plugin.xml') {
+            expand project.pluginDesc
+        }
+    }
+}

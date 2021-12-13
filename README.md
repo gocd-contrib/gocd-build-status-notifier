@@ -6,6 +6,7 @@ Supported:
 * GitHub Pull Request status
 * Stash Pull Request status
 * Gerrit Change Set status
+* Gitea Pull Request status
 
 ## Requirements
 These plugins require GoCD version >= v15.x or above
@@ -20,7 +21,7 @@ These plugins require GoCD version >= v15.x or above
 
 ## Configuration
 
-- You will see `Github Pull Requests status notifier` / `Stash Pull Requests status notifier` / `Gerrit Change Set status notifier` / `GitLab Feature Branch status notifier`  on plugin listing page
+- You will see `Github Pull Requests status notifier` / `Stash Pull Requests status notifier` / `Gerrit Change Set status notifier` / `GitLab Feature Branch status notifier` / `Gitea Pull Requests status notifier`  on plugin listing page
 ![Plugins listing page][1]
 
 - You can configure the plugin (this feature requires GoCD version >= v15.2, use system properties to configure the plugin). The details should be as follows:
@@ -113,6 +114,18 @@ Eg:
 ```
 -Dgo.plugin.build.status.gitlab.endpoint=http://gitlab.com
 -Dgo.plugin.build.status.gitlab.oauth=XXXX
+```
+
+#### Gitea
+**Setup:**
+- You need to provide `GoCD Base URL`, `Gitea Base URL`, `Username`, `Password` using the plugin configuration view.
+- (or) through system property `go.plugin.build.status.go-server`, `go.plugin.build.status.gitea.endpoint`, `go.plugin.build.status.gitea.username`, `go.plugin.build.status.gitea.password`.
+Eg:
+```
+-Dgo.plugin.build.status.go-server=https://gitea.com
+-Dgo.plugin.build.status.gitea.endpoint=https://gitea.com
+-Dgo.plugin.build.status.gitea.username=johndoe
+-Dgo.plugin.build.status.gitea.password=thisaintapassword
 ```
 
 ## FAQs
