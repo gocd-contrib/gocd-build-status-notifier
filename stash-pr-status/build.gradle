@@ -29,6 +29,7 @@ processResources {
     }
 
     from("src/main/resources") {
+        duplicatesStrategy(DuplicatesStrategy.INCLUDE)
         filesMatching('plugin.xml') {
             expand project.pluginDesc
         }

@@ -17,6 +17,7 @@ import groovy.xml.MarkupBuilder
 
 processResources {
     from("src/main/resource-templates") {
+        duplicatesStrategy(DuplicatesStrategy.INCLUDE)
         filesMatching('plugin.xml') {
             expand project.pluginDesc
         }
