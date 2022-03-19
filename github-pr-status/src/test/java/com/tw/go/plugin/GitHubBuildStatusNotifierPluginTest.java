@@ -26,8 +26,8 @@ import com.tw.go.plugin.provider.Provider;
 import com.tw.go.plugin.setting.PluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.JSONUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.util.ArrayList;
@@ -36,8 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.tw.go.plugin.BuildStatusNotifierPlugin.PLUGIN_SETTINGS_GET_CONFIGURATION;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -51,7 +50,7 @@ public class GitHubBuildStatusNotifierPluginTest {
 
     private BuildStatusNotifierPlugin plugin;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks(this);
 
@@ -69,7 +68,7 @@ public class GitHubBuildStatusNotifierPluginTest {
 
     @Test
     public void shouldRegisterForStageStatusChange() {
-        assertThat(plugin.handleNotificationsInterestedIn().responseBody(), is("{\"notifications\":[\"stage-status\"]}"));
+        assertThat(plugin.handleNotificationsInterestedIn().responseBody()).isEqualTo("{\"notifications\":[\"stage-status\"]}");
     }
 
     @Test
@@ -108,7 +107,7 @@ public class GitHubBuildStatusNotifierPluginTest {
         Map<String, Object> configuration = new Gson().fromJson(
                 plugin.handle(createRequest(PLUGIN_SETTINGS_GET_CONFIGURATION)).responseBody(), Map.class);
 
-        assertThat(configuration, is(fields));
+        assertThat(configuration).isEqualTo(fields);
     }
 
     private GoPluginApiRequest createRequest(final String name) {

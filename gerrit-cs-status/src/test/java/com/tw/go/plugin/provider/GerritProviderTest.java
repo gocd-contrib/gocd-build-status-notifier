@@ -19,9 +19,8 @@ package com.tw.go.plugin.provider;
 import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
-import org.hamcrest.core.Is;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +28,7 @@ import java.util.Map;
 
 import static com.tw.go.plugin.provider.GerritConfigurationView.PLUGIN_SETTINGS_REVIEW_LABEL;
 import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class GerritProviderTest {
@@ -46,7 +44,7 @@ public class GerritProviderTest {
     GerritProvider provider;
     HTTPClient mockHttpClient;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         pluginSettings = new GerritPluginSettings();
         pluginSettings.setEndPoint("http://localhost:8080");
@@ -60,10 +58,10 @@ public class GerritProviderTest {
 
     @Test
     public void shouldGetStateFromResult() {
-        assertThat(provider.getCodeReviewValue("Unknown"), is(GerritProvider.IN_PROGRESS_VALUE));
-        assertThat(provider.getCodeReviewValue("Passed"), is(GerritProvider.SUCCESS_VALUE));
-        assertThat(provider.getCodeReviewValue("Failed"), is(GerritProvider.FAILURE_VALUE));
-        assertThat(provider.getCodeReviewValue("Cancelled"), is(GerritProvider.FAILURE_VALUE));
+        assertThat(provider.getCodeReviewValue("Unknown")).isEqualTo(GerritProvider.IN_PROGRESS_VALUE);
+        assertThat(provider.getCodeReviewValue("Passed")).isEqualTo(GerritProvider.SUCCESS_VALUE);
+        assertThat(provider.getCodeReviewValue("Failed")).isEqualTo(GerritProvider.FAILURE_VALUE);
+        assertThat(provider.getCodeReviewValue("Cancelled")).isEqualTo(GerritProvider.FAILURE_VALUE);
     }
 
     @Test
@@ -96,7 +94,7 @@ public class GerritProviderTest {
 
         List<Map<String, Object>> validationErrors = provider.validateConfig(settings);
 
-        assertThat(validationErrors.size(), is(0));
+        assertThat(validationErrors.size()).isEqualTo(0);
     }
 
     private Map<String, Object> getSettingValue() {
@@ -110,9 +108,9 @@ public class GerritProviderTest {
         Map<String, Object> config = new HashMap<String, Object>();
         List<Map<String, Object>> validationErrors = provider.validateConfig(config);
 
-        assertThat(validationErrors.size(), is(1));
-        assertThat((String) validationErrors.get(0).get("key"), is("review_label"));
-        assertThat((String) validationErrors.get(0).get("message"), is("Review field must be set"));
+        assertThat(validationErrors.size()).isEqualTo(1);
+        assertThat((String) validationErrors.get(0).get("key")).isEqualTo("review_label");
+        assertThat((String) validationErrors.get(0).get("message")).isEqualTo("Review field must be set");
     }
 
     @Test
@@ -128,31 +126,31 @@ public class GerritProviderTest {
 
         PluginSettings pluginSettings = provider.pluginSettings(responseBodyMap);
 
-        assertThat(pluginSettings instanceof GerritPluginSettings, is(true));
+        assertThat(pluginSettings instanceof GerritPluginSettings).isEqualTo(true);
         GerritPluginSettings gerritPluginSettings = (GerritPluginSettings) pluginSettings;
 
-        assertThat(gerritPluginSettings.getServerBaseURL(), is("url"));
-        assertThat(gerritPluginSettings.getEndPoint(), is("endpoint"));
-        assertThat(gerritPluginSettings.getUsername(), is("username"));
-        assertThat(gerritPluginSettings.getPassword(), is("password"));
-        assertThat(gerritPluginSettings.getOauthToken(), is("token"));
-        assertThat(gerritPluginSettings.getReviewLabel(), is("label"));
+        assertThat(gerritPluginSettings.getServerBaseURL()).isEqualTo("url");
+        assertThat(gerritPluginSettings.getEndPoint()).isEqualTo("endpoint");
+        assertThat(gerritPluginSettings.getUsername()).isEqualTo("username");
+        assertThat(gerritPluginSettings.getPassword()).isEqualTo("password");
+        assertThat(gerritPluginSettings.getOauthToken()).isEqualTo("token");
+        assertThat(gerritPluginSettings.getReviewLabel()).isEqualTo("label");
     }
 
     @Test
     public void shouldReturnCorrectTemplate() {
-        assertThat(provider.configurationView().templateName(), is("plugin-settings-gerrit.template.html"));
+        assertThat(provider.configurationView().templateName()).isEqualTo("plugin-settings-gerrit.template.html");
     }
 
     @Test
     public void shouldReturnCorrectConfigFields() throws Exception {
         Map<String, Object> configuration = provider.configurationView().fields();
 
-        assertThat(configuration.containsKey("server_base_url"), Is.is(true));
-        assertThat(configuration.containsKey("end_point"), Is.is(true));
-        assertThat(configuration.containsKey("username"), Is.is(true));
-        assertThat(configuration.containsKey("password"), Is.is(true));
-        assertThat(configuration.containsKey("oauth_token"), Is.is(true));
-        assertThat(configuration.containsKey("review_label"), Is.is(true));
+        assertThat(configuration.containsKey("server_base_url")).isEqualTo(true);
+        assertThat(configuration.containsKey("end_point")).isEqualTo(true);
+        assertThat(configuration.containsKey("username")).isEqualTo(true);
+        assertThat(configuration.containsKey("password")).isEqualTo(true);
+        assertThat(configuration.containsKey("oauth_token")).isEqualTo(true);
+        assertThat(configuration.containsKey("review_label")).isEqualTo(true);
     }
 }

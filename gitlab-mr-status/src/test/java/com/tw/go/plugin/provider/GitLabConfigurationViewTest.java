@@ -1,21 +1,21 @@
 package com.tw.go.plugin.provider;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
 import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_END_POINT;
 import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_OAUTH_TOKEN;
 import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_SERVER_BASE_URL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GitLabConfigurationViewTest {
 
     private GitlLabConfigurationView view;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         view = new GitlLabConfigurationView();
     }
