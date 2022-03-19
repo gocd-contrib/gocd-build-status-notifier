@@ -5,23 +5,9 @@ updates:
   schedule:
     interval: weekly
     day: friday
-    timezone: Etc/UCT
-  open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: cd.go.plugin:go-plugin-api
-    versions:
-    - "> 19.7.0"
-  - dependency-name: org.kohsuke:github-api
-    versions:
-    - "1.122"
-    - "1.125"
-    - "1.127"
-  - dependency-name: org.mockito:mockito-core
-    versions:
-    - 3.7.7
-  - dependency-name: junit:junit
-    versions:
-    - 4.13.1
-  - dependency-name: org.apache.commons:commons-lang3
-    versions:
-    - "3.11"
+  open-pull-requests-limit: 99
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: weekly
+    day: friday
