@@ -20,12 +20,13 @@ jobs:
       GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       PRERELEASE:   "${{ github.event.inputs.prerelease }}"
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: Set up JDK
-      uses: actions/setup-java@v1
-      with:
-        java-version: 15
-    - name: Release
-      run: ./gradlew githubRelease
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 15
+          distribution: adopt
+      - name: Release
+        run: ./gradlew verifyExpRelease githubRelease

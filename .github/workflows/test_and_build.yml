@@ -11,13 +11,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK
-      uses: actions/setup-java@v1
-      with:
-        java-version: 15
-    - name: Test with Gradle
-      run: ./gradlew assemble check
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 15
+          distribution: adopt
+      - name: Test with Gradle
+        run: ./gradlew assemble check
   previewGithubRelease:
     needs: test
     runs-on: ubuntu-latest
@@ -25,12 +26,13 @@ jobs:
       GITHUB_USER:  "gocd-contrib"
       GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: Set up JDK
-      uses: actions/setup-java@v1
-      with:
-        java-version: 15
-    - name: Test with Gradle
-      run: ./gradlew githubRelease
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 15
+          distribution: adopt
+      - name: Test with Gradle
+        run: ./gradlew githubRelease
