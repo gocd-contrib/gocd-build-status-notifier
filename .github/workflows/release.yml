@@ -29,4 +29,4 @@ jobs:
           java-version: 15
           distribution: adopt
       - name: Release
-        run: ./gradlew verifyExpRelease githubRelease
+        run: ./gradlew githubRelease
