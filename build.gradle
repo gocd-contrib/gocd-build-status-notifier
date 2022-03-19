@@ -73,13 +73,12 @@ subprojects { Project sub ->
         useJUnitPlatform()
     }
 
-    jar {
-        from(configurations.runtimeClasspath) {
-            into "lib/"
-        }
-    }
-
     if (!sub.name.equalsIgnoreCase("common")) {
+        jar {
+            from(configurations.runtimeClasspath) {
+                into "lib/"
+            }
+        }
         apply from: "${rootProject.projectDir}/plugin-tasks.gradle"
     }
 }
