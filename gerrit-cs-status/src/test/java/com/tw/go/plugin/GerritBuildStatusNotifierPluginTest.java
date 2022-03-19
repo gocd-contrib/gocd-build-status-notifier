@@ -38,10 +38,8 @@ import java.util.Map;
 import static com.tw.go.plugin.BuildStatusNotifierPlugin.PLUGIN_SETTINGS_GET_CONFIGURATION;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class GerritBuildStatusNotifierPluginTest {
     public static final String PLUGIN_ID = "gerrit-plugin-id";
@@ -55,7 +53,7 @@ public class GerritBuildStatusNotifierPluginTest {
 
     @Before
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
 
         plugin = new GerritBuildStatusNotifierPlugin();
 

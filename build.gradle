@@ -63,7 +63,7 @@ subprojects { Project sub ->
         implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 
         testImplementation 'cd.go.plugin:go-plugin-api:21.4.0'
-        testImplementation 'org.mockito:mockito-core:3.8.0'
+        testImplementation 'org.mockito:mockito-core:4.4.0'
         testImplementation 'junit:junit:4.13.2'
     }
 

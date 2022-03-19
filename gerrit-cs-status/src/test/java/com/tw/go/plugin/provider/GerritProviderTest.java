@@ -31,8 +31,6 @@ import static com.tw.go.plugin.provider.GerritConfigurationView.PLUGIN_SETTINGS_
 import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 public class GerritProviderTest {
