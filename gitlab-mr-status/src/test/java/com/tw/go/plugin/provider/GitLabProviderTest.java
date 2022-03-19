@@ -1,11 +1,10 @@
 package com.tw.go.plugin.provider;
 
-import com.google.gson.internal.LinkedHashTreeMap;
-import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,13 +46,13 @@ public class GitLabProviderTest {
 
     @Test
     public void checkValidationWithValidValues () throws Exception {
-        Map<String, Object> config = new LinkedHashTreeMap<String, Object>();
-        List<Map<String, Object>> errors = new ArrayList<Map<String, Object>>();
+        Map<String, Object> config = new LinkedHashMap<>();
+        List<Map<String, Object>> errors = new ArrayList<>();
 
-        Map<String, String> dummyUrl = new LinkedHashTreeMap<String, String>();
+        Map<String, String> dummyUrl = new LinkedHashMap<>();
         dummyUrl.put("value", "http://localhost:8153");
 
-        Map<String, String> dummyToken = new LinkedHashTreeMap<String, String>();
+        Map<String, String> dummyToken = new LinkedHashMap<>();
         dummyToken.put("value", "abcdef");
 
         config.put(PLUGIN_SETTINGS_SERVER_BASE_URL, dummyUrl);
@@ -66,12 +65,12 @@ public class GitLabProviderTest {
 
     @Test
     public void checkValidationWithInvalidValues () throws Exception {
-        Map<String, Object> config = new LinkedHashTreeMap<String, Object>();
+        Map<String, Object> config = new LinkedHashMap<>();
 
-        Map<String, String> dummyUrl = new LinkedHashTreeMap<String, String>();
+        Map<String, String> dummyUrl = new LinkedHashMap<>();
         dummyUrl.put("value", "localhost:8153");
 
-        Map<String, String> dummyToken = new LinkedHashTreeMap<String, String>();
+        Map<String, String> dummyToken = new LinkedHashMap<>();
         dummyToken.put("value", "");
 
         config.put(PLUGIN_SETTINGS_SERVER_BASE_URL, dummyUrl);
