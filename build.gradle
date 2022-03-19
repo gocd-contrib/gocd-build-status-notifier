@@ -43,12 +43,13 @@ allprojects {
     group = 'com.tw.go.plugin'
     version = project.fullVersion
 
-    sourceCompatibility = 1.8
+    sourceCompatibility = 1.11
+    targetCompatibility = 1.11
 }
 
 subprojects { Project sub ->
     repositories {
-        jcenter()
+        mavenCentral()
         mavenLocal()
     }
 
