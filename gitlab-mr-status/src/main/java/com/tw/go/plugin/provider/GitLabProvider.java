@@ -1,7 +1,5 @@
 package com.tw.go.plugin.provider;
 
-import com.google.gson.internal.LinkedHashTreeMap;
-import com.tw.go.plugin.provider.DefaultProvider;
 import com.tw.go.plugin.setting.PluginSettings;
 import org.apache.commons.lang3.StringUtils;
 import org.gitlab.api.GitlabAPI;
@@ -89,7 +87,7 @@ public class GitLabProvider extends DefaultProvider {
         if (values == null) {
             return "";
         }
-        Map<String, String> vals = (LinkedHashTreeMap<String, String>)values;
+        Map<String, String> vals = (Map<String, String>)values;
         String ret = vals.get("value");
         if (ret == null) {
             return "";
