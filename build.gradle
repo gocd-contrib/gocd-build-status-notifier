@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ apply from: 'plugin-helpers.gradle'
 apply plugin: 'co.riiid.gradle'
 
 
-project.ext.pluginVersion = '1.7.0'
+project.ext.pluginVersion = '1.7.1'
 project.ext.fullVersion = project.git.distVersion() ? "${project.pluginVersion}-${project.git.distVersion()}" : project.pluginVersion
 
 project.ext.pluginDesc = [
