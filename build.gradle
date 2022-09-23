@@ -65,7 +65,7 @@ subprojects { Project sub ->
         testImplementation 'cd.go.plugin:go-plugin-api:22.2.0'
         testImplementation 'org.mockito:mockito-core:4.8.0'
         testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.23.1'
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.9.0'
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.9.1'
         testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.9.0'
     }
 
