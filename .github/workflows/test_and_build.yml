@@ -15,7 +15,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: 17
+          java-version: 11
           distribution: temurin
       - name: Test with Gradle
         run: ./gradlew assemble check
@@ -32,7 +32,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: 17
+          java-version: 11
           distribution: temurin
       - name: Test with Gradle
         run: ./gradlew githubRelease
