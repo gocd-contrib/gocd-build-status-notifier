@@ -13,7 +13,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: 15
-          distribution: adopt
+          java-version: 17
+          distribution: temurin
       - name: Build with Gradle
         run: ./gradlew assemble check
