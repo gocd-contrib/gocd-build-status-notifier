@@ -15,14 +15,12 @@
  */
 plugins {
     id 'java'
-    id 'co.riiid.gradle' version '0.4.2'
+    id 'io.github.humblerookie.gradle' version '0.5.0'
 }
 
 apply from: 'plugin-helpers.gradle'
-apply plugin: 'co.riiid.gradle'
 
-
-project.ext.pluginVersion = '1.7.1'
+project.ext.pluginVersion = '1.7.2'
 project.ext.fullVersion = project.git.distVersion() ? "${project.pluginVersion}-${project.git.distVersion()}" : project.pluginVersion
 
 project.ext.pluginDesc = [

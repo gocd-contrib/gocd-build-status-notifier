@@ -60,9 +60,9 @@ tasks.withType(Jar) { jarTask ->
     reproducibleFileOrder = true
 
     ['MD5', 'SHA1', 'SHA-256'].each { algo ->
-        jarTask.outputs.files("${jarTask.archivePath}.${algo}")
+        jarTask.outputs.files("${jarTask.archiveFile.get()}.${algo}")
         jarTask.doLast {
-            ant.checksum file: jarTask.archivePath, format: 'MD5SUM', algorithm: algo
+            ant.checksum file: jarTask.archiveFile.get(), format: 'MD5SUM', algorithm: algo
         }
     }
 
@@ -73,8 +73,8 @@ tasks.withType(Jar) { jarTask ->
                 'Plugin-Revision': project.pluginDesc.version,
                 'Implementation-Title': project.name,
                 'Implementation-Version': project.version,
-                'Source-Compatibility': project.sourceCompatibility,
-                'Target-Compatibility': project.targetCompatibility
+                'Source-Compatibility': project.java.sourceCompatibility,
+                'Target-Compatibility': project.java.targetCompatibility
         )
     }
 }
