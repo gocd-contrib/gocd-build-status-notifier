@@ -64,7 +64,7 @@ subprojects { Project sub ->
     dependencies {
         compileOnly project.deps.gocdPluginApi
         implementation 'com.google.code.gson:gson:2.10.1'
-        implementation 'commons-io:commons-io:2.13.0'
+        implementation 'commons-io:commons-io:2.14.0'
         implementation 'org.apache.httpcomponents:httpclient:4.5.14'
         constraints {
             implementation('commons-codec:commons-codec:1.16.0') {
