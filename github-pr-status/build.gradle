@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
     implementation project(":common")
-    implementation group: 'org.kohsuke', name: 'github-api', version: '1.318'
+    implementation group: 'org.kohsuke', name: 'github-api', version: '1.319'
 }
 
 processResources {
