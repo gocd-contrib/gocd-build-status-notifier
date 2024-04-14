@@ -89,7 +89,7 @@ public class GerritProviderTest {
 
     @Test
     public void shouldValidateConfigurationSuccessfully() {
-        Map<String, Object> settings = new HashMap<String, Object>();
+        Map<String, Object> settings = new HashMap<>();
         settings.put("review_label", getSettingValue());
 
         List<Map<String, Object>> validationErrors = provider.validateConfig(settings);
@@ -98,14 +98,14 @@ public class GerritProviderTest {
     }
 
     private Map<String, Object> getSettingValue() {
-        Map<String, Object> value = new HashMap<String, Object>();
+        Map<String, Object> value = new HashMap<>();
         value.put("value", "Verified");
         return value;
     }
 
     @Test
     public void shouldValidateMissingReviewField() {
-        Map<String, Object> config = new HashMap<String, Object>();
+        Map<String, Object> config = new HashMap<>();
         List<Map<String, Object>> validationErrors = provider.validateConfig(config);
 
         assertThat(validationErrors.size()).isEqualTo(1);
@@ -115,7 +115,7 @@ public class GerritProviderTest {
 
     @Test
     public void shouldReturnGerritSettingsObject() {
-        Map<String, String> responseBodyMap = new HashMap<String, String>();
+        Map<String, String> responseBodyMap = new HashMap<>();
 
         responseBodyMap.put(PLUGIN_SETTINGS_SERVER_BASE_URL, "url");
         responseBodyMap.put(PLUGIN_SETTINGS_END_POINT, "endpoint");

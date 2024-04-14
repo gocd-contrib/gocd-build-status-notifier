@@ -26,7 +26,7 @@ import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 
 public abstract class DefaultProvider implements Provider {
 
-    private PluginConfigurationView pluginConfigurationView;
+    private final PluginConfigurationView pluginConfigurationView;
 
     public DefaultProvider(PluginConfigurationView pluginConfigurationView) {
         this.pluginConfigurationView = pluginConfigurationView;

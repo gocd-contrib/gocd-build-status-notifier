@@ -20,6 +20,16 @@ repositories {
 dependencies {
     implementation project(":common")
     implementation group: 'org.kohsuke', name: 'github-api', version: '1.321'
+
+    implementation(enforcedPlatform('com.fasterxml.jackson:jackson-bom:2.16.2'))
+    constraints {
+        implementation('commons-io:commons-io:2.16.1') {
+            because 'Transitive dependency of github-api has reported vulnerabilities'
+        }
+        implementation('org.apache.commons:commons-lang3:3.14.0') {
+            because 'Transitive dependency of github-api has reported vulnerabilities'
+        }
+    }
 }
 
 processResources {

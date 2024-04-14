@@ -67,7 +67,7 @@ public class DefaultProviderTest {
 
     @Test
     public void shouldReturnSettingsObject() {
-        Map<String, String> responseBodyMap = new HashMap<String, String>();
+        Map<String, String> responseBodyMap = new HashMap<>();
 
         responseBodyMap.put(PLUGIN_SETTINGS_SERVER_BASE_URL, "url");
         responseBodyMap.put(PLUGIN_SETTINGS_END_POINT, "endpoint");

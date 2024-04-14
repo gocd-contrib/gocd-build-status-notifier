@@ -19,7 +19,7 @@ package com.tw.go.plugin.provider;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.tw.go.plugin.setting.DefaultPluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
-import org.apache.commons.lang3.StringUtils;
+import com.tw.go.plugin.util.ValidationUtils;
 import org.kohsuke.github.GHCommitState;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GitHubProvider extends DefaultProvider {
-    private static Logger LOGGER = Logger.getLoggerFor(GitHubProvider.class);
+    private static final Logger LOGGER = Logger.getLoggerFor(GitHubProvider.class);
     public static final String PLUGIN_ID = "github.pr.status";
     public static final String GITHUB_PR_POLLER_PLUGIN_ID = "github.pr";
 
@@ -60,16 +60,16 @@ public class GitHubProvider extends DefaultProvider {
         String passwordToUse = pluginSettings.getPassword();
         String oauthAccessTokenToUse = pluginSettings.getOauthToken();
 
-        if (StringUtils.isEmpty(endPointToUse)) {
+        if (ValidationUtils.isEmpty(endPointToUse)) {
             endPointToUse = System.getProperty("go.plugin.build.status.github.endpoint");
         }
-        if (StringUtils.isEmpty(usernameToUse)) {
+        if (ValidationUtils.isEmpty(usernameToUse)) {
             usernameToUse = System.getProperty("go.plugin.build.status.github.username");
         }
-        if (StringUtils.isEmpty(passwordToUse)) {
+        if (ValidationUtils.isEmpty(passwordToUse)) {
             passwordToUse = System.getProperty("go.plugin.build.status.github.password");
         }
-        if (StringUtils.isEmpty(oauthAccessTokenToUse)) {
+        if (ValidationUtils.isEmpty(oauthAccessTokenToUse)) {
             oauthAccessTokenToUse = System.getProperty("go.plugin.build.status.github.oauth");
         }
 
@@ -80,7 +80,7 @@ public class GitHubProvider extends DefaultProvider {
     public List<Map<String, Object>> validateConfig(Map<String, Object> fields) {
         LOGGER.info("Validating configuration");
 
-        return new ArrayList<Map<String, Object>>();
+        return new ArrayList<>();
     }
 
     void updateCommitStatus(String revision, String pipelineStage, String trackbackURL, String repository, GHCommitState state,

@@ -20,7 +20,7 @@ plugins {
 
 apply from: 'plugin-helpers.gradle'
 
-project.ext.pluginVersion = '1.7.2'
+project.ext.pluginVersion = '1.7.3'
 project.ext.fullVersion = project.git.distVersion() ? "${project.pluginVersion}-${project.git.distVersion()}" : project.pluginVersion
 
 project.ext.pluginDesc = [
@@ -64,14 +64,13 @@ subprojects { Project sub ->
     dependencies {
         compileOnly project.deps.gocdPluginApi
         implementation 'com.google.code.gson:gson:2.10.1'
-        implementation 'commons-io:commons-io:2.16.1'
         implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+
         constraints {
             implementation('commons-codec:commons-codec:1.16.1') {
                 because 'Transitive dependency of apache httpclient has reported vulnerabilities'
             }
         }
-        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.14.0'
 
         testImplementation project.deps.gocdPluginApi
         testImplementation 'org.mockito:mockito-core:5.11.0'

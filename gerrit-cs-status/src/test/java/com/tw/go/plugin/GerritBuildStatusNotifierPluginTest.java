@@ -99,7 +99,7 @@ public class GerritBuildStatusNotifierPluginTest {
         Provider mockProvider = mock(Provider.class);
         PluginConfigurationView mockConfigView = mock(PluginConfigurationView.class);
         when(mockProvider.configurationView()).thenReturn(mockConfigView);
-        Map<String, Object> fields = new HashMap<String, Object>();
+        Map<String, Object> fields = new HashMap<>();
         when(mockConfigView.fields()).thenReturn(fields);
 
         plugin.setProvider(mockProvider);
