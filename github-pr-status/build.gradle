@@ -21,7 +21,7 @@ dependencies {
     implementation project(":common")
     implementation group: 'org.kohsuke', name: 'github-api', version: '1.321'
 
-    implementation(enforcedPlatform('com.fasterxml.jackson:jackson-bom:2.16.2'))
+    implementation(enforcedPlatform('com.fasterxml.jackson:jackson-bom:2.17.1'))
     constraints {
         implementation('commons-io:commons-io:2.16.1') {
             because 'Transitive dependency of github-api has reported vulnerabilities'
