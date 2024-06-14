@@ -25,7 +25,7 @@ public class GitLabProviderTest {
     @Test
     public void checkIdsMatch () throws Exception {
         assertEquals("gitlab.mr.status", provider.pluginId());
-        assertEquals("git.fb", provider.pollerPluginId());
+        assertThat(provider.pollerPluginIds()).containsExactly("git.fb", "gitlab.pr");
     }
 
     @Test

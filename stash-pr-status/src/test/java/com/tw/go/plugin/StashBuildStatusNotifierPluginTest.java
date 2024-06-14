@@ -61,7 +61,7 @@ public class StashBuildStatusNotifierPluginTest {
         pluginSettingsResponse.setResponseBody(JSONUtils.toJSON(new HashMap<String, String>()));
         when(goApplicationAccessor.submit(any(GoApiRequest.class))).thenReturn(pluginSettingsResponse);
         when(provider.pluginId()).thenReturn(PLUGIN_ID);
-        when(provider.pollerPluginId()).thenReturn(POLLER_PLUGIN_ID);
+        when(provider.pollerPluginIds()).thenReturn(List.of(POLLER_PLUGIN_ID));
 
         plugin.initializeGoApplicationAccessor(goApplicationAccessor);
         plugin.setProvider(provider);
