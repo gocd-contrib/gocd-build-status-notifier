@@ -49,7 +49,7 @@ allprojects {
 
 ext {
     deps = [
-        gocdPluginApi: 'cd.go.plugin:go-plugin-api:24.1.0',
+        gocdPluginApi: 'cd.go.plugin:go-plugin-api:24.3.0',
     ]
 
     versions = project.ext.deps.collectEntries { lib, libGav -> [lib, libGav.split(':').last()] }
