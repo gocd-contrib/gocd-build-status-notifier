@@ -24,7 +24,7 @@ dependencies {
 
     implementation(enforcedPlatform('com.fasterxml.jackson:jackson-bom:2.17.2'))
     constraints {
-        implementation('org.slf4j:slf4j-api:2.0.13') {
+        implementation('org.slf4j:slf4j-api:2.0.15') {
             because 'Transitive dependency of java-gitlab-api is out-of-date'
         }
         implementation('commons-io:commons-io:2.16.1') {
