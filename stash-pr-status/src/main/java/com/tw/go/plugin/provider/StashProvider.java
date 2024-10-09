@@ -54,8 +54,8 @@ public class StashProvider extends DefaultProvider {
     }
 
     @Override
-    public String pollerPluginId() {
-        return STASH_PR_POLLER_PLUGIN_ID;
+    public List<String> pollerPluginIds() {
+        return List.of(STASH_PR_POLLER_PLUGIN_ID);
     }
 
     @Override

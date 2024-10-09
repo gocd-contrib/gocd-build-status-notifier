@@ -20,7 +20,7 @@ plugins {
 
 apply from: 'plugin-helpers.gradle'
 
-project.ext.pluginVersion = '1.7.3'
+project.ext.pluginVersion = '1.8.0'
 project.ext.fullVersion = project.git.distVersion() ? "${project.pluginVersion}-${project.git.distVersion()}" : project.pluginVersion
 
 project.ext.pluginDesc = [
