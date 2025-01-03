@@ -73,7 +73,7 @@ subprojects { Project sub ->
         }
 
         testImplementation project.deps.gocdPluginApi
-        testImplementation 'org.mockito:mockito-core:5.14.2'
+        testImplementation 'org.mockito:mockito-core:5.15.2'
         testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.27.0'
         testImplementation platform('org.junit:junit-bom:5.11.4')
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
