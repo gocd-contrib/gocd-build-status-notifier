@@ -67,7 +67,7 @@ subprojects { Project sub ->
         implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 
         constraints {
-            implementation('commons-codec:commons-codec:1.17.1') {
+            implementation('commons-codec:commons-codec:1.17.2') {
                 because 'Transitive dependency of apache httpclient has reported vulnerabilities'
             }
         }
