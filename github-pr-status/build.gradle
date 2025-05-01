@@ -23,7 +23,7 @@ dependencies {
 
     implementation(enforcedPlatform('com.fasterxml.jackson:jackson-bom:2.18.3'))
     constraints {
-        implementation('commons-io:commons-io:2.18.0') {
+        implementation('commons-io:commons-io:2.19.0') {
             because 'Transitive dependency of github-api has reported vulnerabilities'
         }
         implementation('org.apache.commons:commons-lang3:3.17.0') {
