@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+plugins {
+    id 'java'
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile project(":common")
-
-    testCompile 'org.mockito:mockito-core:3.8.0'
-    testCompile 'junit:junit:4.13.2'
+    implementation project(":common")
 }
 
-processResources {
-    doFirst {
-        project.pluginDesc.id = "stash.pr.status"
-        project.pluginDesc.name = "Stash Pull Requests status notifier"
-        project.pluginDesc.description = "Updates build status for Stash pull request"
+gocdPlugin {
+    id = 'stash.pr.status'
+    pluginVersion = rootProject.gocdPlugin.pluginVersion
+    goCdVersion = rootProject.gocdPlugin.goCdVersion
+    name = 'Stash Pull Requests status notifier'
+    description = 'Updates build status for Stash pull request'
+    vendorName = rootProject.gocdPlugin.vendorName
+    vendorUrl = rootProject.gocdPlugin.vendorUrl
+
+    githubRepo {
+        owner = rootProject.gocdPlugin.githubRepo.owner
+        repo = rootProject.gocdPlugin.githubRepo.repo
+        token = rootProject.gocdPlugin.githubRepo.token
     }
 
-    from("src/main/resources") {
-        filesMatching('plugin.xml') {
-            expand project.pluginDesc
-        }
-    }
+    pluginProject = project
+
+    prerelease = rootProject.gocdPlugin.prerelease
+    assetsToRelease = [] // Released by root project
 }
+
+version = gocdPlugin.fullVersion(project)

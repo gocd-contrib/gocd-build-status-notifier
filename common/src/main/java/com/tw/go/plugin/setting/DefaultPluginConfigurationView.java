@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public class DefaultPluginConfigurationView implements PluginConfigurationView {
 
     @Override
     public Map<String, Object> fields() {
-        Map<String, Object> response = new HashMap<String, Object>();
+        Map<String, Object> response = new HashMap<>();
         response.put(PLUGIN_SETTINGS_SERVER_BASE_URL, createField("Server Base URL", null, true, false, "0"));
         response.put(PLUGIN_SETTINGS_END_POINT, createField("End Point", null, true, false, "1"));
         response.put(PLUGIN_SETTINGS_USERNAME, createField("Username", null, true, false, "2"));

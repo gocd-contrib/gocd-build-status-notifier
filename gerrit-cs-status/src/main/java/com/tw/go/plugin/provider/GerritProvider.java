@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
 import com.tw.go.plugin.util.JSONUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.tw.go.plugin.util.ValidationUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,16 +73,16 @@ public class GerritProvider extends DefaultProvider {
         String passwordToUse = settings.getPassword();
         String codeReviewLabel = settings.getReviewLabel();
 
-        if (StringUtils.isEmpty(endPointToUse)) {
+        if (ValidationUtils.isEmpty(endPointToUse)) {
             endPointToUse = System.getProperty("go.plugin.build.status.gerrit.endpoint");
         }
-        if (StringUtils.isEmpty(usernameToUse)) {
+        if (ValidationUtils.isEmpty(usernameToUse)) {
             usernameToUse = System.getProperty("go.plugin.build.status.gerrit.username");
         }
-        if (StringUtils.isEmpty(passwordToUse)) {
+        if (ValidationUtils.isEmpty(passwordToUse)) {
             passwordToUse = System.getProperty("go.plugin.build.status.gerrit.password");
         }
-        if (StringUtils.isEmpty(codeReviewLabel)) {
+        if (ValidationUtils.isEmpty(codeReviewLabel)) {
             codeReviewLabel = System.getProperty("go.plugin.build.status.gerrit.codeReviewLabel");
         }
 
@@ -90,9 +90,9 @@ public class GerritProvider extends DefaultProvider {
         String commitDetailsResponse = httpClient.getRequest(commitDetailsURL, AuthenticationType.DIGEST, usernameToUse, passwordToUse);
         CommitDetails commitDetails = new ResponseParser().parseCommitDetails(commitDetailsResponse);
 
-        Map<String, Object> request = new HashMap<String, Object>();
+        Map<String, Object> request = new HashMap<>();
         request.put("message", String.format("%s: %s", pipelineInstance, trackbackURL));
-        Map<String, Object> labels = new HashMap<String, Object>();
+        Map<String, Object> labels = new HashMap<>();
         request.put("labels", labels);
         labels.put(codeReviewLabel, getCodeReviewValue(result));
         String updateStatusURL = String.format("%s/a/changes/%s/revisions/%s/review", endPointToUse, commitDetails.getId(), revision);
@@ -101,7 +101,7 @@ public class GerritProvider extends DefaultProvider {
 
     @Override
     public List<Map<String, Object>> validateConfig(Map<String, Object> fields) {
-        List<Map<String, Object>> response = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> response = new ArrayList<>();
         if (!fields.containsKey(GerritConfigurationView.PLUGIN_SETTINGS_REVIEW_LABEL)) {
             response.add(getValidationError(
                     GerritConfigurationView.PLUGIN_SETTINGS_REVIEW_LABEL,

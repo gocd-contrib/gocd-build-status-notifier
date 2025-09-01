@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 
 public abstract class DefaultProvider implements Provider {
 
-    private PluginConfigurationView pluginConfigurationView;
+    private final PluginConfigurationView pluginConfigurationView;
 
     public DefaultProvider(PluginConfigurationView pluginConfigurationView) {
         this.pluginConfigurationView = pluginConfigurationView;

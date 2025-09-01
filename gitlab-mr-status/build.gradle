@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,48 @@
  * limitations under the License.
  */
 
+plugins {
+    id 'java'
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile project(":common")
-    compile group: 'org.gitlab', name: 'java-gitlab-api', version: '4.1.1'
+    implementation project(":common")
+    implementation group: 'org.gitlab', name: 'java-gitlab-api', version: '4.1.1'
 
-    testCompile 'org.mockito:mockito-core:3.8.0'
-    testCompile 'junit:junit:4.13.2'
-}
-
-processResources {
-    doFirst {
-        project.pluginDesc.id = "gitlab.mr.status"
-        project.pluginDesc.name = "GitLab Merge Requests status notifier"
-        project.pluginDesc.description = "Updates build status for GitLab Merge requests"
-    }
-
-    from("src/main/resources") {
-        filesMatching('plugin.xml') {
-            expand project.pluginDesc
+    implementation(enforcedPlatform('com.fasterxml.jackson:jackson-bom:2.20.0'))
+    constraints {
+        implementation('org.slf4j:slf4j-api:2.0.17') {
+            because 'Transitive dependency of java-gitlab-api is out-of-date'
+        }
+        implementation('commons-io:commons-io:2.20.0') {
+            because 'Transitive dependency of java-gitlab-api/github-api has reported vulnerabilities'
         }
     }
 }
+
+gocdPlugin {
+    id = 'gitlab.mr.status'
+    pluginVersion = rootProject.gocdPlugin.pluginVersion
+    goCdVersion = rootProject.gocdPlugin.goCdVersion
+    name = 'GitLab Merge Requests status notifier'
+    description = 'Updates build status for GitLab Merge requests'
+    vendorName = rootProject.gocdPlugin.vendorName
+    vendorUrl = rootProject.gocdPlugin.vendorUrl
+
+    githubRepo {
+        owner = rootProject.gocdPlugin.githubRepo.owner
+        repo = rootProject.gocdPlugin.githubRepo.repo
+        token = rootProject.gocdPlugin.githubRepo.token
+    }
+
+    pluginProject = project
+
+    prerelease = rootProject.gocdPlugin.prerelease
+    assetsToRelease = [] // Released by root project
+}
+
+version = gocdPlugin.fullVersion(project)

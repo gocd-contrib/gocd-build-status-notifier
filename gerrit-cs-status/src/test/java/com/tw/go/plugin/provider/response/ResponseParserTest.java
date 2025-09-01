@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,9 @@
 package com.tw.go.plugin.provider.response;
 
 import com.tw.go.plugin.provider.response.model.CommitDetails;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ResponseParserTest {
     @Test
@@ -49,9 +48,9 @@ public class ResponseParserTest {
 
         CommitDetails commitDetails = new ResponseParser().parseCommitDetails(response);
 
-        assertThat(commitDetails.getId(), is("test-gerrit~master~I028339c9d6aa81e9b0a876a6421b96d2d3fadabb"));
-        assertThat(commitDetails.getProject(), is("test-gerrit"));
-        assertThat(commitDetails.getBranch(), is("master"));
-        assertThat(commitDetails.getChangeId(), is("I028339c9d6aa81e9b0a876a6421b96d2d3fadabb"));
+        assertThat(commitDetails.getId()).isEqualTo("test-gerrit~master~I028339c9d6aa81e9b0a876a6421b96d2d3fadabb");
+        assertThat(commitDetails.getProject()).isEqualTo("test-gerrit");
+        assertThat(commitDetails.getBranch()).isEqualTo("master");
+        assertThat(commitDetails.getChangeId()).isEqualTo("I028339c9d6aa81e9b0a876a6421b96d2d3fadabb");
     }
 }

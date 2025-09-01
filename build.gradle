@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,91 +15,94 @@
  */
 plugins {
     id 'java'
-    id 'co.riiid.gradle' version '0.4.2'
 }
 
-apply from: 'plugin-helpers.gradle'
-apply plugin: 'co.riiid.gradle'
+apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-helpers/master/helper.gradle?_=${(int) (new Date().toInstant().epochSecond / 60)}"
 
+gocdPlugin {
+    id = 'dummy'
+    pluginVersion = '1.7.5'
+    goCdVersion = '20.9.0'
+    name = 'Wrapper build status notifier project'
+    description = 'Wrapper build status notifier project'
+    vendorName = 'GoCD Contributors'
+    vendorUrl = 'https://github.com/gocd-contrib/gocd-build-status-notifier'
 
-project.ext.pluginVersion = '1.7.0'
-project.ext.fullVersion = project.git.distVersion() ? "${project.pluginVersion}-${project.git.distVersion()}" : project.pluginVersion
+    githubRepo {
+        owner = System.getenv('GITHUB_USER') ?: 'bob'
+        repo = 'gocd-build-status-notifier'
+        token = System.getenv('GITHUB_TOKEN') ?: 'bad-token'
+    }
 
-project.ext.pluginDesc = [
-        repo       : rootProject.name,
-        version    : project.fullVersion,
-        goCdVersion: '20.9.0',
-        vendorName : 'GoCD Contributors',
-        vendorUrl  : 'https://github.com/gocd-contrib/gocd-build-status-notifier'
-]
+    pluginProject = null // Plugins are defined in subprojects
 
-repositories {
-    mavenCentral()
+    prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
+    assetsToRelease = [
+            project(':gerrit-cs-status').tasks.jar,
+            project(':github-pr-status').tasks.jar,
+            project(':gitlab-mr-status').tasks.jar,
+            project(':stash-pr-status').tasks.jar
+    ]
+}
+
+ext {
+    deps = [
+        gocdPluginApi: 'cd.go.plugin:go-plugin-api:25.3.0',
+    ]
+
+    versions = project.ext.deps.collectEntries { lib, libGav -> [lib, libGav.split(':').last()] }
 }
 
 allprojects {
     apply plugin: 'java'
 
     group = 'com.tw.go.plugin'
-    version = project.fullVersion
 
-    sourceCompatibility = 1.8
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
 }
 
 subprojects { Project sub ->
     repositories {
-        jcenter()
+        mavenCentral()
         mavenLocal()
     }
 
     dependencies {
-        compileOnly 'cd.go.plugin:go-plugin-api:19.7.0'
-        compile 'com.google.code.gson:gson:2.8.7'
-        compile 'commons-io:commons-io:2.8.0'
-        compile 'org.apache.httpcomponents:httpclient:4.5.13'
-        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
-    }
+        compileOnly project.deps.gocdPluginApi
+        implementation 'com.google.code.gson:gson:2.13.1'
+        implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 
-    sourceSets {
-        test {
-            java {
-                compileClasspath += configurations.compileOnly
-                runtimeClasspath += configurations.compileOnly
+        constraints {
+            implementation('commons-codec:commons-codec:1.19.0') {
+                because 'Transitive dependency of apache httpclient has reported vulnerabilities'
             }
         }
+
+        testImplementation project.deps.gocdPluginApi
+        testImplementation 'org.mockito:mockito-core:5.19.0'
+        testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.27.4'
+        testImplementation platform('org.junit:junit-bom:5.13.4')
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
+        testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
+        testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
     }
 
-    jar {
-        from(configurations.compile) {
-            into "lib/"
-        }
+    test {
+        useJUnitPlatform()
     }
 
     if (!sub.name.equalsIgnoreCase("common")) {
-        apply from: "${rootProject.projectDir}/plugin-tasks.gradle"
+        apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-helpers/master/helper.gradle?_=${(int) (new Date().toInstant().epochSecond / 60)}"
+
+        jar {
+            from(configurations.runtimeClasspath) {
+                into "lib/"
+            }
+        }
     }
 }
 
-github {
-    def lastCommit = project.git.gitRevision()
-
-    owner = System.getenv('GITHUB_USER') ?: 'bob'
-    repo = project.pluginDesc.repo
-    token = System.getenv('GITHUB_TOKEN') ?: 'bad-token'
-    targetCommitish = lastCommit
-    prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
-    assets = subprojects.findAll { "common" != it.name }
-            .collect { it.jar.outputs.files.files }
-            .flatten()
-
-    tagName = "${project.fullVersion}${prerelease ? '-exp' : ''}"
-    name = "${prerelease ? 'Experimental: ' : ''}${project.fullVersion}"
-
-    def lastTag = project.git.getLastTag(prerelease)
-    def changelogHeader = lastTag ? "### Changelog ${lastTag}..${lastCommit.substring(0, 7)}" : "### Changelog"
-    def changeLog = project.git.getCommitsSinceLastTag(lastTag).replaceAll("\"", "")
-
-    body = """\n$changelogHeader\n\n${changeLog}\n""".stripIndent().trim()
-}
-
-githubRelease.dependsOn project.subprojects*.tasks*.findByName('assemble').findAll { it != null }
+jar.enabled = false // No jar for the root project

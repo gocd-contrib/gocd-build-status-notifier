@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,12 @@ import java.util.Map;
 
 public class ValidationUtils {
 
+    public static boolean isEmpty(String value) {
+        return value == null || value.isEmpty();
+    }
+
     public static Map<String, Object> getValidationError(String fieldName, String message) {
-        Map<String, Object> validationError = new HashMap<String, Object>();
+        Map<String, Object> validationError = new HashMap<>();
         validationError.put("key", fieldName);
         validationError.put("message", message);
         return validationError;

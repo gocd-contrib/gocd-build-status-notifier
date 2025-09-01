@@ -1,9 +1,7 @@
 package com.tw.go.plugin.provider;
 
-import com.google.gson.internal.LinkedHashTreeMap;
-import com.tw.go.plugin.provider.DefaultProvider;
 import com.tw.go.plugin.setting.PluginSettings;
-import org.apache.commons.lang3.StringUtils;
+import com.tw.go.plugin.util.ValidationUtils;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.GitlabProject;
 
@@ -12,13 +10,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_END_POINT;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_OAUTH_TOKEN;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_SERVER_BASE_URL;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 import static com.tw.go.plugin.util.ValidationUtils.getValidationError;
 
 public class GitLabProvider extends DefaultProvider {
@@ -42,7 +37,7 @@ public class GitLabProvider extends DefaultProvider {
 
     @Override
     public List<Map<String, Object>> validateConfig(Map<String, Object> fields) {
-        List<Map<String, Object>> errors = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> errors = new ArrayList<>();
 
         if (!validateUrl(getValueFromPluginSettings(fields.get(PLUGIN_SETTINGS_END_POINT)))) {
             errors.add(getValidationError(
@@ -56,7 +51,7 @@ public class GitLabProvider extends DefaultProvider {
                     "GoCD Server URL not set correctly"
             ));
         }
-        if (getValueFromPluginSettings(fields.get(PLUGIN_SETTINGS_OAUTH_TOKEN)).equals("")) {
+        if (getValueFromPluginSettings(fields.get(PLUGIN_SETTINGS_OAUTH_TOKEN)).isEmpty()) {
             errors.add(getValidationError(
                     PLUGIN_SETTINGS_OAUTH_TOKEN,
                     "GitLab OAuth Token not set"
@@ -73,10 +68,10 @@ public class GitLabProvider extends DefaultProvider {
         String endPointToUse = pluginSettings.getEndPoint();
         String oauthAccessTokenToUse = pluginSettings.getOauthToken();
 
-        if (StringUtils.isEmpty(endPointToUse)) {
+        if (ValidationUtils.isEmpty(endPointToUse)) {
             endPointToUse = System.getProperty("go.plugin.build.status.gitlab.endpoint");
         }
-        if (StringUtils.isEmpty(oauthAccessTokenToUse)) {
+        if (ValidationUtils.isEmpty(oauthAccessTokenToUse)) {
             oauthAccessTokenToUse = System.getProperty("go.plugin.build.status.gitlab.oauth");
         }
 
@@ -85,11 +80,12 @@ public class GitLabProvider extends DefaultProvider {
         api.createCommitStatus(project, revision, GitLabState.stateFor(result), prIdStr, "GoCD", trackbackURL, "");
     }
 
+    @SuppressWarnings("unchecked")
     private String getValueFromPluginSettings(Object values) {
         if (values == null) {
             return "";
         }
-        Map<String, String> vals = (LinkedHashTreeMap<String, String>)values;
+        Map<String, String> vals = (Map<String, String>) values;
         String ret = vals.get("value");
         if (ret == null) {
             return "";
@@ -123,7 +119,7 @@ public class GitLabProvider extends DefaultProvider {
             repoPath = httpMatcher.group(3);
         }
 
-        if (!StringUtils.isEmpty(repoPath) && repoPath.endsWith(".git")) {
+        if (!ValidationUtils.isEmpty(repoPath) && repoPath.endsWith(".git")) {
             repoPath = repoPath.substring(0, repoPath.length() - 4);
         }
         return repoPath;

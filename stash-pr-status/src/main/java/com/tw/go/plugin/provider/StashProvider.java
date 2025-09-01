@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,11 @@
 package com.tw.go.plugin.provider;
 
 import com.google.gson.GsonBuilder;
-import com.tw.go.plugin.provider.DefaultProvider;
 import com.tw.go.plugin.setting.DefaultPluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
-import org.apache.commons.lang3.StringUtils;
+import com.tw.go.plugin.util.ValidationUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +36,7 @@ public class StashProvider extends DefaultProvider {
     public static final String SUCCESSFUL_STATE = "SUCCESSFUL";
     public static final String FAILED_STATE = "FAILED";
 
-    private HTTPClient httpClient;
+    private final HTTPClient httpClient;
 
     public StashProvider() {
         super(new DefaultPluginConfigurationView());
@@ -66,19 +65,19 @@ public class StashProvider extends DefaultProvider {
         String usernameToUse = pluginSettings.getUsername();
         String passwordToUse = pluginSettings.getPassword();
 
-        if (StringUtils.isEmpty(endPointToUse)) {
+        if (ValidationUtils.isEmpty(endPointToUse)) {
             endPointToUse = System.getProperty("go.plugin.build.status.stash.endpoint");
         }
-        if (StringUtils.isEmpty(usernameToUse)) {
+        if (ValidationUtils.isEmpty(usernameToUse)) {
             usernameToUse = System.getProperty("go.plugin.build.status.stash.username");
         }
-        if (StringUtils.isEmpty(passwordToUse)) {
+        if (ValidationUtils.isEmpty(passwordToUse)) {
             passwordToUse = System.getProperty("go.plugin.build.status.stash.password");
         }
 
         String updateURL = String.format("%s/rest/build-status/1.0/commits/%s", endPointToUse, revision);
 
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put("state", getState(result));
         params.put("key", pipelineStage);
         params.put("name", pipelineStage);
@@ -91,7 +90,7 @@ public class StashProvider extends DefaultProvider {
 
     @Override
     public List<Map<String, Object>> validateConfig(Map<String, Object> fields) {
-        return new ArrayList<Map<String, Object>>();
+        return new ArrayList<>();
     }
 
     public String getState(String result) {

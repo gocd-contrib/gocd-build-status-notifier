@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,20 @@
 package com.tw.go.plugin.provider;
 
 import com.tw.go.plugin.setting.DefaultPluginSettings;
-import org.hamcrest.core.Is;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kohsuke.github.GHCommitState;
 
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GitHubProviderTest {
     DefaultPluginSettings pluginSettings;
     GitHubProvider provider;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         pluginSettings = new DefaultPluginSettings();
         provider = new GitHubProvider();
@@ -40,26 +38,26 @@ public class GitHubProviderTest {
 
     @Test
     public void shouldGetRepositoryFromURL() {
-        assertThat(provider.getRepository("http://github.com/srinivasupadhya/sample-repo"), is("srinivasupadhya/sample-repo"));
-        assertThat(provider.getRepository("http://github.com/srinivasupadhya/sample-repo.git"), is("srinivasupadhya/sample-repo"));
-        assertThat(provider.getRepository("http://github.com/srinivasupadhya/sample-repo/"), is("srinivasupadhya/sample-repo"));
-        assertThat(provider.getRepository("http://github.com/srinivasupadhya/sample-repo.git/"), is("srinivasupadhya/sample-repo"));
-        assertThat(provider.getRepository("https://github.com/srinivasupadhya/sample-repo"), is("srinivasupadhya/sample-repo"));
-        assertThat(provider.getRepository("https://github.com/srinivasupadhya/sample-repo.git"), is("srinivasupadhya/sample-repo"));
-        assertThat(provider.getRepository("git@code.corp.yourcompany.com:srinivasupadhya/sample-repo"), is("srinivasupadhya/sample-repo"));
-        assertThat(provider.getRepository("git@code.corp.yourcompany.com:srinivasupadhya/sample-repo.git"), is("srinivasupadhya/sample-repo"));
-        assertThat(provider.getRepository("git@github.com:srinivasupadhya/sample-repo.git"), is("srinivasupadhya/sample-repo"));
+        assertThat(provider.getRepository("http://github.com/srinivasupadhya/sample-repo")).isEqualTo("srinivasupadhya/sample-repo");
+        assertThat(provider.getRepository("http://github.com/srinivasupadhya/sample-repo.git")).isEqualTo("srinivasupadhya/sample-repo");
+        assertThat(provider.getRepository("http://github.com/srinivasupadhya/sample-repo/")).isEqualTo("srinivasupadhya/sample-repo");
+        assertThat(provider.getRepository("http://github.com/srinivasupadhya/sample-repo.git/")).isEqualTo("srinivasupadhya/sample-repo");
+        assertThat(provider.getRepository("https://github.com/srinivasupadhya/sample-repo")).isEqualTo("srinivasupadhya/sample-repo");
+        assertThat(provider.getRepository("https://github.com/srinivasupadhya/sample-repo.git")).isEqualTo("srinivasupadhya/sample-repo");
+        assertThat(provider.getRepository("git@code.corp.yourcompany.com:srinivasupadhya/sample-repo")).isEqualTo("srinivasupadhya/sample-repo");
+        assertThat(provider.getRepository("git@code.corp.yourcompany.com:srinivasupadhya/sample-repo.git")).isEqualTo("srinivasupadhya/sample-repo");
+        assertThat(provider.getRepository("git@github.com:srinivasupadhya/sample-repo.git")).isEqualTo("srinivasupadhya/sample-repo");
     }
 
     @Test
     public void shouldGetStateFromResult() {
-        assertThat(provider.getState("Unknown"), is(GHCommitState.PENDING));
-        assertThat(provider.getState("Passed"), is(GHCommitState.SUCCESS));
-        assertThat(provider.getState("Failed"), is(GHCommitState.FAILURE));
-        assertThat(provider.getState("Cancelled"), is(GHCommitState.ERROR));
+        assertThat(provider.getState("Unknown")).isEqualTo(GHCommitState.PENDING);
+        assertThat(provider.getState("Passed")).isEqualTo(GHCommitState.SUCCESS);
+        assertThat(provider.getState("Failed")).isEqualTo(GHCommitState.FAILURE);
+        assertThat(provider.getState("Cancelled")).isEqualTo(GHCommitState.ERROR);
     }
 
-    @Ignore("for local runs")
+    @Disabled("for local runs")
     @Test
     public void shouldUpdateStatusForPR() throws Exception {
         provider.updateStatus("https://github.com/srinivasupadhya/sample-repo", pluginSettings, "1", "6d4627a71fa6dc1610a321feee8e76d3e5fe997c", "pipeline-name/stage-name", "Passed", "http://localhost:8153/go/pipelines/pipeline-name/1/stage-name/1");
@@ -67,17 +65,17 @@ public class GitHubProviderTest {
 
     @Test
     public void shouldReturnCorrectTemplate() {
-        assertThat(provider.configurationView().templateName(), is("plugin-settings.template.html"));
+        assertThat(provider.configurationView().templateName()).isEqualTo("plugin-settings.template.html");
     }
 
     @Test
     public void shouldReturnCorrectConfigFields() throws Exception {
         Map<String, Object> configuration = provider.configurationView().fields();
 
-        assertThat(configuration.containsKey("server_base_url"), Is.is(true));
-        assertThat(configuration.containsKey("end_point"), Is.is(true));
-        assertThat(configuration.containsKey("username"), Is.is(true));
-        assertThat(configuration.containsKey("password"), Is.is(true));
-        assertThat(configuration.containsKey("oauth_token"), Is.is(true));
+        assertThat(configuration.containsKey("server_base_url")).isEqualTo(true);
+        assertThat(configuration.containsKey("end_point")).isEqualTo(true);
+        assertThat(configuration.containsKey("username")).isEqualTo(true);
+        assertThat(configuration.containsKey("password")).isEqualTo(true);
+        assertThat(configuration.containsKey("oauth_token")).isEqualTo(true);
     }
 }

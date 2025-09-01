@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,37 @@
  * limitations under the License.
  */
 
+plugins {
+    id 'java'
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile project(":common")
-    testCompile 'org.mockito:mockito-core:3.8.0'
-    testCompile 'junit:junit:4.13.2'
+    implementation project(":common")
 }
 
-processResources {
-    doFirst {
-        project.pluginDesc.id = "gerrit.cs.status"
-        project.pluginDesc.name = "Gerrit Change Set status notifier"
-        project.pluginDesc.description = "Updates build status for Gerrit change set"
+gocdPlugin {
+    id = 'gerrit.cs.status'
+    pluginVersion = rootProject.gocdPlugin.pluginVersion
+    goCdVersion = rootProject.gocdPlugin.goCdVersion
+    name = 'Gerrit Change Set status notifier'
+    description = 'Updates build status for Gerrit change set'
+    vendorName = rootProject.gocdPlugin.vendorName
+    vendorUrl = rootProject.gocdPlugin.vendorUrl
+
+    githubRepo {
+        owner = rootProject.gocdPlugin.githubRepo.owner
+        repo = rootProject.gocdPlugin.githubRepo.repo
+        token = rootProject.gocdPlugin.githubRepo.token
     }
 
-    from("src/main/resources") {
-        filesMatching('plugin.xml') {
-            expand project.pluginDesc
-        }
-    }
+    pluginProject = project
+
+    prerelease = rootProject.gocdPlugin.prerelease
+    assetsToRelease = [] // Released by root project
 }
+
+version = gocdPlugin.fullVersion(project)

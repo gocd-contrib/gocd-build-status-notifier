@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,15 @@ package com.tw.go.plugin.provider;
 
 import com.tw.go.plugin.setting.DefaultPluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultProviderTest {
 
@@ -61,14 +60,14 @@ public class DefaultProviderTest {
 
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         provider = new TestProvider();
     }
 
     @Test
     public void shouldReturnSettingsObject() {
-        Map<String, String> responseBodyMap = new HashMap<String, String>();
+        Map<String, String> responseBodyMap = new HashMap<>();
 
         responseBodyMap.put(PLUGIN_SETTINGS_SERVER_BASE_URL, "url");
         responseBodyMap.put(PLUGIN_SETTINGS_END_POINT, "endpoint");
@@ -78,11 +77,11 @@ public class DefaultProviderTest {
 
         PluginSettings pluginSettings = provider.pluginSettings(responseBodyMap);
 
-        assertThat(pluginSettings.getServerBaseURL(), is("url"));
-        assertThat(pluginSettings.getEndPoint(), is("endpoint"));
-        assertThat(pluginSettings.getUsername(), is("username"));
-        assertThat(pluginSettings.getPassword(), is("password"));
-        assertThat(pluginSettings.getOauthToken(), is("token"));
+        assertThat(pluginSettings.getServerBaseURL()).isEqualTo("url");
+        assertThat(pluginSettings.getEndPoint()).isEqualTo("endpoint");
+        assertThat(pluginSettings.getUsername()).isEqualTo("username");
+        assertThat(pluginSettings.getPassword()).isEqualTo("password");
+        assertThat(pluginSettings.getOauthToken()).isEqualTo("token");
     }
 
 }

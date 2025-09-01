@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import com.tw.go.plugin.provider.StashProvider;
 import com.tw.go.plugin.setting.PluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.JSONUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.util.ArrayList;
@@ -37,12 +37,9 @@ import java.util.List;
 import java.util.Map;
 
 import static com.tw.go.plugin.BuildStatusNotifierPlugin.PLUGIN_SETTINGS_GET_CONFIGURATION;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class StashBuildStatusNotifierPluginTest {
     public static final String PLUGIN_ID = "stash";
@@ -54,9 +51,9 @@ public class StashBuildStatusNotifierPluginTest {
 
     private BuildStatusNotifierPlugin plugin;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
 
         plugin = new StashBuildStatusNotifierPlugin();
 
@@ -72,7 +69,7 @@ public class StashBuildStatusNotifierPluginTest {
 
     @Test
     public void shouldRegisterForStageStatusChange() {
-        assertThat(plugin.handleNotificationsInterestedIn().responseBody(), is("{\"notifications\":[\"stage-status\"]}"));
+        assertThat(plugin.handleNotificationsInterestedIn().responseBody()).isEqualTo("{\"notifications\":[\"stage-status\"]}");
     }
 
     @Test
@@ -126,7 +123,7 @@ public class StashBuildStatusNotifierPluginTest {
         Provider mockProvider = mock(Provider.class);
         PluginConfigurationView mockConfigView = mock(PluginConfigurationView.class);
         when(mockProvider.configurationView()).thenReturn(mockConfigView);
-        Map<String, Object> fields = new HashMap<String, Object>();
+        Map<String, Object> fields = new HashMap<>();
         when(mockConfigView.fields()).thenReturn(fields);
 
         plugin.setProvider(mockProvider);
@@ -135,7 +132,7 @@ public class StashBuildStatusNotifierPluginTest {
                 plugin.handle(createRequest(PLUGIN_SETTINGS_GET_CONFIGURATION)
                 ).responseBody(), Map.class);
 
-        assertThat(configuration, is(fields));
+        assertThat(configuration).isEqualTo(fields);
     }
 
     private GoPluginApiRequest createRequest(final String name) {
@@ -217,12 +214,12 @@ public class StashBuildStatusNotifierPluginTest {
 
         Map<String, Object> configuration = new Gson().fromJson(plugin.handle(createRequest(PLUGIN_SETTINGS_GET_CONFIGURATION)).responseBody(), Map.class);
 
-        assertThat(configuration.containsKey("server_base_url"), is(true));
-        assertThat(configuration.containsKey("end_point"), is(true));
-        assertThat(configuration.containsKey("username"), is(true));
-        assertThat(configuration.containsKey("password"), is(true));
-        assertThat(configuration.containsKey("oauth_token"), is(true));
-        assertThat(configuration.containsKey("review_label"), is(false));
+        assertThat(configuration.containsKey("server_base_url")).isEqualTo(true);
+        assertThat(configuration.containsKey("end_point")).isEqualTo(true);
+        assertThat(configuration.containsKey("username")).isEqualTo(true);
+        assertThat(configuration.containsKey("password")).isEqualTo(true);
+        assertThat(configuration.containsKey("oauth_token")).isEqualTo(true);
+        assertThat(configuration.containsKey("review_label")).isEqualTo(false);
     }
 
     private Map createRequestBodyMapWithBranch(String url, String username, String revision, String branch, String pipelineName, String pipelineCounter, String stageName, String stageCounter, String stageResult) {
