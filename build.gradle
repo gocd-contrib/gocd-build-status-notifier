@@ -105,4 +105,5 @@ subprojects { Project sub ->
     }
 }
 
+checkLicense.enabled = false // Not needed on root project
 generateLicenseReport.enabled = false // Not needed on root project
