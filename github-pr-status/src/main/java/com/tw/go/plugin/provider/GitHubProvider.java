@@ -43,8 +43,8 @@ public class GitHubProvider extends DefaultProvider {
     }
 
     @Override
-    public String pollerPluginId() {
-        return GITHUB_PR_POLLER_PLUGIN_ID;
+    public List<String> pollerPluginIds() {
+        return List.of(GITHUB_PR_POLLER_PLUGIN_ID);
     }
 
     @Override

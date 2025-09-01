@@ -21,6 +21,7 @@ import com.tw.go.plugin.setting.PluginSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +45,8 @@ public class DefaultProviderTest {
         }
 
         @Override
-        public String pollerPluginId() {
-            return null;
+        public List<String> pollerPluginIds() {
+            return Collections.emptyList();
         }
 
         @Override

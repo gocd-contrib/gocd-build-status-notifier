@@ -59,8 +59,8 @@ public class GerritProvider extends DefaultProvider {
     }
 
     @Override
-    public String pollerPluginId() {
-        return GERRIT_CS_POLLER_PLUGIN_ID;
+    public List<String> pollerPluginIds() {
+        return List.of(GERRIT_CS_POLLER_PLUGIN_ID);
     }
 
     @Override
