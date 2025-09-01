@@ -66,3 +66,5 @@ stash-pr-status/out
 sample.db
 target/
 dist/
+
+resources-generated/
