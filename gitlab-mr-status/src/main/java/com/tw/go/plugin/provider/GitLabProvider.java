@@ -70,7 +70,7 @@ public class GitLabProvider extends DefaultProvider {
     }
 
     @Override
-    public void updateStatus(String url, PluginSettings pluginSettings, String prIdStr, String revision, String pipelineStage,
+    public void updateStatus(String url, PluginSettings pluginSettings, String branch, String revision, String pipelineStage,
                              String result, String trackbackURL) throws Exception {
         LOGGER.info(String.format("Updating commit status for %s on %s", revision, pipelineStage));
 
@@ -87,7 +87,7 @@ public class GitLabProvider extends DefaultProvider {
         GitlabAPI api = GitlabAPI.connect(endPointToUse, oauthAccessTokenToUse);
         GitlabProject project = api.getProject(getRepository(url));
         String state = GitLabState.stateFor(result);
-        api.createCommitStatus(project, revision, state, prIdStr, "GoCD", trackbackURL, "");
+        api.createCommitStatus(project, revision, state, branch, pipelineStage, trackbackURL, "");
     }
 
     @SuppressWarnings("unchecked")
