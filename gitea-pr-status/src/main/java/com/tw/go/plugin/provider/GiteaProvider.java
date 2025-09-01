@@ -20,7 +20,7 @@ import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
 import com.tw.go.plugin.util.JSONUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.tw.go.plugin.util.ValidationUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,10 +31,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_SERVER_BASE_URL;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_END_POINT;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_USERNAME;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_PASSWORD;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 import static com.tw.go.plugin.util.ValidationUtils.getValidationError;
 
 public class GiteaProvider extends DefaultProvider {
@@ -103,13 +100,13 @@ public class GiteaProvider extends DefaultProvider {
         String username = pluginSettings.getUsername();
         String password = pluginSettings.getPassword();
 
-        if (StringUtils.isEmpty(giteaBaseURL)) {
+        if (ValidationUtils.isEmpty(giteaBaseURL)) {
             giteaBaseURL = System.getProperty("go.plugin.build.status.gitea.endpoint");
         }
-        if (StringUtils.isEmpty(username)) {
+        if (ValidationUtils.isEmpty(username)) {
             username = System.getProperty("go.plugin.build.status.gitea.username");
         }
-        if (StringUtils.isEmpty(password)) {
+        if (ValidationUtils.isEmpty(password)) {
             password = System.getProperty("go.plugin.build.status.gitea.password");
         }
 
@@ -169,7 +166,7 @@ public class GiteaProvider extends DefaultProvider {
             repoPath = httpMatcher.group(3);
         }
 
-        if (!StringUtils.isEmpty(repoPath) && repoPath.endsWith(".git")) {
+        if (!ValidationUtils.isEmpty(repoPath) && repoPath.endsWith(".git")) {
             repoPath = repoPath.substring(0, repoPath.length() - 4);
         }
         return repoPath;

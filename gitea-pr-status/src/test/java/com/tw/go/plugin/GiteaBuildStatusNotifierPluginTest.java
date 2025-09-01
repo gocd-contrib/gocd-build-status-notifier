@@ -27,8 +27,8 @@ import com.tw.go.plugin.provider.Provider;
 import com.tw.go.plugin.setting.PluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
 import com.tw.go.plugin.util.JSONUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.util.ArrayList;
@@ -37,12 +37,9 @@ import java.util.List;
 import java.util.Map;
 
 import static com.tw.go.plugin.BuildStatusNotifierPlugin.PLUGIN_SETTINGS_GET_CONFIGURATION;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 public class GiteaBuildStatusNotifierPluginTest {
     public static final String PLUGIN_ID = "gitea-plugin";
@@ -54,9 +51,9 @@ public class GiteaBuildStatusNotifierPluginTest {
 
     private BuildStatusNotifierPlugin plugin;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        initMocks(this);
+        openMocks(this);
 
         plugin = new GiteaBuildStatusNotifierPlugin();
 
@@ -72,7 +69,7 @@ public class GiteaBuildStatusNotifierPluginTest {
 
     @Test
     public void shouldRegisterForStageStatusChange() {
-        assertThat(plugin.handleNotificationsInterestedIn().responseBody(), is("{\"notifications\":[\"stage-status\"]}"));
+        assertThat(plugin.handleNotificationsInterestedIn().responseBody()).isEqualTo("{\"notifications\":[\"stage-status\"]}");
     }
 
     @Test
@@ -92,7 +89,7 @@ public class GiteaBuildStatusNotifierPluginTest {
         String expectedPipelineInstance = String.format("%s/%s/%s/%s", pipelineName, pipelineCounter, stageName, stageCounter);
         String expectedStageResult = "Passed";
 
-        Map requestBody = createRequestBodyMap(expectedURL, expectedUsername, expectedRevision, expectedPRId, pipelineName, pipelineCounter, stageName, stageCounter, expectedStageResult);
+        Map<String, Object> requestBody = createRequestBodyMap(expectedURL, expectedUsername, expectedRevision, expectedPRId, pipelineName, pipelineCounter, stageName, stageCounter, expectedStageResult);
         plugin.handleStageNotification(createGoPluginAPIRequest(requestBody));
 
         verify(provider).updateStatus(eq(expectedURL), any(PluginSettings.class), eq("1"), eq(expectedRevision), eq(expectedPipelineStage), eq(expectedStageResult), eq("http://localhost:8153/go/pipelines/" + expectedPipelineInstance));
@@ -115,18 +112,18 @@ public class GiteaBuildStatusNotifierPluginTest {
         String expectedPipelineInstance = String.format("%s/%s/%s/%s", pipelineName, pipelineCounter, stageName, stageCounter);
         String expectedStageResult = "Passed";
 
-        Map requestBody = createRequestBodyMapWithBranch(expectedURL, expectedUsername, expectedRevision, expectedBranch, pipelineName, pipelineCounter, stageName, stageCounter, expectedStageResult);
+        Map<String, Object> requestBody = createRequestBodyMapWithBranch(expectedURL, expectedUsername, expectedRevision, expectedBranch, pipelineName, pipelineCounter, stageName, stageCounter, expectedStageResult);
         plugin.handleStageNotification(createGoPluginAPIRequest(requestBody));
 
         verify(provider).updateStatus(eq(expectedURL), any(PluginSettings.class), eq("test-branch"), eq(expectedRevision), eq(expectedPipelineStage), eq(expectedStageResult), eq("http://localhost:8153/go/pipelines/" + expectedPipelineInstance));
     }
 
     @Test
-    public void shouldReturnPluginSettings() throws Exception {
+    public void shouldReturnPluginSettings() {
         Provider mockProvider = mock(Provider.class);
         PluginConfigurationView mockConfigView = mock(PluginConfigurationView.class);
         when(mockProvider.configurationView()).thenReturn(mockConfigView);
-        Map<String, Object> fields = new HashMap<String, Object>();
+        Map<String, Object> fields = new HashMap<>();
         when(mockConfigView.fields()).thenReturn(fields);
 
         plugin.setProvider(mockProvider);
@@ -135,7 +132,7 @@ public class GiteaBuildStatusNotifierPluginTest {
                 plugin.handle(createRequest(PLUGIN_SETTINGS_GET_CONFIGURATION)
                 ).responseBody(), Map.class);
 
-        assertThat(configuration, is(fields));
+        assertThat(configuration).isEqualTo(fields);
     }
 
     private GoPluginApiRequest createRequest(final String name) {
@@ -172,32 +169,32 @@ public class GiteaBuildStatusNotifierPluginTest {
         };
     }
 
-    private Map createRequestBodyMap(String url, String username, String revision, String prId, String pipelineName, String pipelineCounter, String stageName, String stageCounter, String stageResult) {
-        Map materialRevisionMap = new HashMap();
-        Map materialMap = new HashMap();
+    private Map<String, Object> createRequestBodyMap(String url, String username, String revision, String prId, String pipelineName, String pipelineCounter, String stageName, String stageCounter, String stageResult) {
+        Map<String, Object> materialRevisionMap = new HashMap<>();
+        Map<String, Object> materialMap = new HashMap<>();
         materialMap.put("type", "scm");
         materialMap.put("plugin-id", POLLER_PLUGIN_ID);
-        Map configurationMap = new HashMap();
+        Map<String, Object> configurationMap = new HashMap<>();
         configurationMap.put("url", url);
         configurationMap.put("username", username);
         materialMap.put("scm-configuration", configurationMap);
         materialRevisionMap.put("material", materialMap);
 
-        List modifications = new ArrayList();
-        Map modificationMap = new HashMap();
+        List<Map<String, Object>> modifications = new ArrayList<>();
+        Map<String, Object> modificationMap = new HashMap<>();
         modificationMap.put("revision", revision);
-        Map modificationDataMap = new HashMap();
+        Map<String, Object> modificationDataMap = new HashMap<>();
         modificationDataMap.put("PR_ID", prId);
         modificationMap.put("data", modificationDataMap);
         modifications.add(modificationMap);
         materialRevisionMap.put("modifications", modifications);
 
-        Map pipelineMap = new HashMap();
-        List buildCause = new ArrayList();
+        Map<String, Object> pipelineMap = new HashMap<>();
+        List<Map<String, Object>> buildCause = new ArrayList<>();
         buildCause.add(materialRevisionMap);
         pipelineMap.put("build-cause", buildCause);
 
-        Map stageMap = new HashMap();
+        Map<String, Object> stageMap = new HashMap<>();
         stageMap.put("name", stageName);
         stageMap.put("counter", stageCounter);
         stageMap.put("result", stageResult);
@@ -206,51 +203,51 @@ public class GiteaBuildStatusNotifierPluginTest {
         pipelineMap.put("name", pipelineName);
         pipelineMap.put("counter", pipelineCounter);
 
-        Map requestBody = new HashMap();
+        Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("pipeline", pipelineMap);
         return requestBody;
     }
 
     @Test
-    public void shouldReturnCorrectConfigForGiteaPlugin() throws Exception {
+    public void shouldReturnCorrectConfigForGiteaPlugin() {
         plugin.setProvider(new GiteaProvider());
 
         Map<String, Object> configuration = new Gson().fromJson(plugin.handle(createRequest(PLUGIN_SETTINGS_GET_CONFIGURATION)).responseBody(), Map.class);
 
-        assertThat(configuration.containsKey("server_base_url"), is(true));
-        assertThat(configuration.containsKey("end_point"), is(true));
-        assertThat(configuration.containsKey("username"), is(true));
-        assertThat(configuration.containsKey("password"), is(true));
-        assertThat(configuration.containsKey("oauth_token"), is(false));
-        assertThat(configuration.containsKey("review_label"), is(false));
+        assertThat(configuration.containsKey("server_base_url")).isEqualTo(true);
+        assertThat(configuration.containsKey("end_point")).isEqualTo(true);
+        assertThat(configuration.containsKey("username")).isEqualTo(true);
+        assertThat(configuration.containsKey("password")).isEqualTo(true);
+        assertThat(configuration.containsKey("oauth_token")).isEqualTo(false);
+        assertThat(configuration.containsKey("review_label")).isEqualTo(false);
     }
 
-    private Map createRequestBodyMapWithBranch(String url, String username, String revision, String branch, String pipelineName, String pipelineCounter, String stageName, String stageCounter, String stageResult) {
-        Map materialRevisionMap = new HashMap();
-        Map materialMap = new HashMap();
+    private Map<String, Object> createRequestBodyMapWithBranch(String url, String username, String revision, String branch, String pipelineName, String pipelineCounter, String stageName, String stageCounter, String stageResult) {
+        Map<String, Object> materialRevisionMap = new HashMap<>();
+        Map<String, Object> materialMap = new HashMap<>();
         materialMap.put("type", "scm");
         materialMap.put("plugin-id", POLLER_PLUGIN_ID);
-        Map configurationMap = new HashMap();
+        Map<String, Object> configurationMap = new HashMap<>();
         configurationMap.put("url", url);
         configurationMap.put("username", username);
         materialMap.put("scm-configuration", configurationMap);
         materialRevisionMap.put("material", materialMap);
 
-        List modifications = new ArrayList();
-        Map modificationMap = new HashMap();
+        List<Map<String, Object>> modifications = new ArrayList<>();
+        Map<String, Object> modificationMap = new HashMap<>();
         modificationMap.put("revision", revision);
-        Map modificationDataMap = new HashMap();
+        Map<String, Object> modificationDataMap = new HashMap<>();
         modificationDataMap.put("CURRENT_BRANCH", branch);
         modificationMap.put("data", modificationDataMap);
         modifications.add(modificationMap);
         materialRevisionMap.put("modifications", modifications);
 
-        Map pipelineMap = new HashMap();
-        List buildCause = new ArrayList();
+        Map<String, Object> pipelineMap = new HashMap<>();
+        List<Map<String, Object>> buildCause = new ArrayList<>();
         buildCause.add(materialRevisionMap);
         pipelineMap.put("build-cause", buildCause);
 
-        Map stageMap = new HashMap();
+        Map<String, Object> stageMap = new HashMap<>();
         stageMap.put("name", stageName);
         stageMap.put("counter", stageCounter);
         stageMap.put("result", stageResult);
@@ -259,12 +256,12 @@ public class GiteaBuildStatusNotifierPluginTest {
         pipelineMap.put("name", pipelineName);
         pipelineMap.put("counter", pipelineCounter);
 
-        Map requestBody = new HashMap();
+        Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("pipeline", pipelineMap);
         return requestBody;
     }
 
-    private DefaultGoPluginApiRequest createGoPluginAPIRequest(Map requestBody) {
+    private DefaultGoPluginApiRequest createGoPluginAPIRequest(Map<String, Object> requestBody) {
         DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest(BuildStatusNotifierPlugin.EXTENSION_NAME, "1.0", BuildStatusNotifierPlugin.REQUEST_STAGE_STATUS);
         request.setRequestBody(JSONUtils.toJSON(requestBody));
         return request;

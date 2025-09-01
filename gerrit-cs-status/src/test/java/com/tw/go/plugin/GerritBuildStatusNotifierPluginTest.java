@@ -88,7 +88,7 @@ public class GerritBuildStatusNotifierPluginTest {
         String expectedPipelineInstance = String.format("%s/%s/%s/%s", pipelineName, pipelineCounter, stageName, stageCounter);
         String expectedStageResult = "Passed";
 
-        Map requestBody = createRequestBodyMap(expectedURL, expectedUsername, expectedRevision, expectedPRId, pipelineName, pipelineCounter, stageName, stageCounter, expectedStageResult);
+        Map<String, Object> requestBody = createRequestBodyMap(expectedURL, expectedUsername, expectedRevision, expectedPRId, pipelineName, pipelineCounter, stageName, stageCounter, expectedStageResult);
         plugin.handleStageNotification(createGoPluginAPIRequest(requestBody));
 
         verify(provider).updateStatus(eq(expectedURL), any(PluginSettings.class), eq("1"), eq(expectedRevision), eq(expectedPipelineStage), eq(expectedStageResult), eq("http://localhost:8153/go/pipelines/" + expectedPipelineInstance));
@@ -145,32 +145,32 @@ public class GerritBuildStatusNotifierPluginTest {
         };
     }
 
-    private Map createRequestBodyMap(String url, String username, String revision, String prId, String pipelineName, String pipelineCounter, String stageName, String stageCounter, String stageResult) {
-        Map materialRevisionMap = new HashMap();
-        Map materialMap = new HashMap();
+    private Map<String, Object> createRequestBodyMap(String url, String username, String revision, String prId, String pipelineName, String pipelineCounter, String stageName, String stageCounter, String stageResult) {
+        Map<String, Object> materialRevisionMap = new HashMap<>();
+        Map<String, Object> materialMap = new HashMap<>();
         materialMap.put("type", "scm");
         materialMap.put("plugin-id", POLLER_PLUGIN_ID);
-        Map configurationMap = new HashMap();
+        Map<String, Object> configurationMap = new HashMap<>();
         configurationMap.put("url", url);
         configurationMap.put("username", username);
         materialMap.put("scm-configuration", configurationMap);
         materialRevisionMap.put("material", materialMap);
 
-        List modifications = new ArrayList();
-        Map modificationMap = new HashMap();
+        List<Map<String, Object>> modifications = new ArrayList<>();
+        Map<String, Object> modificationMap = new HashMap<>();
         modificationMap.put("revision", revision);
-        Map modificationDataMap = new HashMap();
+        Map<String, Object> modificationDataMap = new HashMap<>();
         modificationDataMap.put("PR_ID", prId);
         modificationMap.put("data", modificationDataMap);
         modifications.add(modificationMap);
         materialRevisionMap.put("modifications", modifications);
 
-        Map pipelineMap = new HashMap();
-        List buildCause = new ArrayList();
+        Map<String, Object> pipelineMap = new HashMap<>();
+        List<Map<String, Object>> buildCause = new ArrayList<>();
         buildCause.add(materialRevisionMap);
         pipelineMap.put("build-cause", buildCause);
 
-        Map stageMap = new HashMap();
+        Map<String, Object> stageMap = new HashMap<>();
         stageMap.put("name", stageName);
         stageMap.put("counter", stageCounter);
         stageMap.put("result", stageResult);
@@ -179,12 +179,12 @@ public class GerritBuildStatusNotifierPluginTest {
         pipelineMap.put("name", pipelineName);
         pipelineMap.put("counter", pipelineCounter);
 
-        Map requestBody = new HashMap();
+        Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("pipeline", pipelineMap);
         return requestBody;
     }
 
-    private DefaultGoPluginApiRequest createGoPluginAPIRequest(Map requestBody) {
+    private DefaultGoPluginApiRequest createGoPluginAPIRequest(Map<String, Object> requestBody) {
         DefaultGoPluginApiRequest request = new DefaultGoPluginApiRequest(BuildStatusNotifierPlugin.EXTENSION_NAME, "1.0", BuildStatusNotifierPlugin.REQUEST_STAGE_STATUS);
         request.setRequestBody(JSONUtils.toJSON(requestBody));
         return request;

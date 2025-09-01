@@ -16,13 +16,14 @@
 
 package com.tw.go.plugin.provider;
 
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GiteaStateTest {
     @Test
-    public void checkStates() throws Exception {
+    public void checkStates() {
         assertEquals("pending", GiteaState.stateFor("unknown"));
         assertEquals("pending", GiteaState.stateFor(null));
         assertEquals("success", GiteaState.stateFor("Passed"));
@@ -31,7 +32,7 @@ public class GiteaStateTest {
     }
 
     @Test
-    public void checkDescriptions() throws Exception {
+    public void checkDescriptions() {
         assertEquals("Build is pending", GiteaState.descriptionFor("unknown"));
         assertEquals("Build is pending", GiteaState.descriptionFor(null));
         assertEquals("Build is passing", GiteaState.descriptionFor("Passed"));

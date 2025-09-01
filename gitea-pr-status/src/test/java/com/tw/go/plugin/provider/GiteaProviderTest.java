@@ -16,24 +16,20 @@
 
 package com.tw.go.plugin.provider;
 
-import com.google.gson.internal.LinkedHashTreeMap;
 import com.tw.go.plugin.setting.DefaultPluginSettings;
 import com.tw.go.plugin.util.AuthenticationType;
 import com.tw.go.plugin.util.HTTPClient;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_SERVER_BASE_URL;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_END_POINT;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_USERNAME;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_PASSWORD;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -47,8 +43,8 @@ public class GiteaProviderTest {
     private static final String testUser = "testUser";
     private static final String testPassword = "testPassword";
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() {
         pluginSettings = new DefaultPluginSettings();
         pluginSettings.setServerBaseURL(serverBaseURL);
         pluginSettings.setEndPoint(endpoint);
@@ -60,23 +56,23 @@ public class GiteaProviderTest {
     }
 
     @Test
-    public void checkIdsMatch() throws Exception {
+    public void checkIdsMatch() {
         assertEquals("gitea.pr.status", provider.pluginId());
         assertEquals("git.fb", provider.pollerPluginId());
     }
 
     @Test
-    public void checkValidationWithValidValues() throws Exception {
-        Map<String, Object> config = new LinkedHashTreeMap<String, Object>();
-        List<Map<String, Object>> errors = new ArrayList<Map<String, Object>>();
+    public void checkValidationWithValidValues() {
+        Map<String, Object> config = new LinkedHashMap<>();
+        List<Map<String, Object>> errors = new ArrayList<>();
 
-        Map<String, String> dummyUrl = new LinkedHashTreeMap<String, String>();
+        Map<String, String> dummyUrl = new LinkedHashMap<>();
         dummyUrl.put("value", "http://localhost:8153");
 
-        Map<String, String> dummyUsername = new LinkedHashTreeMap<String, String>();
+        Map<String, String> dummyUsername = new LinkedHashMap<>();
         dummyUsername.put("value", "testUser");
 
-        Map<String, String> dummyPassword = new LinkedHashTreeMap<String, String>();
+        Map<String, String> dummyPassword = new LinkedHashMap<>();
         dummyPassword.put("value", "testPassword");
 
         config.put(PLUGIN_SETTINGS_SERVER_BASE_URL, dummyUrl);
@@ -89,16 +85,16 @@ public class GiteaProviderTest {
     }
 
     @Test
-    public void checkValidationWithInvalidValues() throws Exception {
-        Map<String, Object> config = new LinkedHashTreeMap<String, Object>();
+    public void checkValidationWithInvalidValues() {
+        Map<String, Object> config = new LinkedHashMap<>();
 
-        Map<String, String> dummyUrl = new LinkedHashTreeMap<String, String>();
+        Map<String, String> dummyUrl = new LinkedHashMap<>();
         dummyUrl.put("value", "invalid");
 
-        Map<String, String> dummyUsername = new LinkedHashTreeMap<String, String>();
+        Map<String, String> dummyUsername = new LinkedHashMap<>();
         dummyUsername.put("value", "");
 
-        Map<String, String> dummyPassword = new LinkedHashTreeMap<String, String>();
+        Map<String, String> dummyPassword = new LinkedHashMap<>();
         dummyPassword.put("value", "");
 
         config.put(PLUGIN_SETTINGS_SERVER_BASE_URL, dummyUrl);
@@ -112,28 +108,28 @@ public class GiteaProviderTest {
 
     @Test
     public void shouldGetRepositoryFromURL() {
-        assertThat(provider.getRepository("http://gitea.com/group/sample-repo"), is("group/sample-repo"));
-        assertThat(provider.getRepository("http://gitea.com/group/sample-repo.git"), is("group/sample-repo"));
-        assertThat(provider.getRepository("http://gitea.com/group/sample-repo/"), is("group/sample-repo"));
-        assertThat(provider.getRepository("http://gitea.com/group/sample-repo.git/"), is("group/sample-repo"));
-        assertThat(provider.getRepository("https://gitea.com/group/sample-repo"), is("group/sample-repo"));
-        assertThat(provider.getRepository("https://gitea.com/group/sample-repo.git"), is("group/sample-repo"));
-        assertThat(provider.getRepository("git@code.corp.yourcompany.com:group/sample-repo"), is("group/sample-repo"));
-        assertThat(provider.getRepository("git@code.corp.yourcompany.com:group/sample-repo.git"), is("group/sample-repo"));
-        assertThat(provider.getRepository("git@gitea.com:group/sample-repo.git"), is("group/sample-repo"));
-        assertThat(provider.getRepository("http://gitea.com/group/sub-group/sample-repo.git/"), is("group/sub-group/sample-repo"));
-        assertThat(provider.getRepository("https://gitea.com/group/sub-group/another-sub-group/sample-repo"), is("group/sub-group/another-sub-group/sample-repo"));
+        assertThat(provider.getRepository("http://gitea.com/group/sample-repo")).isEqualTo("group/sample-repo");
+        assertThat(provider.getRepository("http://gitea.com/group/sample-repo.git")).isEqualTo("group/sample-repo");
+        assertThat(provider.getRepository("http://gitea.com/group/sample-repo/")).isEqualTo("group/sample-repo");
+        assertThat(provider.getRepository("http://gitea.com/group/sample-repo.git/")).isEqualTo("group/sample-repo");
+        assertThat(provider.getRepository("https://gitea.com/group/sample-repo")).isEqualTo("group/sample-repo");
+        assertThat(provider.getRepository("https://gitea.com/group/sample-repo.git")).isEqualTo("group/sample-repo");
+        assertThat(provider.getRepository("git@code.corp.yourcompany.com:group/sample-repo")).isEqualTo("group/sample-repo");
+        assertThat(provider.getRepository("git@code.corp.yourcompany.com:group/sample-repo.git")).isEqualTo("group/sample-repo");
+        assertThat(provider.getRepository("git@gitea.com:group/sample-repo.git")).isEqualTo("group/sample-repo");
+        assertThat(provider.getRepository("http://gitea.com/group/sub-group/sample-repo.git/")).isEqualTo("group/sub-group/sample-repo");
+        assertThat(provider.getRepository("https://gitea.com/group/sub-group/another-sub-group/sample-repo")).isEqualTo("group/sub-group/another-sub-group/sample-repo");
     }
 
     @Test
-    public void checkFormUpdateURL() throws Exception {
+    public void checkFormUpdateURL() {
         String gitServerBaseURL = "https://www.test-gitea.com";
         String gitServerBaseURLWithEndingSlash = "https://www.test-gitea.com/";
         String repositoryURL = "https://www.test-gitea.com/test-owner/test-repo";
         String commitRevision = "revValue";
 
-        assertThat(provider.formUpdateURL(gitServerBaseURL, repositoryURL, commitRevision), is("https://www.test-gitea.com/api/v1/repos/test-owner/test-repo/statuses/revValue"));
-        assertThat(provider.formUpdateURL(gitServerBaseURLWithEndingSlash, repositoryURL, commitRevision), is("https://www.test-gitea.com/api/v1/repos/test-owner/test-repo/statuses/revValue"));
+        assertThat(provider.formUpdateURL(gitServerBaseURL, repositoryURL, commitRevision)).isEqualTo("https://www.test-gitea.com/api/v1/repos/test-owner/test-repo/statuses/revValue");
+        assertThat(provider.formUpdateURL(gitServerBaseURLWithEndingSlash, repositoryURL, commitRevision)).isEqualTo("https://www.test-gitea.com/api/v1/repos/test-owner/test-repo/statuses/revValue");
     }
 
     @Test

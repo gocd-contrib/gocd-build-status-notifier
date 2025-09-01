@@ -21,10 +21,7 @@ import com.tw.go.plugin.setting.PluginConfigurationView;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_SERVER_BASE_URL;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_END_POINT;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_USERNAME;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_PASSWORD;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 import static com.tw.go.plugin.util.ConfigurationUtils.createField;
 
 public class GiteaConfigurationView implements PluginConfigurationView {
@@ -36,7 +33,7 @@ public class GiteaConfigurationView implements PluginConfigurationView {
 
     @Override
     public Map<String, Object> fields() {
-        Map<String, Object> response = new HashMap<String, Object>();
+        Map<String, Object> response = new HashMap<>();
         response.put(PLUGIN_SETTINGS_SERVER_BASE_URL, createField("GoCD Base URL", null, true, false, "0"));
         response.put(PLUGIN_SETTINGS_END_POINT, createField("Gitea Base URL", null, true, false, "1"));
         response.put(PLUGIN_SETTINGS_USERNAME, createField("Username", null, true, false, "2"));

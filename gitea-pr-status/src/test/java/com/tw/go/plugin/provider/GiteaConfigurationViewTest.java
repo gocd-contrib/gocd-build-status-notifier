@@ -16,31 +16,29 @@
 
 package com.tw.go.plugin.provider;
 
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_SERVER_BASE_URL;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_END_POINT;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_USERNAME;
-import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.PLUGIN_SETTINGS_PASSWORD;
+import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class GiteaConfigurationViewTest {
 
     private GiteaConfigurationView view;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         view = new GiteaConfigurationView();
     }
 
     @Test
-    public void checkExpectedFields() throws Exception {
-        Set<String> expected = new HashSet<String>();
+    public void checkExpectedFields() {
+        Set<String> expected = new HashSet<>();
         expected.add(PLUGIN_SETTINGS_SERVER_BASE_URL);
         expected.add(PLUGIN_SETTINGS_END_POINT);
         expected.add(PLUGIN_SETTINGS_USERNAME);
@@ -49,7 +47,7 @@ public class GiteaConfigurationViewTest {
     }
 
     @Test
-    public void checkTemplateName() throws Exception {
+    public void checkTemplateName() {
         assertEquals("plugin-settings-gitea.template.html", view.templateName());
     }
 }
