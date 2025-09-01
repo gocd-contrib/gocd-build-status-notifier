@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+plugins {
+    id 'java'
+}
+
 repositories {
     mavenCentral()
 }
@@ -33,17 +37,25 @@ dependencies {
     }
 }
 
-processResources {
-    doFirst {
-        project.pluginDesc.id = "gitlab.mr.status"
-        project.pluginDesc.name = "GitLab Merge Requests status notifier"
-        project.pluginDesc.description = "Updates build status for GitLab Merge requests"
+gocdPlugin {
+    id = 'gitlab.mr.status'
+    pluginVersion = rootProject.gocdPlugin.pluginVersion
+    goCdVersion = rootProject.gocdPlugin.goCdVersion
+    name = 'GitLab Merge Requests status notifier'
+    description = 'Updates build status for GitLab Merge requests'
+    vendorName = rootProject.gocdPlugin.vendorName
+    vendorUrl = rootProject.gocdPlugin.vendorUrl
+
+    githubRepo {
+        owner = rootProject.gocdPlugin.githubRepo.owner
+        repo = rootProject.gocdPlugin.githubRepo.repo
+        token = rootProject.gocdPlugin.githubRepo.token
     }
 
-    from("src/main/resources") {
-        duplicatesStrategy(DuplicatesStrategy.INCLUDE)
-        filesMatching('plugin.xml') {
-            expand project.pluginDesc
-        }
-    }
+    pluginProject = project
+
+    prerelease = rootProject.gocdPlugin.prerelease
+    assetsToRelease = [project.tasks.findByName('jar')]
 }
+
+version = gocdPlugin.fullVersion(project)

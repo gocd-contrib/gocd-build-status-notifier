@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+plugins {
+    id 'java'
+}
+
 repositories {
     mavenCentral()
 }
@@ -24,18 +29,25 @@ dependencies {
     implementation(enforcedPlatform('com.fasterxml.jackson:jackson-bom:2.19.2'))
 }
 
-processResources {
-    doFirst {
-        project.pluginDesc.id = "github.pr.status"
-        project.pluginDesc.name = "Github Pull Requests status notifier"
-        project.pluginDesc.description = "Updates build status for GitHub pull request"
+gocdPlugin {
+    id = 'github.pr.status'
+    pluginVersion = rootProject.gocdPlugin.pluginVersion
+    goCdVersion = rootProject.gocdPlugin.goCdVersion
+    name = 'Github Pull Requests status notifier'
+    description = 'Updates build status for GitHub pull request'
+    vendorName = rootProject.gocdPlugin.vendorName
+    vendorUrl = rootProject.gocdPlugin.vendorUrl
+
+    githubRepo {
+        owner = rootProject.gocdPlugin.githubRepo.owner
+        repo = rootProject.gocdPlugin.githubRepo.repo
+        token = rootProject.gocdPlugin.githubRepo.token
     }
 
-    from("src/main/resources") {
-        duplicatesStrategy(DuplicatesStrategy.INCLUDE)
-        filesMatching('plugin.xml') {
-            expand project.pluginDesc
-        }
-    }
+    pluginProject = project
 
+    prerelease = rootProject.gocdPlugin.prerelease
+    assetsToRelease = [project.tasks.findByName('jar')]
 }
+
+version = gocdPlugin.fullVersion(project)

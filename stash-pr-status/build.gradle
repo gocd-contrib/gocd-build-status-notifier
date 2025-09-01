@@ -13,6 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+plugins {
+    id 'java'
+}
+
 repositories {
     mavenCentral()
 }
@@ -21,17 +26,25 @@ dependencies {
     implementation project(":common")
 }
 
-processResources {
-    doFirst {
-        project.pluginDesc.id = "stash.pr.status"
-        project.pluginDesc.name = "Stash Pull Requests status notifier"
-        project.pluginDesc.description = "Updates build status for Stash pull request"
+gocdPlugin {
+    id = 'stash.pr.status'
+    pluginVersion = rootProject.gocdPlugin.pluginVersion
+    goCdVersion = rootProject.gocdPlugin.goCdVersion
+    name = 'Stash Pull Requests status notifier'
+    description = 'Updates build status for Stash pull request'
+    vendorName = rootProject.gocdPlugin.vendorName
+    vendorUrl = rootProject.gocdPlugin.vendorUrl
+
+    githubRepo {
+        owner = rootProject.gocdPlugin.githubRepo.owner
+        repo = rootProject.gocdPlugin.githubRepo.repo
+        token = rootProject.gocdPlugin.githubRepo.token
     }
 
-    from("src/main/resources") {
-        duplicatesStrategy(DuplicatesStrategy.INCLUDE)
-        filesMatching('plugin.xml') {
-            expand project.pluginDesc
-        }
-    }
+    pluginProject = project
+
+    prerelease = rootProject.gocdPlugin.prerelease
+    assetsToRelease = [project.tasks.findByName('jar')]
 }
+
+version = gocdPlugin.fullVersion(project)

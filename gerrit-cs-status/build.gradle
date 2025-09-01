@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+plugins {
+    id 'java'
+}
+
 repositories {
     mavenCentral()
 }
@@ -22,17 +26,25 @@ dependencies {
     implementation project(":common")
 }
 
-processResources {
-    doFirst {
-        project.pluginDesc.id = "gerrit.cs.status"
-        project.pluginDesc.name = "Gerrit Change Set status notifier"
-        project.pluginDesc.description = "Updates build status for Gerrit change set"
+gocdPlugin {
+    id = 'gerrit.cs.status'
+    pluginVersion = rootProject.gocdPlugin.pluginVersion
+    goCdVersion = rootProject.gocdPlugin.goCdVersion
+    name = 'Gerrit Change Set status notifier'
+    description = 'Updates build status for Gerrit change set'
+    vendorName = rootProject.gocdPlugin.vendorName
+    vendorUrl = rootProject.gocdPlugin.vendorUrl
+
+    githubRepo {
+        owner = rootProject.gocdPlugin.githubRepo.owner
+        repo = rootProject.gocdPlugin.githubRepo.repo
+        token = rootProject.gocdPlugin.githubRepo.token
     }
 
-    from("src/main/resources") {
-        duplicatesStrategy(DuplicatesStrategy.INCLUDE)
-        filesMatching('plugin.xml') {
-            expand project.pluginDesc
-        }
-    }
+    pluginProject = project
+
+    prerelease = rootProject.gocdPlugin.prerelease
+    assetsToRelease = [project.tasks.findByName('jar')]
 }
+
+version = gocdPlugin.fullVersion(project)

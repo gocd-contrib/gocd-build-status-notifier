@@ -15,36 +15,29 @@
  */
 plugins {
     id 'java'
-    id 'io.github.humblerookie.gradle' version '0.5.0'
 }
 
-apply from: 'plugin-helpers.gradle'
+apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-helpers/master/helper.gradle?_=${(int) (new Date().toInstant().epochSecond / 60)}"
 
-project.ext.pluginVersion = '1.7.4'
-project.ext.fullVersion = project.git.distVersion() ? "${project.pluginVersion}-${project.git.distVersion()}" : project.pluginVersion
+gocdPlugin {
+    id = 'dummy'
+    pluginVersion = '1.7.5'
+    goCdVersion = '20.9.0'
+    name = 'Wrapper build status notifier project'
+    description = 'Wrapper build status notifier project'
+    vendorName = 'GoCD Contributors'
+    vendorUrl = 'https://github.com/gocd-contrib/gocd-build-status-notifier'
 
-project.ext.pluginDesc = [
-        repo       : rootProject.name,
-        version    : project.fullVersion,
-        goCdVersion: '20.9.0',
-        vendorName : 'GoCD Contributors',
-        vendorUrl  : 'https://github.com/gocd-contrib/gocd-build-status-notifier'
-]
-
-repositories {
-    mavenCentral()
-}
-
-allprojects {
-    apply plugin: 'java'
-
-    group = 'com.tw.go.plugin'
-    version = project.fullVersion
-
-    java {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+    githubRepo {
+        owner = System.getenv('GITHUB_USER') ?: 'bob'
+        repo = 'gocd-build-status-notifier'
+        token = System.getenv('GITHUB_TOKEN') ?: 'bad-token'
     }
+
+    pluginProject = project
+
+    prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
+    assetsToRelease = []
 }
 
 ext {
@@ -53,6 +46,17 @@ ext {
     ]
 
     versions = project.ext.deps.collectEntries { lib, libGav -> [lib, libGav.split(':').last()] }
+}
+
+allprojects {
+    apply plugin: 'java'
+
+    group = 'com.tw.go.plugin'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
 }
 
 subprojects { Project sub ->
@@ -86,35 +90,12 @@ subprojects { Project sub ->
     }
 
     if (!sub.name.equalsIgnoreCase("common")) {
+        apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-helpers/master/helper.gradle?_=${(int) (new Date().toInstant().epochSecond / 60)}"
+
         jar {
             from(configurations.runtimeClasspath) {
                 into "lib/"
             }
         }
-        apply from: "${rootProject.projectDir}/plugin-tasks.gradle"
     }
 }
-
-github {
-    def lastCommit = project.git.gitRevision()
-
-    owner = System.getenv('GITHUB_USER') ?: 'bob'
-    repo = project.pluginDesc.repo
-    token = System.getenv('GITHUB_TOKEN') ?: 'bad-token'
-    targetCommitish = lastCommit
-    prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
-    assets = subprojects.findAll { "common" != it.name }
-            .collect { it.jar.outputs.files.files }
-            .flatten()
-
-    tagName = "${project.fullVersion}${prerelease ? '-exp' : ''}"
-    name = "${prerelease ? 'Experimental: ' : ''}${project.fullVersion}"
-
-    def lastTag = project.git.getLastTag(prerelease)
-    def changelogHeader = lastTag ? "### Changelog ${lastTag}..${lastCommit.substring(0, 7)}" : "### Changelog"
-    def changeLog = project.git.getCommitsSinceLastTag(lastTag).replaceAll("\"", "")
-
-    body = """\n$changelogHeader\n\n${changeLog}\n""".stripIndent().trim()
-}
-
-githubRelease.dependsOn project.subprojects*.tasks*.findByName('assemble').findAll { it != null }
