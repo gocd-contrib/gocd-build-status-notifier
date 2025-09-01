@@ -34,7 +34,7 @@ gocdPlugin {
         token = System.getenv('GITHUB_TOKEN') ?: 'bad-token'
     }
 
-    pluginProject = project
+    pluginProject = null // Plugins are defined in subprojects
 
     prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
     assetsToRelease = [
@@ -105,5 +105,4 @@ subprojects { Project sub ->
     }
 }
 
-checkLicense.enabled = false // Not needed on root project
-generateLicenseReport.enabled = false // Not needed on root project
+jar.enabled = false // No jar for the root project
