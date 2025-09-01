@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.tw.go.plugin.BuildStatusNotifierPlugin.PLUGIN_SETTINGS_GET_CONFIGURATION;
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -61,7 +60,7 @@ public class GerritBuildStatusNotifierPluginTest {
         pluginSettingsResponse.setResponseBody(JSONUtils.toJSON(new HashMap<String, String>()));
         when(goApplicationAccessor.submit(any(GoApiRequest.class))).thenReturn(pluginSettingsResponse);
         when(provider.pluginId()).thenReturn(PLUGIN_ID);
-        when(provider.pollerPluginIds()).thenReturn(singletonList(POLLER_PLUGIN_ID));
+        when(provider.pollerPluginIds()).thenReturn(List.of(POLLER_PLUGIN_ID));
 
         plugin.initializeGoApplicationAccessor(goApplicationAccessor);
         plugin.setProvider(provider);

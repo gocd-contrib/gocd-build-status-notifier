@@ -31,7 +31,6 @@ import java.util.Map;
 
 import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 import static com.tw.go.plugin.util.ValidationUtils.getValidationError;
-import static java.util.Collections.singletonList;
 
 public class GerritProvider extends DefaultProvider {
 
@@ -61,7 +60,7 @@ public class GerritProvider extends DefaultProvider {
 
     @Override
     public List<String> pollerPluginIds() {
-        return singletonList(GERRIT_CS_POLLER_PLUGIN_ID);
+        return List.of(GERRIT_CS_POLLER_PLUGIN_ID);
     }
 
     @Override

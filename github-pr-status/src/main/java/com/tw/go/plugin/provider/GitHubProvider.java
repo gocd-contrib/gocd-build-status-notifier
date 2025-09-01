@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Collections.singletonList;
-
 public class GitHubProvider extends DefaultProvider {
     private static final Logger LOGGER = Logger.getLoggerFor(GitHubProvider.class);
     public static final String PLUGIN_ID = "github.pr.status";
@@ -46,7 +44,7 @@ public class GitHubProvider extends DefaultProvider {
 
     @Override
     public List<String> pollerPluginIds() {
-        return singletonList(GITHUB_PR_POLLER_PLUGIN_ID);
+        return List.of(GITHUB_PR_POLLER_PLUGIN_ID);
     }
 
     @Override

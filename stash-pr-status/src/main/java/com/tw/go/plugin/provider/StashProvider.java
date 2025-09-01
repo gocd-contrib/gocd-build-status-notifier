@@ -28,8 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Collections.singletonList;
-
 public class StashProvider extends DefaultProvider {
     public static final String PLUGIN_ID = "stash.pr.status";
     public static final String STASH_PR_POLLER_PLUGIN_ID = "stash.pr";
@@ -57,7 +55,7 @@ public class StashProvider extends DefaultProvider {
 
     @Override
     public List<String> pollerPluginIds() {
-        return singletonList(STASH_PR_POLLER_PLUGIN_ID);
+        return List.of(STASH_PR_POLLER_PLUGIN_ID);
     }
 
     @Override
