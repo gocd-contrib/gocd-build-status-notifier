@@ -44,7 +44,7 @@ gocdPlugin {
     pluginProject = project
 
     prerelease = rootProject.gocdPlugin.prerelease
-    assetsToRelease = [project.tasks.findByName('jar')]
+    assetsToRelease = [] // Released by root project
 }
 
 version = gocdPlugin.fullVersion(project)

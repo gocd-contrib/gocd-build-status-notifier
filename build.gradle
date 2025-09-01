@@ -37,7 +37,12 @@ gocdPlugin {
     pluginProject = project
 
     prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
-    assetsToRelease = []
+    assetsToRelease = [
+            project(':gerrit-cs-status').tasks.jar,
+            project(':github-pr-status').tasks.jar,
+            project(':gitlab-mr-status').tasks.jar,
+            project(':stash-pr-status').tasks.jar
+    ]
 }
 
 ext {
@@ -99,3 +104,5 @@ subprojects { Project sub ->
         }
     }
 }
+
+generateLicenseReport.enabled = false // Not needed on root project
