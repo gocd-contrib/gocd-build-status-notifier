@@ -44,7 +44,7 @@ public class DefaultProviderTest {
         }
 
         @Override
-        public String pollerPluginId() {
+        public List<String> pollerPluginIds() {
             return null;
         }
 

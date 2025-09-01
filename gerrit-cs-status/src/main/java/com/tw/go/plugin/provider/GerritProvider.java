@@ -24,10 +24,7 @@ import com.tw.go.plugin.util.HTTPClient;
 import com.tw.go.plugin.util.JSONUtils;
 import com.tw.go.plugin.util.ValidationUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.tw.go.plugin.setting.DefaultPluginConfigurationView.*;
 import static com.tw.go.plugin.util.ValidationUtils.getValidationError;
@@ -59,8 +56,8 @@ public class GerritProvider extends DefaultProvider {
     }
 
     @Override
-    public String pollerPluginId() {
-        return GERRIT_CS_POLLER_PLUGIN_ID;
+    public List<String> pollerPluginIds() {
+        return Collections.singletonList(GERRIT_CS_POLLER_PLUGIN_ID);
     }
 
     @Override

@@ -31,10 +31,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.tw.go.plugin.BuildStatusNotifierPlugin.PLUGIN_SETTINGS_GET_CONFIGURATION;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,7 +58,7 @@ public class StashBuildStatusNotifierPluginTest {
         pluginSettingsResponse.setResponseBody(JSONUtils.toJSON(new HashMap<String, String>()));
         when(goApplicationAccessor.submit(any(GoApiRequest.class))).thenReturn(pluginSettingsResponse);
         when(provider.pluginId()).thenReturn(PLUGIN_ID);
-        when(provider.pollerPluginId()).thenReturn(POLLER_PLUGIN_ID);
+        when(provider.pollerPluginIds()).thenReturn(Collections.singletonList(POLLER_PLUGIN_ID));
 
         plugin.initializeGoApplicationAccessor(goApplicationAccessor);
         plugin.setProvider(provider);

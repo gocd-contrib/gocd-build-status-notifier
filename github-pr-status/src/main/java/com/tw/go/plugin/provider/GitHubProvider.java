@@ -25,6 +25,7 @@ import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -43,8 +44,8 @@ public class GitHubProvider extends DefaultProvider {
     }
 
     @Override
-    public String pollerPluginId() {
-        return GITHUB_PR_POLLER_PLUGIN_ID;
+    public List<String> pollerPluginIds() {
+        return Collections.singletonList(GITHUB_PR_POLLER_PLUGIN_ID);
     }
 
     @Override
