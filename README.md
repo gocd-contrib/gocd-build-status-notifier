@@ -16,7 +16,7 @@ These plugins require GoCD version >= v15.x or above
 - Download the latest plugin jar from [Releases](https://github.com/srinivasupadhya/gocd-build-status-notifier/releases) section. Place it in `<go-server-location>/plugins/external` & restart Go Server.
 
 ## Behavior
-- Go Server notifies the plugin on every `Stage Status Change` with relevant details. The plugin scans the `build-cause` to see if the `github.pr` / `stash.pr` / `gerrit.cs` material is present.
+- Go Server notifies the plugin on every `Stage Status Change` with relevant details. The plugin scans the `build-cause` to see if the `github.pr` / `stash.pr` / `gerrit.cs` / `gitlab.pr` material is present.
 - If it is, then Pull Request/Change Set status is updated with `status=stage-result`, `context=pipeline-name/stage-name` & `target-url=trackback-url`.
 
 ## Configuration
@@ -108,6 +108,7 @@ Eg:
 - This works with `git.fb` and `gitlab.pr` poller plugins that can be found here https://github.com/ashwanthkumar/gocd-build-github-pull-requests/releases
 - You will need a Gitlab Oauth token: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html
 - You need to provide `server_base_url`, `endpoint`, `oauth_token` using the plugin configuration view
+- When using `gitlab.pr` plugin, please make sure the populate fields are enabled
 ![Configure Gitlab Plugin][5]
 - Alternatively you can pass them through GoCD system property `go.plugin.build.status.gitlab.endpoint`, `go.plugin.build.status.gitlab.oauth`.
 Eg:
