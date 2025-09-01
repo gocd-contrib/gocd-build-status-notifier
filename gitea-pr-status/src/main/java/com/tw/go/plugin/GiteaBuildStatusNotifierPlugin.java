@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 ThoughtWorks, Inc.
+ * Copyright 2022 Thoughtworks, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package com.tw.go.plugin;
 
 import com.thoughtworks.go.plugin.api.annotation.Extension;
-import com.tw.go.plugin.provider.Provider;
 import com.tw.go.plugin.provider.GiteaProvider;
+import com.tw.go.plugin.provider.Provider;
 
 @Extension
 public class GiteaBuildStatusNotifierPlugin extends BuildStatusNotifierPlugin {
