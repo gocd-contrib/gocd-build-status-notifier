@@ -21,8 +21,8 @@ apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-help
 
 gocdPlugin {
     id = 'dummy'
-    pluginVersion = '1.7.5'
-    goCdVersion = '20.9.0'
+    pluginVersion = '2.0.0'
+    goCdVersion = '22.1.0'
     name = 'Wrapper build status notifier project'
     description = 'Wrapper build status notifier project'
     vendorName = 'GoCD Contributors'
@@ -53,14 +53,19 @@ ext {
     versions = project.ext.deps.collectEntries { lib, libGav -> [lib, libGav.split(':').last()] }
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+}
+
 allprojects {
     apply plugin: 'java'
 
     group = 'com.tw.go.plugin'
-
-    tasks.withType(JavaCompile).configureEach {
-        options.release = 11
-    }
 }
 
 subprojects { Project sub ->
