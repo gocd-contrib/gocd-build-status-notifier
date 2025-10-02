@@ -16,7 +16,6 @@
 plugins {
     id 'java'
 }
-
 apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-helpers/master/helper.gradle?_=${(int) (new Date().toInstant().epochSecond / 60)}"
 
 gocdPlugin {
@@ -63,7 +62,9 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 allprojects {
-    apply plugin: 'java'
+    plugins {
+        id 'java'
+    }
 
     group = 'com.tw.go.plugin'
 }
