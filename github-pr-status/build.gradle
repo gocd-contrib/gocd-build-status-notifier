@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     implementation project(":common")
-    implementation group: 'org.kohsuke', name: 'github-api', version: '1.330'
+    implementation 'org.kohsuke:github-api:1.330'
 
     implementation(enforcedPlatform('com.fasterxml.jackson:jackson-bom:2.20.0'))
 }
