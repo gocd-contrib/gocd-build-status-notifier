@@ -21,8 +21,8 @@ apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-help
 
 gocdPlugin {
     id = 'dummy'
-    pluginVersion = '1.7.5'
-    goCdVersion = '20.9.0'
+    pluginVersion = '2.0.0'
+    goCdVersion = '22.1.0'
     name = 'Wrapper build status notifier project'
     description = 'Wrapper build status notifier project'
     vendorName = 'GoCD Contributors'
@@ -37,6 +37,7 @@ gocdPlugin {
     pluginProject = null // Plugins are defined in subprojects
 
     prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
+    prereleaseDryrun = !"Yes".equalsIgnoreCase(System.getenv('PRERELEASE'))
     assetsToRelease = [
             project(':gerrit-cs-status').tasks.jar,
             project(':github-pr-status').tasks.jar,
@@ -54,15 +55,19 @@ ext {
     versions = project.ext.deps.collectEntries { lib, libGav -> [lib, libGav.split(':').last()] }
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+}
+
 allprojects {
     apply plugin: 'java'
 
     group = 'com.tw.go.plugin'
-
-    java {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
 }
 
 subprojects { Project sub ->
@@ -73,7 +78,7 @@ subprojects { Project sub ->
 
     dependencies {
         compileOnly project.deps.gocdPluginApi
-        implementation 'com.google.code.gson:gson:2.13.1'
+        implementation 'com.google.code.gson:gson:2.13.2'
         implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 
         constraints {
@@ -83,12 +88,12 @@ subprojects { Project sub ->
         }
 
         testImplementation project.deps.gocdPluginApi
-        testImplementation 'org.mockito:mockito-core:5.19.0'
-        testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.27.4'
-        testImplementation platform('org.junit:junit-bom:5.13.4')
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
-        testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
-        testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
+        testImplementation 'org.mockito:mockito-core:5.20.0'
+        testImplementation 'org.assertj:assertj-core:3.27.6'
+        testImplementation platform('org.junit:junit-bom:6.0.0')
+        testImplementation 'org.junit.jupiter:junit-jupiter-api'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
 
     test {

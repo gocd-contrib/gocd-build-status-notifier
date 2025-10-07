@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     implementation project(":common")
-    implementation group: 'org.gitlab', name: 'java-gitlab-api', version: '4.1.1'
+    implementation 'org.gitlab:java-gitlab-api:4.1.1'
 
     implementation(enforcedPlatform('com.fasterxml.jackson:jackson-bom:2.20.0'))
     constraints {
@@ -55,6 +55,7 @@ gocdPlugin {
     pluginProject = project
 
     prerelease = rootProject.gocdPlugin.prerelease
+    prereleaseDryrun = rootProject.gocdPlugin.prereleaseDryrun
     assetsToRelease = [] // Released by root project
 }
 

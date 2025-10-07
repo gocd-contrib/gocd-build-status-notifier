@@ -1,18 +1,21 @@
-# This workflow will build a Java project with Gradle
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
-
 name: Test and Build
 
 on:
   push:
     branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: 'The release should be an experimental release'
+        default: 'NO'
+        required: true
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
 
@@ -20,24 +23,25 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
         with:
-          java-version: 17
+          java-version: 21
           distribution: temurin
       - name: Test with Gradle
         run: ./gradlew assemble check
       - name: Generate and submit dependency graph
-        uses: gradle/actions/dependency-submission@017a9effdb900e5b5b2fddfb590a105619dca3c3 # v4.4.2
+        uses: gradle/actions/dependency-submission@748248ddd2a24f49513d8f472f81c3a07d4d50e1 # v4.4.4
         if: github.ref == 'refs/heads/master'
         env:
           DEPENDENCY_GRAPH_INCLUDE_CONFIGURATIONS: runtimeClasspath
-  previewGithubRelease:
+  githubRelease:
     needs: test
     runs-on: ubuntu-latest
     env:
       GITHUB_USER:  "gocd-contrib"
       GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      PRERELEASE:   "${{ github.event.inputs.prerelease }}"
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
 
@@ -47,7 +51,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
         with:
-          java-version: 17
+          java-version: 21
           distribution: temurin
-      - name: Test with Gradle
+      - name: Build and release with Gradle
         run: ./gradlew githubRelease
