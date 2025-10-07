@@ -47,6 +47,7 @@ gocdPlugin {
     pluginProject = project
 
     prerelease = rootProject.gocdPlugin.prerelease
+    prereleaseDryrun = rootProject.gocdPlugin.prereleaseDryrun
     assetsToRelease = [] // Released by root project
 }
 

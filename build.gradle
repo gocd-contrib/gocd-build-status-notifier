@@ -37,6 +37,7 @@ gocdPlugin {
     pluginProject = null // Plugins are defined in subprojects
 
     prerelease = !"No".equalsIgnoreCase(System.getenv('PRERELEASE'))
+    prereleaseDryrun = !"Yes".equalsIgnoreCase(System.getenv('PRERELEASE'))
     assetsToRelease = [
             project(':gerrit-cs-status').tasks.jar,
             project(':github-pr-status').tasks.jar,
