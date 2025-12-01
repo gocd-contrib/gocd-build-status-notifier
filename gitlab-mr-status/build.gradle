@@ -31,7 +31,7 @@ dependencies {
         implementation('org.slf4j:slf4j-api:2.0.17') {
             because 'Transitive dependency of java-gitlab-api is out-of-date'
         }
-        implementation('commons-io:commons-io:2.20.0') {
+        implementation('commons-io:commons-io:2.21.0') {
             because 'Transitive dependency of java-gitlab-api/github-api has reported vulnerabilities'
         }
     }
