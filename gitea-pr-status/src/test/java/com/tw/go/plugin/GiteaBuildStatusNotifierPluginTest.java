@@ -22,6 +22,7 @@ import com.thoughtworks.go.plugin.api.request.DefaultGoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoApiRequest;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.DefaultGoApiResponse;
+import com.tw.go.plugin.provider.GiteaProvider;
 import com.tw.go.plugin.provider.Provider;
 import com.tw.go.plugin.setting.PluginConfigurationView;
 import com.tw.go.plugin.setting.PluginSettings;
@@ -40,9 +41,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-public class GerritBuildStatusNotifierPluginTest {
-    public static final String PLUGIN_ID = "gerrit-plugin-id";
-    public static final String POLLER_PLUGIN_ID = "gerrit-repo-poller-plugin-id";
+public class GiteaBuildStatusNotifierPluginTest {
+    public static final String PLUGIN_ID = "gitea-plugin";
+    public static final String POLLER_PLUGIN_ID = "gitea-poller-plugin-id";
     @Mock
     private GoApplicationAccessor goApplicationAccessor;
     @Mock
@@ -54,7 +55,7 @@ public class GerritBuildStatusNotifierPluginTest {
     public void setUp() {
         openMocks(this);
 
-        plugin = new GerritBuildStatusNotifierPlugin();
+        plugin = new GiteaBuildStatusNotifierPlugin();
 
         DefaultGoApiResponse pluginSettingsResponse = new DefaultGoApiResponse(200);
         pluginSettingsResponse.setResponseBody(JSONUtils.toJSON(new HashMap<String, String>()));
@@ -95,7 +96,30 @@ public class GerritBuildStatusNotifierPluginTest {
     }
 
     @Test
-    public void shouldReturnPluginSettings() throws Exception {
+    public void shouldDelegateUpdateStatusToProviderWithCorrectParametersWithoutPrID() throws Exception {
+        PluginSettings mockSettings = mock(PluginSettings.class);
+        when(plugin.getPluginSettings()).thenReturn(mockSettings);
+
+        String expectedURL = "url";
+        String expectedUsername = "username";
+        String expectedRevision = "sha-1";
+        String expectedBranch = "test-branch";
+        String pipelineName = "pipeline";
+        String pipelineCounter = "1";
+        String stageName = "stage";
+        String stageCounter = "1";
+        String expectedPipelineStage = String.format("%s/%s", pipelineName, stageName);
+        String expectedPipelineInstance = String.format("%s/%s/%s/%s", pipelineName, pipelineCounter, stageName, stageCounter);
+        String expectedStageResult = "Passed";
+
+        Map<String, Object> requestBody = createRequestBodyMapWithBranch(expectedURL, expectedUsername, expectedRevision, expectedBranch, pipelineName, pipelineCounter, stageName, stageCounter, expectedStageResult);
+        plugin.handleStageNotification(createGoPluginAPIRequest(requestBody));
+
+        verify(provider).updateStatus(eq(expectedURL), any(PluginSettings.class), eq("test-branch"), eq(expectedRevision), eq(expectedPipelineStage), eq(expectedStageResult), eq("http://localhost:8153/go/pipelines/" + expectedPipelineInstance));
+    }
+
+    @Test
+    public void shouldReturnPluginSettings() {
         Provider mockProvider = mock(Provider.class);
         PluginConfigurationView mockConfigView = mock(PluginConfigurationView.class);
         when(mockProvider.configurationView()).thenReturn(mockConfigView);
@@ -161,6 +185,59 @@ public class GerritBuildStatusNotifierPluginTest {
         modificationMap.put("revision", revision);
         Map<String, Object> modificationDataMap = new HashMap<>();
         modificationDataMap.put("PR_ID", prId);
+        modificationMap.put("data", modificationDataMap);
+        modifications.add(modificationMap);
+        materialRevisionMap.put("modifications", modifications);
+
+        Map<String, Object> pipelineMap = new HashMap<>();
+        List<Map<String, Object>> buildCause = new ArrayList<>();
+        buildCause.add(materialRevisionMap);
+        pipelineMap.put("build-cause", buildCause);
+
+        Map<String, Object> stageMap = new HashMap<>();
+        stageMap.put("name", stageName);
+        stageMap.put("counter", stageCounter);
+        stageMap.put("result", stageResult);
+        pipelineMap.put("stage", stageMap);
+
+        pipelineMap.put("name", pipelineName);
+        pipelineMap.put("counter", pipelineCounter);
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("pipeline", pipelineMap);
+        return requestBody;
+    }
+
+    @Test
+    public void shouldReturnCorrectConfigForGiteaPlugin() {
+        plugin.setProvider(new GiteaProvider());
+
+        Map<String, Object> configuration = new Gson().fromJson(plugin.handle(createRequest(PLUGIN_SETTINGS_GET_CONFIGURATION)).responseBody(), Map.class);
+
+        assertThat(configuration.containsKey("server_base_url")).isEqualTo(true);
+        assertThat(configuration.containsKey("end_point")).isEqualTo(true);
+        assertThat(configuration.containsKey("username")).isEqualTo(true);
+        assertThat(configuration.containsKey("password")).isEqualTo(true);
+        assertThat(configuration.containsKey("oauth_token")).isEqualTo(false);
+        assertThat(configuration.containsKey("review_label")).isEqualTo(false);
+    }
+
+    private Map<String, Object> createRequestBodyMapWithBranch(String url, String username, String revision, String branch, String pipelineName, String pipelineCounter, String stageName, String stageCounter, String stageResult) {
+        Map<String, Object> materialRevisionMap = new HashMap<>();
+        Map<String, Object> materialMap = new HashMap<>();
+        materialMap.put("type", "scm");
+        materialMap.put("plugin-id", POLLER_PLUGIN_ID);
+        Map<String, Object> configurationMap = new HashMap<>();
+        configurationMap.put("url", url);
+        configurationMap.put("username", username);
+        materialMap.put("scm-configuration", configurationMap);
+        materialRevisionMap.put("material", materialMap);
+
+        List<Map<String, Object>> modifications = new ArrayList<>();
+        Map<String, Object> modificationMap = new HashMap<>();
+        modificationMap.put("revision", revision);
+        Map<String, Object> modificationDataMap = new HashMap<>();
+        modificationDataMap.put("CURRENT_BRANCH", branch);
         modificationMap.put("data", modificationDataMap);
         modifications.add(modificationMap);
         materialRevisionMap.put("modifications", modifications);

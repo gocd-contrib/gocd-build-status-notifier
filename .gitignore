@@ -54,11 +54,13 @@ github-pr-status/build
 gitlab-mr-status/build
 gerrit-cs-status/build
 stash-pr-status/build
+gitea-pr-status/build
 common/out
 github-pr-status/out
 gitlab-mr-status/out
 gerrit-cs-status/out
 stash-pr-status/out
+gitea-pr-status/out
 
 
 # App #

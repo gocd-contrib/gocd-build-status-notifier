@@ -42,7 +42,8 @@ gocdPlugin {
             project(':gerrit-cs-status').tasks.jar,
             project(':github-pr-status').tasks.jar,
             project(':gitlab-mr-status').tasks.jar,
-            project(':stash-pr-status').tasks.jar
+            project(':stash-pr-status').tasks.jar,
+            project(':gitea-pr-status').tasks.jar,
     ]
 }
 
