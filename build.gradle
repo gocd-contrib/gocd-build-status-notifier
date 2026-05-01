@@ -77,13 +77,13 @@ subprojects { Project sub ->
 
     dependencies {
         compileOnly project.deps.gocdPluginApi
-        implementation('com.google.code.gson:gson:2.13.2') {
+        implementation('com.google.code.gson:gson:2.14.0') {
             exclude(module: 'error_prone_annotations') // Not needed at runtime
         }
         implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 
         constraints {
-            implementation('commons-codec:commons-codec:1.21.0') {
+            implementation('commons-codec:commons-codec:1.22.0') {
                 because 'Transitive dependency of apache httpclient has reported vulnerabilities'
             }
         }
