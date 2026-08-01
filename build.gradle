@@ -48,7 +48,7 @@ gocdPlugin {
 
 ext {
     deps = [
-        gocdPluginApi: 'cd.go.plugin:go-plugin-api:25.4.0',
+        gocdPluginApi: 'cd.go.plugin:go-plugin-api:26.1.0',
     ]
 
     versions = project.ext.deps.collectEntries { lib, libGav -> [lib, libGav.split(':').last()] }
@@ -91,7 +91,7 @@ subprojects { Project sub ->
         testImplementation project.deps.gocdPluginApi
         testImplementation 'org.mockito:mockito-core:5.23.0'
         testImplementation 'org.assertj:assertj-core:3.27.7'
-        testImplementation platform('org.junit:junit-bom:6.1.1')
+        testImplementation platform('org.junit:junit-bom:6.1.2')
         testImplementation 'org.junit.jupiter:junit-jupiter-api'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
