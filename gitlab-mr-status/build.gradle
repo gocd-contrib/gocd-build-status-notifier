@@ -26,9 +26,9 @@ dependencies {
     implementation project(":common")
     implementation 'org.gitlab:java-gitlab-api:4.1.1'
 
-    implementation(enforcedPlatform('com.fasterxml.jackson:jackson-bom:2.22.2'))
+    implementation(enforcedPlatform('com.fasterxml.jackson:jackson-bom:2.22.3'))
     constraints {
-        implementation('org.slf4j:slf4j-api:2.0.18') {
+        implementation('org.slf4j:slf4j-api:2.0.20') {
             because 'Transitive dependency of java-gitlab-api is out-of-date'
         }
         implementation('commons-io:commons-io:2.22.0') {
